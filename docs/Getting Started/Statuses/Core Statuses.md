@@ -29,7 +29,7 @@ Note that `Todo` is followed by `Done`, in order to preserve compatibility with 
 You can edit the 'Todo' core status to make its Next Status Symbol be `/` and enable `Todo` -> `In Progress` -> `Done`, if you prefer.
 
 > [!Tip]
-> Use the "Review and check your Statuses" button at any time to [[Check your Statuses]] and to visualise them.
+> Use "Create status report" at any time to [[Check your Statuses]] and to visualise them.
 
 ## Editing core statuses
 

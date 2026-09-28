@@ -30,8 +30,8 @@ We also see that each status consists of:
 
 - **Status Symbol** (for example, `x` and  `-`)
 - **Status Name** (for example, 'In Progress')
+- **Status Type** (for example, 'To do', 'Done', 'In progress' or 'Cancelled')
 - **Next Status Symbol** (for example, `x` and `space`)
-- **Status Type** (one of `TODO`, `DONE`, `IN_PROGRESS` or `CANCELLED`)
 
 ## Add New Task Status
 
@@ -43,6 +43,8 @@ This adds a new, empty row to the Custom Statuses section.
 You can then click its Pencil icon and fill in the details for your new Status.
 
 ## Bulk-adding Statuses
+
+These options are in the **Tools** section. Themes are added with **Import from theme**.
 
 ### Minimal Theme
 
@@ -75,7 +77,7 @@ You can find a full list, with screenshots and complete details of the supported
 
 ### Add All Unknown Status Types
 
-This searches all the tasks in your vault for any with status symbols that are not already in Tasks settings.
+This option, **Add statuses found in vault**, searches all the tasks in your vault for any with status symbols that are not already in Tasks settings.
 It then creates a new custom status for each unknown status symbol.
 
 The new statuses are sorted by their symbols.
@@ -88,7 +90,7 @@ For example, in a vault that has already used a few custom statuses, we might se
 
 ## Reset Custom Status Types to Defaults
 
-This resets the entire Custom Statuses section back to its default list.
+This option, **Reset custom statuses**, resets the entire Custom Statuses section back to its default list.
 
 This allows you to try out each of the buttons above, and if you don't like them, you can quickly undo their changes.
 
