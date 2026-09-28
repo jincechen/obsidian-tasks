@@ -27,6 +27,7 @@
         "name": "Görev Durum Adı"
       },
       "editStatusSymbol": {
+        "coreDescription": "",
         "description": "Köşeli parantezler arasındaki karakterdir. (Yalnızca Özel durumlar için düzenlenebilir; Temel durumlar için düzenlenemez.)",
         "name": "Görev Durum Simgesi"
       },

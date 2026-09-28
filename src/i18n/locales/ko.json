@@ -27,6 +27,7 @@
         "name": "상태 이름"
       },
       "editStatusSymbol": {
+        "coreDescription": "",
         "description": "대괄호 '[]' 사이에 들어가는 문자입니다. (코어 상태가 아닌 사용자 정의 상태만 편집할 수 있습니다.)",
         "name": "상태 기호"
       },

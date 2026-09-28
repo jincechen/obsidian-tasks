@@ -27,6 +27,7 @@
         "name": "任务状态名称"
       },
       "editStatusSymbol": {
+        "coreDescription": "",
         "description": "这是方括号中的字符。（仅可编辑自定义状态,不可编辑核心状态。）",
         "name": "任务状态符号"
       },

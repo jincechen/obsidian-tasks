@@ -27,6 +27,7 @@
         "name": "Name des Aufgabenstatus"
       },
       "editStatusSymbol": {
+        "coreDescription": "",
         "description": "Das Zeichen zwischen den eckigen Klammern. (Sie können es nur für benutzerdefinierte Status bearbeiten, nicht für Kernstatus.)",
         "name": "Symbol des Aufgabenstatus"
       },

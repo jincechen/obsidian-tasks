@@ -27,6 +27,7 @@
         "name": "Nom du statut"
       },
       "editStatusSymbol": {
+        "coreDescription": "",
         "description": "Le caractère utilisé entre les crochets. (Peut uniquement être modifié pour les statuts personnalisés, pas pour les statuts principaux.)",
         "name": "Symbole du statut"
       },

@@ -27,6 +27,7 @@
         "name": "Nome do Status da Tarefa"
       },
       "editStatusSymbol": {
+        "coreDescription": "",
         "description": "Este é o caractere entre os colchetes. (Só pode ser editado para status Personalizados, e não para status Principais).",
         "name": "Símbolo do Status da Tarefa"
       },

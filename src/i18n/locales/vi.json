@@ -27,6 +27,7 @@
         "name": "Tên trạng thái nhiệm vụ"
       },
       "editStatusSymbol": {
+        "coreDescription": "",
         "description": "Đây là ký tự nằm giữa dấu ngoặc vuông. (Chỉ có thể chỉnh sửa cho trạng thái Tùy chỉnh, không phải trạng thái Cốt lõi.)",
         "name": "Ký hiệu trạng thái nhiệm vụ"
       },

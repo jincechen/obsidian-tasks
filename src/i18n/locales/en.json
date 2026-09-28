@@ -15,23 +15,24 @@
   "modals": {
     "customStatusModal": {
       "editAvailableAsCommand": {
-        "description": "If enabled this status will be available as a command so you can assign a hotkey and toggle the status using it.",
+        "description": "Make this status available as a command, so you can give it a hotkey.",
         "name": "Available as command"
       },
       "editNextStatusSymbol": {
-        "description": "When clicked on this is the symbol that should be used next.",
-        "name": "Next status symbol"
+        "description": "The symbol this status changes to when toggled.",
+        "name": "Next symbol"
       },
       "editStatusName": {
-        "description": "This is the friendly name of the task status.",
+        "description": "The name shown in menus and searches.",
         "name": "Name"
       },
       "editStatusSymbol": {
-        "description": "This is the character between the square braces. (It can only be edited for custom statuses, and not core statuses.)",
+        "coreDescription": "The character between the square brackets. Core status symbols cannot be changed.",
+        "description": "The character between the square brackets.",
         "name": "Symbol"
       },
       "editStatusType": {
-        "description": "Control how the status behaves for searching and toggling.",
+        "description": "How the status behaves when searching and toggling.",
         "name": "Type"
       },
       "fixErrorsBeforeSaving": "Fix errors before saving.",

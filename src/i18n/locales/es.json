@@ -27,6 +27,7 @@
         "name": "Nombre del estado de la tarea"
       },
       "editStatusSymbol": {
+        "coreDescription": "",
         "description": "Este es el carácter entre los corchetes. (Solo se puede editar en estados personalizados, no en estados principales).",
         "name": "Símbolo del estado de la tarea"
       },
