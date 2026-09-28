@@ -82,15 +82,6 @@
     </section>
     <hr id="line-after-priority" />
     <section class="tasks-modal-dates-section">
-      <label for="recurrence">
-        <span class="accesskey">R</span>
-        ecurs
-      </label>
-      <input id="recurrence" type="text" class="tasks-modal-date-input" placeholder="e.g. every week" accesskey="r" />
-      <span class="tasks-modal-parsed-date tasks-modal-parsed-message">
-        🔁
-        <i>not recurring</i>
-      </span>
       <label for="due">
         <span class="accesskey">D</span>
         ue
@@ -134,11 +125,20 @@
         🛫
         <input class="tasks-modal-date-editor-picker" type="date" id="date-editor-picker" tabindex="-1" />
       </div>
+      <label for="recurrence">
+        <span class="accesskey">R</span>
+        ecurs
+      </label>
+      <input id="recurrence" type="text" class="tasks-modal-date-input" placeholder="e.g. every week" accesskey="r" />
+      <span class="tasks-modal-parsed-date tasks-modal-parsed-message">
+        🔁
+        <i>not recurring</i>
+      </span>
       <div class="future-dates-only" id="only-future-dates">
         <label for="forwardOnly">
           Only
           <span class="accesskey">f</span>
-          uture dates:
+          uture dates
         </label>
         <input id="forwardOnly" type="checkbox" class="task-list-item-checkbox tasks-modal-checkbox" accesskey="f" />
       </div>
@@ -147,7 +147,7 @@
     <section class="tasks-modal-dependencies-section">
       <label for="blockedBy">
         <span class="accesskey">B</span>
-        efore this
+        locked by
       </label>
       <span>
         <input
@@ -155,7 +155,7 @@
           id="before_this"
           class="tasks-modal-dependency-input"
           type="text"
-          placeholder="Search for tasks that the task being edited depends on..." />
+          placeholder="Search tasks that must be done first…" />
         <iframe
           style="display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; border: 0; opacity: 0; pointer-events: none; z-index: -1;"
           aria-hidden="true"
@@ -163,17 +163,17 @@
           src="about:blank"></iframe>
       </span>
       <label for="blocking">
-        Aft
-        <span class="accesskey">e</span>
-        r this
+        Bloc
+        <span class="accesskey">k</span>
+        s
       </label>
       <span>
         <input
-          accesskey="e"
+          accesskey="k"
           id="after_this"
           class="tasks-modal-dependency-input"
           type="text"
-          placeholder="Search for tasks that depend on this task being done..." />
+          placeholder="Search tasks waiting on this one…" />
         <iframe
           style="display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; border: 0; opacity: 0; pointer-events: none; z-index: -1;"
           aria-hidden="true"
