@@ -18,7 +18,6 @@ import {
 import { StatusConfiguration, StatusType } from '../Statuses/StatusConfiguration';
 import type TasksPlugin from '../main';
 import { StatusRegistry } from '../Statuses/StatusRegistry';
-import { Status } from '../Statuses/Status';
 import type { StatusCollection } from '../Statuses/StatusCollection';
 import { createStatusRegistryReport } from '../Statuses/StatusRegistryReport';
 import { i18n } from '../i18n/i18n';
@@ -789,27 +788,35 @@ export class SettingsTab extends PluginSettingTab {
     }
 
     /**
-     * Builds one list row for a single status. The row's `name` is the
-     * status's friendly name, with the symbol and its toggle transition
-     * prepended as a `<code>` chip, and the status type shown as a flair; a
-     * pencil extraButton opens the existing edit modal. Deletion is wired by
-     * the list's `onDelete`, so no per-row delete button is needed.
+     * Lay out a status row as "[/] In progress (type) ... Next → [x]".
+     */
+    private static decorateStatusRow(setting: Setting, status: StatusConfiguration): void {
+        const { coreStatuses, customStatuses } = getSettings().statusSettings;
+        const next = [...coreStatuses, ...customStatuses].find((s) => s.symbol === status.nextStatusSymbol);
+        setting.settingEl.addClass('tasks-status-row');
+        setting.nameEl.createEl('code', {
+            cls: 'tasks-status-symbol',
+            text: `[${status.symbol || ' '}]`,
+            prepend: true,
+        });
+        setting.nameEl.createSpan({ cls: 'flair', text: humanizeStatusType(status.type) });
+        const nextEl = setting.controlEl.createSpan({ cls: 'tasks-status-next' });
+        if (next?.name) {
+            nextEl.setAttribute('aria-label', next.name);
+        }
+        nextEl.createSpan({ cls: 'tasks-status-label', text: `${i18n.t('settings.statuses.row.next')} →` });
+        nextEl.createEl('code', { cls: 'tasks-status-symbol', text: `[${status.nextStatusSymbol || ' '}]` });
+    }
+
+    /**
+     * One list row for a status: its symbol, name, type and next symbol.
+     * Deletion is wired by the list's `onDelete`.
      */
     private statusRow(status: StatusConfiguration, isCoreStatus: boolean): SettingDefinition {
-        const symbol = status.symbol || ' ';
-        const nextSymbol = status.nextStatusSymbol || ' ';
         return {
             name: status.name || i18n.t('settings.statuses.unnamed'),
             render: (setting) => {
-                // Prepend the symbol and transition to the left of the row's
-                // name — reads as the list marker for the friendly name beside
-                // it (`- [/] → [x] In progress`).
-                setting.nameEl.createEl('code', {
-                    cls: 'tasks-status-symbol',
-                    text: `- [${symbol}] → [${nextSymbol}]`,
-                    prepend: true,
-                });
-                setting.controlEl.createSpan({ cls: 'flair', text: humanizeStatusType(status.type) });
+                SettingsTab.decorateStatusRow(setting, status);
                 setting.addExtraButton((btn) => {
                     btn.setIcon('pencil')
                         .setTooltip(i18n.t('common.edit'))
@@ -1179,15 +1186,7 @@ export class SettingsTab extends PluginSettingTab {
             SettingsTab.coreStatusesDescription(),
             (sectionEl) => {
                 statusSettings.coreStatuses.forEach((status) => {
-                    createRowForTaskStatus(
-                        sectionEl,
-                        status,
-                        statusSettings.coreStatuses,
-                        statusSettings,
-                        this,
-                        this.plugin,
-                        true,
-                    );
+                    this.createRowForTaskStatus(sectionEl, status, true);
                 });
                 this.addLegacyButton(
                     sectionEl,
@@ -1205,15 +1204,7 @@ export class SettingsTab extends PluginSettingTab {
             SettingsTab.customStatusesDescription(),
             (sectionEl) => {
                 statusSettings.customStatuses.forEach((status) => {
-                    createRowForTaskStatus(
-                        sectionEl,
-                        status,
-                        statusSettings.customStatuses,
-                        statusSettings,
-                        this,
-                        this.plugin,
-                        false,
-                    );
+                    this.createRowForTaskStatus(sectionEl, status, false);
                 });
                 this.addLegacyButton(
                     sectionEl,
@@ -1561,6 +1552,35 @@ export class SettingsTab extends PluginSettingTab {
         renderContent(detailsContainer);
     }
 
+    /**
+     * A row to view and edit one status.
+     */
+    private createRowForTaskStatus(containerEl: HTMLElement, status: StatusConfiguration, isCoreStatus: boolean) {
+        const setting = new Setting(containerEl).setName(status.name || i18n.t('settings.statuses.unnamed'));
+        SettingsTab.decorateStatusRow(setting, status);
+
+        setting.addExtraButton((extra) => {
+            extra
+                .setIcon('pencil')
+                .setTooltip(i18n.t('common.edit'))
+                .onClick(() => this.openEditStatusModal(status, isCoreStatus));
+        });
+
+        if (!isCoreStatus) {
+            setting.addExtraButton((extra) => {
+                extra
+                    .setIcon('trash-2')
+                    .setTooltip(i18n.t('common.delete'))
+                    .onClick(() => {
+                        const { statusSettings } = getSettings();
+                        if (StatusSettings.deleteStatus(statusSettings.customStatuses, status)) {
+                            updateAndSaveStatusSettings(statusSettings, this);
+                        }
+                    });
+            });
+        }
+    }
+
     private static parseCommaSeparatedFolders(input: string): string[] {
         return (
             input
@@ -1605,70 +1625,6 @@ function getThemeCollections(): { name: string; collection: StatusCollection }[]
         // Dark only themes - alphabetical order
         { name: i18n.t('settings.statuses.collections.lytModeTheme'), collection: Themes.lytModeSupportedStatuses() },
     ];
-}
-
-/**
- * Create the row to see and modify settings for a single task status type.
- * @param containerEl
- * @param statusType - The status type to be edited.
- * @param statuses - The list of statuses that statusType is stored in.
- * @param statusSettings - All the status types already in the user's settings, EXCEPT the standard ones.
- * @param settings
- * @param plugin
- * @param isCoreStatus - whether the status is a core status
- */
-function createRowForTaskStatus(
-    containerEl: HTMLElement,
-    statusType: StatusConfiguration,
-    statuses: StatusConfiguration[],
-    statusSettings: StatusSettings,
-    settings: SettingsTab,
-    plugin: TasksPlugin,
-    isCoreStatus: boolean,
-) {
-    //const taskStatusDiv = containerEl.createEl('div');
-
-    const taskStatusPreview = containerEl.createEl('pre');
-    taskStatusPreview.addClass('row-for-status');
-    taskStatusPreview.textContent = new Status(statusType).previewText();
-
-    const setting = new Setting(containerEl);
-
-    setting.infoEl.replaceWith(taskStatusPreview);
-
-    if (!isCoreStatus) {
-        setting.addExtraButton((extra) => {
-            extra
-                .setIcon('cross')
-                .setTooltip('Delete')
-                .onClick(() => {
-                    if (StatusSettings.deleteStatus(statuses, statusType)) {
-                        updateAndSaveStatusSettings(statusSettings, settings);
-                    }
-                });
-        });
-    }
-
-    setting.addExtraButton((extra) => {
-        extra
-            .setIcon('pencil')
-            .setTooltip('Edit')
-            .onClick(() => {
-                const modal = new CustomStatusModal(plugin, statusType, isCoreStatus);
-
-                modal.onClose = () => {
-                    if (modal.saved) {
-                        if (StatusSettings.replaceStatus(statuses, statusType, modal.statusConfiguration())) {
-                            updateAndSaveStatusSettings(statusSettings, settings);
-                        }
-                    }
-                };
-
-                modal.open();
-            });
-    });
-
-    setting.infoEl.remove();
 }
 
 function addCustomStatesToSettings(

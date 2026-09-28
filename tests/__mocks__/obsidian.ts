@@ -418,10 +418,12 @@ export class Setting {
     public settingEl = document.createElement('div');
     public infoEl = document.createElement('div');
     public controlEl = document.createElement('div');
+    public nameEl = document.createElement('div');
 
     private readonly record: Record<string, unknown>;
 
     constructor(containerEl: HTMLElement) {
+        this.infoEl.appendChild(this.nameEl);
         this.settingEl.appendChild(this.infoEl);
         this.settingEl.appendChild(this.controlEl);
         containerEl.appendChild(this.settingEl);

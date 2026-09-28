@@ -41,6 +41,7 @@
     "controls": []
   },
   {
+    "name": "Todo",
     "controls": [
       {
         "icon": "pencil",
@@ -51,6 +52,7 @@
     ]
   },
   {
+    "name": "Done",
     "controls": [
       {
         "icon": "pencil",
@@ -81,33 +83,35 @@
     "controls": []
   },
   {
+    "name": "In Progress",
     "controls": [
-      {
-        "icon": "cross",
-        "onClick": "[Function]",
-        "tooltip": "Delete",
-        "type": "extraButton"
-      },
       {
         "icon": "pencil",
         "onClick": "[Function]",
         "tooltip": "Edit",
+        "type": "extraButton"
+      },
+      {
+        "icon": "trash-2",
+        "onClick": "[Function]",
+        "tooltip": "Delete",
         "type": "extraButton"
       }
     ]
   },
   {
+    "name": "Cancelled",
     "controls": [
-      {
-        "icon": "cross",
-        "onClick": "[Function]",
-        "tooltip": "Delete",
-        "type": "extraButton"
-      },
       {
         "icon": "pencil",
         "onClick": "[Function]",
         "tooltip": "Edit",
+        "type": "extraButton"
+      },
+      {
+        "icon": "trash-2",
+        "onClick": "[Function]",
+        "tooltip": "Delete",
         "type": "extraButton"
       }
     ]

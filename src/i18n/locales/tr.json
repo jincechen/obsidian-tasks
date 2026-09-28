@@ -1,6 +1,7 @@
 {
   "common": {
     "cancel": "",
+    "delete": "",
     "edit": "",
     "moreInfo": "",
     "okay": "",
@@ -319,6 +320,9 @@
       },
       "heading": "Görev Durumları",
       "reloadRequired": "",
+      "row": {
+        "next": ""
+      },
       "types": {
         "cancelled": "",
         "done": "",

@@ -1,6 +1,7 @@
 {
   "common": {
     "cancel": "Cancel",
+    "delete": "Delete",
     "edit": "Edit",
     "moreInfo": "More info",
     "okay": "Okay",
@@ -319,6 +320,9 @@
       },
       "heading": "Task statuses",
       "reloadRequired": "Changes take effect after reload.",
+      "row": {
+        "next": "Next"
+      },
       "types": {
         "cancelled": "Cancelled",
         "done": "Done",
