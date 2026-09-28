@@ -467,8 +467,8 @@ describe('HtmlQueryResultsRenderer - task buttons', () => {
             labelMatchesTitle: button.getAttribute('aria-label') === button.title,
         }));
         expect(attributes).toEqual([
-            { className: 'tasks-edit', href: '#', role: 'button', labelMatchesTitle: true },
             { className: 'tasks-postpone', href: '#', role: 'button', labelMatchesTitle: true },
+            { className: 'tasks-edit', href: '#', role: 'button', labelMatchesTitle: true },
         ]);
     });
 });

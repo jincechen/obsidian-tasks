@@ -54,6 +54,12 @@
         <span class="task-due" data-task-due="past-1d" title="Click to edit due date, Right-click for more options">
           <span>📅 2023-07-04</span>
         </span>
+        <a
+          class="tasks-postpone"
+          title="ℹ️ Due tomorrow, on Thu 6th Jul (right-click for more options)"
+          href="#"
+          role="button"
+          aria-label="ℹ️ Due tomorrow, on Thu 6th Jul (right-click for more options)"></a>
         <span
           class="task-cancelled"
           data-task-cancelled="future-1d"
@@ -73,12 +79,6 @@
           )
         </span>
         <a class="tasks-edit" title="Edit task" href="#" role="button" aria-label="Edit task"></a>
-        <a
-          class="tasks-postpone"
-          title="ℹ️ Due tomorrow, on Thu 6th Jul (right-click for more options)"
-          href="#"
-          role="button"
-          aria-label="ℹ️ Due tomorrow, on Thu 6th Jul (right-click for more options)"></a>
       </span>
     </li>
   </ul>
