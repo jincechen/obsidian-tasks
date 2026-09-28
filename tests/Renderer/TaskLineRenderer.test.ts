@@ -9,6 +9,7 @@ import { DateParser } from '../../src/DateTime/DateParser';
 import type { TextRenderer } from '../../src/Renderer/TaskLineRenderer';
 import { TaskLineRenderer, reconcileReplacementTask } from '../../src/Renderer/TaskLineRenderer';
 import type { Task } from '../../src/Task/Task';
+import { Priority } from '../../src/Task/Priority';
 import { TaskRegularExpressions } from '../../src/Task/TaskRegularExpressions';
 import { verifyWithFileExtension } from '../TestingTools/ApprovalTestHelpers';
 import { prettifyHTML } from '../TestingTools/HTMLHelpers';
@@ -305,6 +306,62 @@ describe('task line rendering - debug info rendering', () => {
         expect(renderedDescription).toEqual(
             "Task with debug info<br>🐛 <b>0</b> . 0 . 0 . '<code>- [ ] Task with debug info</code>'<br>'<code>a/b/c.d</code>' > '<code>Previous Heading</code>'<br>",
         );
+    });
+});
+
+describe('task line rendering - icons', () => {
+    beforeEach(() => {
+        updateSettings({ signifierDisplay: 'icons' });
+    });
+
+    /**
+     * Returns the rendered text of each field, with each icon written as '[icon-name|label]'.
+     */
+    function getComponentsWithIcons(listItem: HTMLElement): string[] {
+        const textSpan = getTextSpan(listItem);
+        return Array.from(textSpan.children)
+            .slice(1)
+            .map((span) => {
+                const clone = span.cloneNode(true) as HTMLElement;
+                clone.querySelectorAll('.tasks-icon').forEach((icon) => {
+                    icon.replaceWith(`[${icon.getAttribute('test-icon')}|${icon.getAttribute('aria-label')}]`);
+                });
+                return clone.textContent ?? '';
+            });
+    }
+
+    it('shows each field with an icon, while keeping the field values', async () => {
+        const task = TaskBuilder.createFullyPopulatedTask();
+        const listItem = await renderListItem(task);
+        expect(getComponentsWithIcons(listItem)).toEqual([
+            ' [fingerprint|ID] abcdef',
+            ' [lock|Blocked by] 123456,abc123',
+            ' [tasks-fa-caret-up|Medium priority]',
+            ' [repeat|Recurs] every day when done',
+            ' [flag|On completion] delete',
+            ' [plus-circle|Created] 2023-07-01',
+            ' [plane-takeoff|Start] 2023-07-02',
+            ' [hourglass|Scheduled] 2023-07-03',
+            ' [calendar|Due] 2023-07-04',
+            ' [x-circle|Cancelled] 2023-07-06',
+            ' [check-circle|Done] 2023-07-05',
+            ' ^dcf64c',
+        ]);
+    });
+
+    it('shows only the icons in short mode', async () => {
+        const task = new TaskBuilder().dueDate('2023-07-04').priority(Priority.Highest).build();
+        const queryLayoutOptions = new QueryLayoutOptions();
+        queryLayoutOptions.shortMode = true;
+        const listItem = await renderListItem(task, undefined, queryLayoutOptions);
+        expect(getComponentsWithIcons(listItem)).toEqual([' [tasks-fa-angles-up|Highest priority]', ' [calendar|Due]']);
+    });
+
+    it('shows emojis if the user prefers them', async () => {
+        updateSettings({ signifierDisplay: 'emoji' });
+        const task = new TaskBuilder().dueDate('2023-07-04').build();
+        const listItem = await renderListItem(task);
+        expect(getComponentsWithIcons(listItem)).toEqual([' 📅 2023-07-04']);
     });
 });
 

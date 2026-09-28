@@ -1,4 +1,4 @@
-import type { App, Component, TFile } from 'obsidian';
+import { type App, type Component, type TFile, setIcon } from 'obsidian';
 import { getSettings } from '../Config/Settings';
 import { postponeButtonTitle, shouldShowPostponeButton } from '../DateTime/Postponer';
 import type { IQuery } from '../IQuery';
@@ -11,6 +11,7 @@ import type { ListItem } from '../Task/ListItem';
 import type { Task } from '../Task/Task';
 import { PostponeMenu } from '../ui/Menus/PostponeMenu';
 import { showMenu } from '../ui/Menus/TaskEditingMenu';
+import { TasksIcon, appendIcon, useIconsForDisplay } from '../ui/Icons';
 import type { BacklinksEventHandler, EditButtonClickHandler } from './QueryResultsRenderer';
 import { QueryResultsRendererBase } from './QueryResultsRendererBase';
 import { TaskLineRenderer, type TextRenderer } from './TaskLineRenderer';
@@ -206,6 +207,7 @@ export class HtmlQueryResultsRenderer extends QueryResultsRendererBase {
         editTaskPencil.classList.add('tasks-edit');
         editTaskPencil.title = 'Edit task';
         editTaskPencil.href = '#';
+        HtmlQueryResultsRenderer.showIconIfChosen(editTaskPencil, TasksIcon.edit);
 
         editTaskPencil.addEventListener('click', (event: MouseEvent) =>
             this.htmlQueryRendererParameters.editTaskPencilClickHandler(
@@ -294,14 +296,16 @@ export class HtmlQueryResultsRenderer extends QueryResultsRendererBase {
             link.classList.add('internal-link-short-mode');
         }
 
-        let linkText: string;
         if (shortMode) {
-            linkText = ' 🔗';
+            if (useIconsForDisplay()) {
+                link.append(' ');
+                appendIcon(link, TasksIcon.link, task.getLinkText({ isFilenameUnique }) ?? '');
+            } else {
+                link.text = ' 🔗';
+            }
         } else {
-            linkText = task.getLinkText({ isFilenameUnique }) ?? '';
+            link.text = task.getLinkText({ isFilenameUnique }) ?? '';
         }
-
-        link.text = linkText;
 
         // Go to the line the task is defined at
         link.addEventListener('click', async (ev: MouseEvent) => {
@@ -328,6 +332,7 @@ export class HtmlQueryResultsRenderer extends QueryResultsRendererBase {
             button.classList.add('tasks-postpone-short-mode');
         }
         button.title = buttonTooltipText;
+        HtmlQueryResultsRenderer.showIconIfChosen(button, TasksIcon.postpone);
 
         button.addEventListener('click', async (ev: MouseEvent) => {
             ev.preventDefault(); // suppress the default click behavior
@@ -340,6 +345,16 @@ export class HtmlQueryResultsRenderer extends QueryResultsRendererBase {
         button.addEventListener('contextmenu', async (ev: MouseEvent) => {
             showMenu(ev, new PostponeMenu(button, task));
         });
+    }
+
+    /**
+     * Show an icon in the button, if icons are chosen. Otherwise, CSS shows an emoji.
+     */
+    private static showIconIfChosen(button: HTMLAnchorElement, iconId: string) {
+        if (useIconsForDisplay()) {
+            button.classList.add('clickable-icon');
+            setIcon(button, iconId);
+        }
     }
 
     private addTaskCount(queryResult: QueryResult) {
