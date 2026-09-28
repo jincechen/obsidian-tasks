@@ -102,6 +102,11 @@ export class RemoveTaskDate implements TaskEditingInstruction {
     isCheckedForTask(_task: Task): boolean {
         return false;
     }
+
+    isEnabledForTask(task: Task): boolean {
+        // An inferred scheduled date comes from the file name, so cannot be removed.
+        return !(this.dateFieldToEdit === 'scheduledDate' && task.scheduledDateIsInferred);
+    }
 }
 
 /**

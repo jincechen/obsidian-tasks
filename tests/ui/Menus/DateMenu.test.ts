@@ -86,7 +86,7 @@ describe('DateMenu', () => {
         `);
     });
 
-    it.failing('should disable the item for removing an inferred scheduled date', () => {
+    it('should disable the item for removing an inferred scheduled date', () => {
         const task = new TaskBuilder().scheduledDate(today).scheduledDateIsInferred(true).build();
         const menu = new DateMenu(TaskLayoutComponent.ScheduledDate, task);
 
