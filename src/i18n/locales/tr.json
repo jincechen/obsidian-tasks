@@ -252,6 +252,10 @@
     },
     "searchResults": {
       "heading": "Arama sonuçları",
+      "subtaskProgress": {
+        "description": "",
+        "name": ""
+      },
       "taskCountLocation": {
         "description": "Görev sayısının sorgu sonuçlarının üstünde mi yoksa altında mı gösterileceğini seçin.",
         "name": "Görev sayısı konumu",

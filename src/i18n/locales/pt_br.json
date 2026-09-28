@@ -252,6 +252,10 @@
     },
     "searchResults": {
       "heading": "Resultados da pesquisa",
+      "subtaskProgress": {
+        "description": "",
+        "name": ""
+      },
       "taskCountLocation": {
         "description": "Escolha se a contagem de tarefas deve ser mostrada na parte superior ou inferior dos resultados da consulta.",
         "name": "Localização da contagem de tarefas",

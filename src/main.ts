@@ -9,6 +9,7 @@ import { TasksEvents } from './Obsidian/TasksEvents';
 import { initializeFile } from './Obsidian/File';
 import { InlineRenderer } from './Obsidian/InlineRenderer';
 import { newLivePreviewExtension } from './Obsidian/LivePreviewExtension';
+import { newSubtaskProgressExtension } from './Obsidian/SubtaskProgressExtension';
 import { QueryRenderer } from './Renderer/QueryRenderer';
 import { getSettings, updateSettings } from './Config/Settings';
 import { SettingsTab } from './Config/SettingsTab';
@@ -80,6 +81,7 @@ export default class TasksPlugin extends Plugin {
         this.setObsidianPropertiesTypes();
 
         this.registerEditorExtension(newLivePreviewExtension(this));
+        this.registerEditorExtension(newSubtaskProgressExtension());
         this.registerEditorSuggest(new EditorSuggestor(this.app, getSettings(), this));
         new Commands({ plugin: this });
     }

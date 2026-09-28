@@ -83,6 +83,10 @@ describe('resetSettings behaviour', () => {
         expect(currentSettings.searchResults.taskCountLocation).toBe('bottom');
     });
 
+    it('should not show subtask progress by default', () => {
+        expect(getSettings().showSubtaskProgress).toBe(false);
+    });
+
     it('should enable fuzzy Quick Search by default and retain a loaded value', () => {
         expect(getSettings().quickSearch.fuzzyMatching).toBe(true);
 

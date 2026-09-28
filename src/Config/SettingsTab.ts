@@ -23,6 +23,7 @@ import type { StatusCollection } from '../Statuses/StatusCollection';
 import { createStatusRegistryReport } from '../Statuses/StatusRegistryReport';
 import { i18n } from '../i18n/i18n';
 import type { TasksEvents } from '../Obsidian/TasksEvents';
+import { refreshEditorDecorations } from '../Obsidian/EditorDecorations';
 import * as Themes from './Themes';
 import {
     type HeadingState,
@@ -398,8 +399,26 @@ export class SettingsTab extends PluginSettingTab {
                         });
                     },
                 },
+                {
+                    name: i18n.t('settings.searchResults.subtaskProgress.name'),
+                    desc: i18n.t('settings.searchResults.subtaskProgress.description'),
+                    render: (setting) => {
+                        setting.addToggle((toggle) => {
+                            toggle
+                                .setValue(getSettings().showSubtaskProgress)
+                                .onChange(async (value) => await this.setShowSubtaskProgress(value));
+                        });
+                    },
+                },
             ],
         };
+    }
+
+    private async setShowSubtaskProgress(value: boolean) {
+        updateSettings({ showSubtaskProgress: value });
+        await this.plugin.saveSettings();
+        this.events.triggerReloadOpenSearchResults();
+        refreshEditorDecorations(this.app);
     }
 
     private renderEnableCustomSearchesToggle(setting: Setting): void {
@@ -1231,6 +1250,15 @@ export class SettingsTab extends PluginSettingTab {
 
                     this.events.triggerReloadOpenSearchResults();
                 });
+            });
+
+        new Setting(containerEl)
+            .setName(i18n.t('settings.searchResults.subtaskProgress.name'))
+            .setDesc(i18n.t('settings.searchResults.subtaskProgress.description'))
+            .addToggle((toggle) => {
+                toggle
+                    .setValue(getSettings().showSubtaskProgress)
+                    .onChange(async (value) => await this.setShowSubtaskProgress(value));
             });
 
         // ---------------------------------------------------------------------------

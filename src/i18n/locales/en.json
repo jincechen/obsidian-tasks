@@ -252,6 +252,10 @@
     },
     "searchResults": {
       "heading": "Search results",
+      "subtaskProgress": {
+        "description": "Show a progress bar after tasks that have subtasks, in query results and Live Preview. Use 'hide progress' to hide it in a query.",
+        "name": "Subtask progress"
+      },
       "taskCountLocation": {
         "description": "Choose whether the task count is shown at the top or bottom of query results.",
         "name": "Task count location",

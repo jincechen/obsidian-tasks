@@ -61,6 +61,13 @@
     ]
   },
   {
+    "name": "Subtask progress",
+    "desc": "Show a progress bar after tasks that have subtasks, in query results and Live Preview. Use 'hide progress' to hide it in a query.",
+    "controls": [
+      "toggle"
+    ]
+  },
+  {
     "name": "Presets",
     "heading": true,
     "desc": "<p>You can define named instructions here, that you can re-use in multiple queries. A preset called '<code>name</code>' can be used in Tasks queries with either '<code>preset name</code>' or '<code>{{preset.name}}</code>'.</p><p>Any open Tasks queries are reloaded automatically when presets are edited.</p><p><a href=\"https://publish.obsidian.md/tasks/Queries/Presets\">See the documentation</a>.</p>",

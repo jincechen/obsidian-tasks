@@ -252,6 +252,10 @@
     },
     "searchResults": {
       "heading": "Résultats de recherche",
+      "subtaskProgress": {
+        "description": "",
+        "name": ""
+      },
       "taskCountLocation": {
         "description": "Afficher le nombre de tâches en haut ou en bas des résultats d'une requête.",
         "name": "Emplacement du nombre de tâches",

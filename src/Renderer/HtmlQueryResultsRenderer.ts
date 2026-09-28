@@ -9,6 +9,7 @@ import type { QueryResult } from '../Query/QueryResult';
 import type { TasksFile } from '../Scripting/TasksFile';
 import type { ListItem } from '../Task/ListItem';
 import type { Task } from '../Task/Task';
+import { renderSubtaskProgress, subtaskProgressOfListItem } from '../Task/SubtaskProgress';
 import { PostponeMenu } from '../ui/Menus/PostponeMenu';
 import { showMenu } from '../ui/Menus/TaskEditingMenu';
 import type { BacklinksEventHandler, EditButtonClickHandler } from './QueryResultsRenderer';
@@ -171,6 +172,10 @@ export class HtmlQueryResultsRenderer extends QueryResultsRendererBase {
         const extrasSpan = listItem.createSpan();
         extrasSpan.classList.add('task-extras');
 
+        if (getSettings().showSubtaskProgress && !this.query.queryLayoutOptions.hideProgress) {
+            this.addSubtaskProgress(extrasSpan, task);
+        }
+
         if (!this.query.queryLayoutOptions.hideUrgency) {
             this.addUrgency(extrasSpan, task);
         }
@@ -214,6 +219,16 @@ export class HtmlQueryResultsRenderer extends QueryResultsRendererBase {
                 this.htmlQueryRendererParameters.allTasks(),
             ),
         );
+    }
+
+    /**
+     * Show the progress of all the task's subtasks, not just those matched by the query.
+     */
+    private addSubtaskProgress(listItem: HTMLElement, task: Task) {
+        const progress = subtaskProgressOfListItem(task);
+        if (progress !== null) {
+            renderSubtaskProgress(listItem, progress);
+        }
     }
 
     private addUrgency(listItem: HTMLElement, task: Task) {
