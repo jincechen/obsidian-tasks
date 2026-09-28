@@ -206,6 +206,7 @@ export class HtmlQueryResultsRenderer extends QueryResultsRendererBase {
         editTaskPencil.classList.add('tasks-edit');
         editTaskPencil.title = 'Edit task';
         editTaskPencil.href = '#';
+        HtmlQueryResultsRenderer.decorateButton(editTaskPencil, 'Edit task');
 
         editTaskPencil.addEventListener('click', (event: MouseEvent) =>
             this.htmlQueryRendererParameters.editTaskPencilClickHandler(
@@ -328,6 +329,8 @@ export class HtmlQueryResultsRenderer extends QueryResultsRendererBase {
             button.classList.add('tasks-postpone-short-mode');
         }
         button.title = buttonTooltipText;
+        button.href = '#'; // Make the button reachable with the keyboard
+        HtmlQueryResultsRenderer.decorateButton(button, buttonTooltipText);
 
         button.addEventListener('click', async (ev: MouseEvent) => {
             ev.preventDefault(); // suppress the default click behavior
@@ -340,6 +343,11 @@ export class HtmlQueryResultsRenderer extends QueryResultsRendererBase {
         button.addEventListener('contextmenu', async (ev: MouseEvent) => {
             showMenu(ev, new PostponeMenu(button, task));
         });
+    }
+
+    private static decorateButton(button: HTMLAnchorElement, label: string) {
+        button.setAttribute('role', 'button');
+        button.setAttribute('aria-label', label);
     }
 
     private addTaskCount(queryResult: QueryResult) {

@@ -725,6 +725,29 @@ describe('Edit Modal HTML snapshot tests', () => {
     });
 });
 
+describe('Edit Modal labels and ids', () => {
+    function renderFullyPopulatedModal() {
+        const task = taskFromLine({ line: TaskBuilder.createFullyPopulatedTask().toFileLineString(), path: '' });
+        return renderAndCheckModal(task, () => {}).container;
+    }
+
+    it('should have unique element ids', () => {
+        const container = renderFullyPopulatedModal();
+
+        const ids = Array.from(container.querySelectorAll('[id]')).map((element) => element.id);
+        const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index);
+        expect(duplicateIds).toEqual([]);
+    });
+
+    it('should associate every label with a form control', () => {
+        const container = renderFullyPopulatedModal();
+
+        const labels = Array.from(container.querySelectorAll<HTMLLabelElement>('label[for]'));
+        const unassociatedLabels = labels.filter((label) => label.control === null).map((label) => label.htmlFor);
+        expect(unassociatedLabels).toEqual([]);
+    });
+});
+
 describe('Hiding modal fields', () => {
     function testElementRendered(elementId: string) {
         const fullyPopulatedLine = TaskBuilder.createFullyPopulatedTask().toFileLineString();

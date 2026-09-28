@@ -418,6 +418,26 @@ describe('Reusing HtmlQueryResultsRenderer', () => {
     });
 });
 
+describe('HtmlQueryResultsRenderer - task buttons', () => {
+    it('should make the edit and postpone buttons usable from the keyboard', async () => {
+        const allTasks = [new TaskBuilder().dueDate('2023-12-03').build()];
+        const { query, renderer } = makeHtmlRenderer('', createTestTasksFile('query.md'), allTasks);
+        const container = await renderTasks(State.Warm, renderer, allTasks, query);
+
+        const buttons = Array.from(container.querySelectorAll<HTMLAnchorElement>('.tasks-edit, .tasks-postpone'));
+        const attributes = buttons.map((button) => ({
+            className: button.className,
+            href: button.getAttribute('href'),
+            role: button.getAttribute('role'),
+            labelMatchesTitle: button.getAttribute('aria-label') === button.title,
+        }));
+        expect(attributes).toEqual([
+            { className: 'tasks-edit', href: '#', role: 'button', labelMatchesTitle: true },
+            { className: 'tasks-postpone', href: '#', role: 'button', labelMatchesTitle: true },
+        ]);
+    });
+});
+
 describe('HtmlQueryResultsRenderer - task count location setting', () => {
     const tasksFile = createTestTasksFile('query.md');
     const source = 'hide toolbar\nhide backlinks\nhide edit button';

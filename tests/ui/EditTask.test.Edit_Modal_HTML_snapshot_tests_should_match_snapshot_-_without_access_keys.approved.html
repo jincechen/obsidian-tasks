@@ -58,7 +58,12 @@
       <input id="due" type="text" class="tasks-modal-date-input" placeholder="Try 'Mon' or 'tm' then space" />
       <div class="tasks-modal-parsed-date">
         📅
-        <input class="tasks-modal-date-editor-picker" type="date" id="date-editor-picker" tabindex="-1" />
+        <input
+          class="tasks-modal-date-editor-picker"
+          type="date"
+          id="date-editor-picker-due"
+          aria-label="Pick Due date"
+          tabindex="-1" />
       </div>
       <label for="scheduled">Scheduled</label>
       <input
@@ -74,7 +79,12 @@
       <input id="start" type="text" class="tasks-modal-date-input" placeholder="Try 'Mon' or 'tm' then space" />
       <div class="tasks-modal-parsed-date">
         🛫
-        <input class="tasks-modal-date-editor-picker" type="date" id="date-editor-picker" tabindex="-1" />
+        <input
+          class="tasks-modal-date-editor-picker"
+          type="date"
+          id="date-editor-picker-start"
+          aria-label="Pick Start date"
+          tabindex="-1" />
       </div>
       <div class="future-dates-only" id="only-future-dates">
         <label for="forwardOnly">Only future dates:</label>
@@ -83,7 +93,7 @@
     </section>
     <hr id="line-after-happens-dates" />
     <section class="tasks-modal-dependencies-section">
-      <label for="blockedBy">Before this</label>
+      <label for="before_this">Before this</label>
       <span>
         <input
           id="before_this"
@@ -96,7 +106,7 @@
           tabindex="-1"
           src="about:blank"></iframe>
       </span>
-      <label for="blocking">After this</label>
+      <label for="after_this">After this</label>
       <span>
         <input
           id="after_this"
@@ -112,7 +122,7 @@
     </section>
     <hr id="line-after-dependencies" />
     <section class="tasks-modal-dates-section">
-      <label for="status" id="status">Status</label>
+      <label for="status-type" id="status">Status</label>
       <select id="status-type" class="status-editor-status-selector">
         <option value=" ">Todo [ ]</option>
         <option value="/">In Progress [/]</option>
@@ -123,19 +133,34 @@
       <input id="created" type="text" class="tasks-modal-date-input" placeholder="Try 'Mon' or 'tm' then space" />
       <div class="tasks-modal-parsed-date">
         ➕
-        <input class="tasks-modal-date-editor-picker" type="date" id="date-editor-picker" tabindex="-1" />
+        <input
+          class="tasks-modal-date-editor-picker"
+          type="date"
+          id="date-editor-picker-created"
+          aria-label="Pick Created date"
+          tabindex="-1" />
       </div>
       <label for="done">Done</label>
       <input id="done" type="text" class="tasks-modal-date-input" placeholder="Try 'Mon' or 'tm' then space" />
       <div class="tasks-modal-parsed-date">
         ✅
-        <input class="tasks-modal-date-editor-picker" type="date" id="date-editor-picker" tabindex="-1" />
+        <input
+          class="tasks-modal-date-editor-picker"
+          type="date"
+          id="date-editor-picker-done"
+          aria-label="Pick Done date"
+          tabindex="-1" />
       </div>
       <label for="cancelled">Cancelled</label>
       <input id="cancelled" type="text" class="tasks-modal-date-input" placeholder="Try 'Mon' or 'tm' then space" />
       <div class="tasks-modal-parsed-date">
         ❌
-        <input class="tasks-modal-date-editor-picker" type="date" id="date-editor-picker" tabindex="-1" />
+        <input
+          class="tasks-modal-date-editor-picker"
+          type="date"
+          id="date-editor-picker-cancelled"
+          aria-label="Pick Cancelled date"
+          tabindex="-1" />
       </div>
     </section>
     <section class="tasks-modal-button-section">
