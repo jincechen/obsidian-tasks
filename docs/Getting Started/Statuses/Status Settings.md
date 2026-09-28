@@ -25,6 +25,7 @@ There are two sections:
     - You will need to choose and install a Theme or CSS Snippet that supports 'custom checkboxes'
     - Tasks automatically adds `[/]` and `[-]`
     - And this is where you can add your own custom statuses.
+    - Drag them to change the order they are shown in menus.
 
 We also see that each status consists of:
 
