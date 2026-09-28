@@ -26,6 +26,7 @@ For convenience, here is a list of all those documentation pages (in the order t
 - [[Auto-Suggest#Settings|Auto-Suggest]]
 - [[Create or edit Task#Turning off keyboard shortcuts|Create or edit Task modal]]
 - [[Layout#Task count location|Search results]]
+- [[Layout#Subtask progress|Subtask progress]]
 
 ## Support
 
