@@ -3,8 +3,10 @@ import type { EditorPosition, EditorSuggestContext, EditorSuggestTriggerInfo } f
 import type TasksPlugin from 'main';
 import { ensureTaskHasId } from '../Task/TaskDependency';
 import { replaceTaskWithTasks } from '../Obsidian/File';
-import { type Settings, getUserSelectedTaskFormat } from '../Config/Settings';
+import { type Settings, getSettings, getUserSelectedTaskFormat } from '../Config/Settings';
+import { setTasksIcon, useIconsForDisplay } from '../ui/Icons';
 import { canSuggestForLine } from './Suggestor';
+import { suggestionDisplay, symbolsForTaskFormat } from './SuggestionDisplay';
 import type { SuggestInfo } from '.';
 
 export type SuggestInfoWithContext = SuggestInfo & {
@@ -120,7 +122,19 @@ export class EditorSuggestor extends EditorSuggest<SuggestInfoWithContext> {
     }
 
     renderSuggestion(value: SuggestInfoWithContext, el: HTMLElement) {
-        el.setText(value.displayText);
+        if (!useIconsForDisplay()) {
+            el.setText(value.displayText);
+            return;
+        }
+
+        const { iconId, text } = suggestionDisplay(value, symbolsForTaskFormat(getSettings().taskFormat));
+        el.addClass('tasks-suggestion');
+        if (iconId) {
+            const iconSpan = el.createSpan({ cls: 'tasks-icon' });
+            setTasksIcon(iconSpan, iconId);
+            iconSpan.setAttribute('aria-hidden', 'true');
+        }
+        el.createSpan({ text });
     }
 
     async selectSuggestion(value: SuggestInfoWithContext, _evt: MouseEvent | KeyboardEvent) {

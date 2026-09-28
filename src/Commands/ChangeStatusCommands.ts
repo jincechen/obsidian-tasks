@@ -64,6 +64,7 @@ export function createSetStatusCommands(statusRegistry: StatusRegistry): Command
         const command = {
             id: `set-status-symbol-to-${symbolSlug}`,
             name: instruction.instructionDisplayName(),
+            icon: instruction.instructionIcon(),
             editorCheckCallback: createEditorCallback(createSetStatusLineTransformer(status)),
         };
         setStatusCommands.push(command);

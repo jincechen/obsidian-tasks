@@ -79,5 +79,10 @@ export class TaskEditingMenu extends Menu {
                     await this.taskSaver(task, newTask);
                 }
             });
+
+        const iconId = instruction.instructionIcon?.();
+        if (iconId) {
+            item.setIcon(iconId);
+        }
     }
 }

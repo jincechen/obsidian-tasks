@@ -2,6 +2,7 @@
     import { TASK_FORMATS } from '../Config/Settings';
     import type { EditableTask } from './EditableTask';
     import { labelContentWithAccessKey } from './EditTaskHelpers';
+    import { TasksIcon, icon, useIconsForDisplay } from './Icons';
 
     export let editableTask: EditableTask;
     export let isRecurrenceValid: boolean;
@@ -12,6 +13,7 @@
     $: ({ parsedRecurrence, isRecurrenceValid } = editableTask.parseAndValidateRecurrence());
 
     const { recurrenceSymbol } = TASK_FORMATS.tasksPluginEmoji.taskSerializer.symbols;
+    const useIcons = useIconsForDisplay();
 </script>
 
 <label for="recurrence">{@html labelContentWithAccessKey('Recurs', accesskey)}</label>
@@ -25,4 +27,13 @@
     placeholder="Try 'every day when done'"
     {accesskey}
 />
-<code class="tasks-modal-parsed-date">{recurrenceSymbol} {@html parsedRecurrence}</code>
+<code class="tasks-modal-parsed-date">
+    {#if useIcons}
+        {#if editableTask.recurrenceRule && isRecurrenceValid}
+            <span use:icon={{ id: TasksIcon.recurrence, label: 'Recurs' }} />
+        {/if}
+    {:else}
+        {recurrenceSymbol}
+    {/if}
+    {@html parsedRecurrence}
+</code>

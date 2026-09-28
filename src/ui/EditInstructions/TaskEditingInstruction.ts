@@ -28,4 +28,9 @@ export interface TaskEditingInstruction {
      * @param task
      */
     isCheckedForTask(task: Task): boolean;
+
+    /**
+     * Optional: the name of the icon to show next to this instruction in menus.
+     */
+    instructionIcon?(): string | null;
 }

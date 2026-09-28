@@ -2,6 +2,7 @@ import type { AllTaskDateFields } from '../../DateTime/DateFieldTypes';
 import { Task } from '../../Task/Task';
 import { postponeMenuItemTitleFromDate, removeDateMenuItemTitleForField } from '../../DateTime/Postponer';
 import { TasksDate } from '../../DateTime/TasksDate';
+import { TasksIcon } from '../Icons';
 import type { TaskEditingInstruction } from './TaskEditingInstruction';
 import { MenuDividerInstruction } from './MenuDividerInstruction';
 
@@ -40,6 +41,10 @@ export class SetTaskDate implements TaskEditingInstruction {
 
     public isCheckedForTask(task: Task): boolean {
         return task[this.dateFieldToEdit]?.isSame(window.moment(this.newDate)) || false;
+    }
+
+    public instructionIcon(): string {
+        return TasksIcon[this.dateFieldToEdit];
     }
 }
 
@@ -101,6 +106,10 @@ export class RemoveTaskDate implements TaskEditingInstruction {
 
     isCheckedForTask(_task: Task): boolean {
         return false;
+    }
+
+    instructionIcon(): string {
+        return TasksIcon.remove;
     }
 }
 
