@@ -26,6 +26,14 @@ For convenience, here is a list of all those documentation pages (in the order t
 - [[Auto-Suggest#Settings|Auto-Suggest]]
 - [[Create or edit Task#Turning off keyboard shortcuts|Create or edit Task modal]]
 - [[Layout#Task count location|Search results]]
+- [[#Display settings]]
+
+## Display settings
+
+- **Property style**: show task properties as **Emoji** (the default) or **Icons**, in search results, Reading mode, dialogs and menus. Your notes are not changed.
+
+> [!released]
+> Display settings were introduced in Tasks X.Y.Z.
 
 ## Support
 
