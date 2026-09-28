@@ -76,6 +76,7 @@ export interface Settings {
     autoSuggestMinMatch: number;
     autoSuggestMaxItems: number;
     provideAccessKeys: boolean;
+    signifierDisplay: 'icons' | 'emoji';
     useFilenameAsScheduledDate: boolean;
     filenameAsScheduledDateFormat: string;
     filenameAsDateFolders: string[];
@@ -125,6 +126,7 @@ const defaultSettings: Readonly<Settings> = {
     autoSuggestMinMatch: 0,
     autoSuggestMaxItems: 20,
     provideAccessKeys: true,
+    signifierDisplay: 'emoji',
     useFilenameAsScheduledDate: false,
     filenameAsScheduledDateFormat: '',
     filenameAsDateFolders: [],

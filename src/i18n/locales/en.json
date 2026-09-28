@@ -191,6 +191,17 @@
       },
       "heading": "Dialogs"
     },
+    "display": {
+      "heading": "Display",
+      "signifiers": {
+        "description": "How task properties such as dates and priority are shown in results, dialogs and menus. Your notes are not changed.",
+        "name": "Property style",
+        "options": {
+          "emoji": "Emoji",
+          "icons": "Icons"
+        }
+      }
+    },
     "format": {
       "description": {
         "line1": "The format that Tasks uses to read and write tasks.",

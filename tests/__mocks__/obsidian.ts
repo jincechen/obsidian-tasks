@@ -290,6 +290,12 @@ export function setIcon(element: HTMLElement, iconId: IconName): void {
     element.setAttribute('test-icon', iconId);
 }
 
+export const registeredIcons: Record<string, string> = {};
+
+export function addIcon(iconId: string, svgContent: string): void {
+    registeredIcons[iconId] = svgContent;
+}
+
 export function setTooltip(element: HTMLElement, text: string): void {
     element.setAttribute('test-tooltip', text);
 }

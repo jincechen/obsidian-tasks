@@ -308,5 +308,19 @@
       }
     ],
     "type": "group"
+  },
+  {
+    "heading": "Display",
+    "items": [
+      {
+        "name": "Property style",
+        "desc": "How task properties such as dates and priority are shown in results, dialogs and menus. Your notes are not changed.",
+        "aliases": [
+          "Display"
+        ],
+        "render": "[Function]"
+      }
+    ],
+    "type": "group"
   }
 ]

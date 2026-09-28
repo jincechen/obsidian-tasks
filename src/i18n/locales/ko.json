@@ -191,6 +191,17 @@
       },
       "heading": "대화상자"
     },
+    "display": {
+      "heading": "",
+      "signifiers": {
+        "description": "",
+        "name": "",
+        "options": {
+          "emoji": "",
+          "icons": ""
+        }
+      }
+    },
     "format": {
       "description": {
         "line1": "Tasks가 작업을 읽고 쓰는 데 사용할 형식입니다.",

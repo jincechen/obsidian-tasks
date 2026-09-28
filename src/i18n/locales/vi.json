@@ -191,6 +191,17 @@
       },
       "heading": "Hộp thoại"
     },
+    "display": {
+      "heading": "",
+      "signifiers": {
+        "description": "",
+        "name": "",
+        "options": {
+          "emoji": "",
+          "icons": ""
+        }
+      }
+    },
     "format": {
       "description": {
         "line1": "Định dạng mà Tasks sử dụng để đọc và viết nhiệm vụ.",

@@ -191,6 +191,17 @@
       },
       "heading": "İletişim Kutuları"
     },
+    "display": {
+      "heading": "",
+      "signifiers": {
+        "description": "",
+        "name": "",
+        "options": {
+          "emoji": "",
+          "icons": ""
+        }
+      }
+    },
     "format": {
       "description": {
         "line1": "Tasks'ın görevleri okumak ve yazmak için kullandığı biçim.",

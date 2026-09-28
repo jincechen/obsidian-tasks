@@ -191,6 +191,17 @@
       },
       "heading": "Діалогові вікна"
     },
+    "display": {
+      "heading": "",
+      "signifiers": {
+        "description": "",
+        "name": "",
+        "options": {
+          "emoji": "",
+          "icons": ""
+        }
+      }
+    },
     "format": {
       "description": {
         "line1": "Формат, який Tasks використовує для читання та запису задач.",

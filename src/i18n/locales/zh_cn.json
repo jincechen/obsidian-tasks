@@ -191,6 +191,17 @@
       },
       "heading": "对话框"
     },
+    "display": {
+      "heading": "",
+      "signifiers": {
+        "description": "",
+        "name": "",
+        "options": {
+          "emoji": "",
+          "icons": ""
+        }
+      }
+    },
     "format": {
       "description": {
         "line1": "Tasks 用于读取和写入任务的格式.",

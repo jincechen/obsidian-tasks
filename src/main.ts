@@ -22,6 +22,7 @@ import { QueryFileDefaults } from './Query/QueryFileDefaults';
 import { LinkResolver } from './Task/LinkResolver';
 import { ObsidianLocalStorageProvider } from './Config/ObsidianLocalStorageProvider';
 import { EnableJsInTasksQueries } from './Config/EnableJsInTasksQueries';
+import { registerTasksIcons } from './ui/Icons';
 
 export default class TasksPlugin extends Plugin {
     private cache: Cache | undefined;
@@ -34,6 +35,7 @@ export default class TasksPlugin extends Plugin {
 
     async onload() {
         await initializeI18n();
+        registerTasksIcons();
 
         logging.registerConsoleLogger();
         log('info', i18n.t('main.loadingPlugin', { name: this.manifest.name, version: this.manifest.version }));

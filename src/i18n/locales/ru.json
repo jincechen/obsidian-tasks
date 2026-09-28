@@ -191,6 +191,17 @@
       },
       "heading": "Диалоги"
     },
+    "display": {
+      "heading": "",
+      "signifiers": {
+        "description": "",
+        "name": "",
+        "options": {
+          "emoji": "",
+          "icons": ""
+        }
+      }
+    },
     "format": {
       "description": {
         "line1": "Формат, который Tasks использует для чтения и записи задач.",

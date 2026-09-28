@@ -191,6 +191,17 @@
       },
       "heading": "Diálogos"
     },
+    "display": {
+      "heading": "",
+      "signifiers": {
+        "description": "",
+        "name": "",
+        "options": {
+          "emoji": "",
+          "icons": ""
+        }
+      }
+    },
     "format": {
       "description": {
         "line1": "O formato que o Tasks usa para ler e escrever tarefas.",

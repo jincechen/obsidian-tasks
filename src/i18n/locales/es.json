@@ -191,6 +191,17 @@
       },
       "heading": "Cuadros de diálogo"
     },
+    "display": {
+      "heading": "",
+      "signifiers": {
+        "description": "",
+        "name": "",
+        "options": {
+          "emoji": "",
+          "icons": ""
+        }
+      }
+    },
     "format": {
       "description": {
         "line1": "El formato que utiliza Tasks para leer y escribir tareas.",

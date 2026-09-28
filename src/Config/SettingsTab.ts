@@ -243,6 +243,7 @@ export class SettingsTab extends PluginSettingTab {
             this.datesFromFilenamesGroup(),
             this.recurringTasksGroup(),
             this.taskEntryGroup(),
+            this.displayGroup(),
         ];
     }
 
@@ -1065,6 +1066,39 @@ export class SettingsTab extends PluginSettingTab {
         };
     }
 
+    // ---- Display ----------------------------------------------------------
+
+    private async setSignifierDisplay(value: 'icons' | 'emoji') {
+        updateSettings({ signifierDisplay: value });
+        await this.plugin.saveSettings();
+        this.events.triggerReloadOpenSearchResults();
+    }
+
+    private addSignifierDisplayDropdown(setting: Setting) {
+        setting.addDropdown((dropdown) => {
+            dropdown
+                .addOption('emoji', i18n.t('settings.display.signifiers.options.emoji'))
+                .addOption('icons', i18n.t('settings.display.signifiers.options.icons'))
+                .setValue(getSettings().signifierDisplay)
+                .onChange(async (value) => await this.setSignifierDisplay(value as 'icons' | 'emoji'));
+        });
+    }
+
+    private displayGroup(): SettingDefinitionItem {
+        return {
+            type: 'group',
+            heading: i18n.t('settings.display.heading'),
+            items: [
+                {
+                    name: i18n.t('settings.display.signifiers.name'),
+                    aliases: [i18n.t('settings.display.heading')],
+                    desc: i18n.t('settings.display.signifiers.description'),
+                    render: (setting) => this.addSignifierDisplayDropdown(setting),
+                },
+            ],
+        };
+    }
+
     public display(): void {
         const { containerEl } = this;
 
@@ -1603,6 +1637,15 @@ export class SettingsTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 });
             });
+
+        // ---------------------------------------------------------------------------
+        new Setting(containerEl).setName(i18n.t('settings.display.heading')).setHeading();
+        // ---------------------------------------------------------------------------
+
+        const signifierDisplaySetting = new Setting(containerEl)
+            .setName(i18n.t('settings.display.signifiers.name'))
+            .setDesc(i18n.t('settings.display.signifiers.description'));
+        this.addSignifierDisplayDropdown(signifierDisplaySetting);
     }
 
     private seeTheDocsPara(url: string) {

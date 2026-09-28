@@ -191,6 +191,17 @@
       },
       "heading": "Dialoge"
     },
+    "display": {
+      "heading": "",
+      "signifiers": {
+        "description": "",
+        "name": "",
+        "options": {
+          "emoji": "",
+          "icons": ""
+        }
+      }
+    },
     "format": {
       "description": {
         "line1": "Das Format, das Tasks zum Lesen und Schreiben von Aufgaben verwendet.",
