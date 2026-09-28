@@ -38,11 +38,13 @@
       },
       "fixErrorsBeforeSaving": "저장하기 전에 오류를 수정하세요.",
       "title": {
+        "addStatus": "",
         "editCoreStatus": "",
         "editCustomStatus": ""
       }
     },
     "editPresetModal": {
+      "addTitle": "",
       "name": {
         "duplicate": "",
         "name": "",

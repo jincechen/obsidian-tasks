@@ -235,7 +235,7 @@ export class PresetsSettingsUI {
         // Add delete button
         setting.addExtraButton((btn) => {
             btn.extraSettingsEl.addClass('tasks-presets-delete-button');
-            btn.setIcon('cross')
+            btn.setIcon('trash-2')
                 .setTooltip(i18n.t('common.delete'))
                 .onClick(() => {
                     new ConfirmModal(this.plugin.app, {
@@ -525,9 +525,7 @@ class EditPresetModal extends Modal {
         super(app);
         this.modalEl.addClass('mod-lg', 'tasks-edit-preset-modal');
         this.setTitle(
-            editingKey === null
-                ? i18n.t('settings.presets.buttons.addNewPreset')
-                : i18n.t('modals.editPresetModal.title'),
+            editingKey === null ? i18n.t('modals.editPresetModal.addTitle') : i18n.t('modals.editPresetModal.title'),
         );
 
         // Form layout: each field is a label above a full-width control,

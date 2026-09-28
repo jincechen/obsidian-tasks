@@ -38,11 +38,13 @@
       },
       "fixErrorsBeforeSaving": "Vui lòng sửa lỗi trước khi lưu.",
       "title": {
+        "addStatus": "",
         "editCoreStatus": "",
         "editCustomStatus": ""
       }
     },
     "editPresetModal": {
+      "addTitle": "",
       "name": {
         "duplicate": "",
         "name": "",

@@ -38,11 +38,13 @@
       },
       "fixErrorsBeforeSaving": "在保存前修复错误。",
       "title": {
+        "addStatus": "",
         "editCoreStatus": "",
         "editCustomStatus": ""
       }
     },
     "editPresetModal": {
+      "addTitle": "",
       "name": {
         "duplicate": "",
         "name": "",

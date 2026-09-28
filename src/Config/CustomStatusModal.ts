@@ -24,12 +24,15 @@ export class CustomStatusModal extends Modal {
         public plugin: Plugin,
         statusType: StatusConfiguration,
         isCoreStatus: boolean,
+        isNewStatus: boolean = false,
     ) {
         super(plugin.app);
         this.setTitle(
-            isCoreStatus
-                ? i18n.t('modals.customStatusModal.title.editCoreStatus')
-                : i18n.t('modals.customStatusModal.title.editCustomStatus'),
+            isNewStatus
+                ? i18n.t('modals.customStatusModal.title.addStatus')
+                : isCoreStatus
+                  ? i18n.t('modals.customStatusModal.title.editCoreStatus')
+                  : i18n.t('modals.customStatusModal.title.editCustomStatus'),
         );
         this.statusSymbol = statusType.symbol;
         this.originalSymbol = statusType.symbol;

@@ -38,11 +38,13 @@
       },
       "fixErrorsBeforeSaving": "Выпраўце памылкі перад захаваннем.",
       "title": {
+        "addStatus": "",
         "editCoreStatus": "",
         "editCustomStatus": ""
       }
     },
     "editPresetModal": {
+      "addTitle": "",
       "name": {
         "duplicate": "",
         "name": "",
@@ -257,6 +259,8 @@
         "notSet": "",
         "placeholder": "",
         "summary": "",
+        "summaryMultiline_few": "",
+        "summaryMultiline_many": "",
         "summaryMultiline_one": "",
         "summaryMultiline_other": ""
       },
@@ -329,6 +333,8 @@
       },
       "tools": {
         "addUnknown": {
+          "added_few": "",
+          "added_many": "",
           "added_one": "",
           "added_other": "",
           "button": "",

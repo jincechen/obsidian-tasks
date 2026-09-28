@@ -38,11 +38,13 @@
       },
       "fixErrorsBeforeSaving": "Fix errors before saving.",
       "title": {
+        "addStatus": "Add status",
         "editCoreStatus": "Edit core status",
         "editCustomStatus": "Edit custom status"
       }
     },
     "editPresetModal": {
+      "addTitle": "Add preset",
       "name": {
         "duplicate": "A preset with this name already exists",
         "name": "Name",
@@ -323,7 +325,7 @@
         "placeholder": "Filter statuses…"
       },
       "heading": "Task statuses",
-      "reloadRequired": "Changes take effect after reload.",
+      "reloadRequired": "Reload Obsidian to finish applying your status changes.",
       "row": {
         "next": "Next"
       },

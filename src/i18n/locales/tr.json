@@ -38,11 +38,13 @@
       },
       "fixErrorsBeforeSaving": "Kaydetmeden önce hataları düzeltin.",
       "title": {
+        "addStatus": "",
         "editCoreStatus": "",
         "editCustomStatus": ""
       }
     },
     "editPresetModal": {
+      "addTitle": "",
       "name": {
         "duplicate": "",
         "name": "",

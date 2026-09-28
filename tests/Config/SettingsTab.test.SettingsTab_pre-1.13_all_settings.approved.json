@@ -206,7 +206,7 @@
         "type": "extraButton"
       },
       {
-        "icon": "cross",
+        "icon": "trash-2",
         "onClick": "[Function]",
         "tooltip": "Delete",
         "type": "extraButton"
@@ -223,7 +223,7 @@
         "type": "extraButton"
       },
       {
-        "icon": "cross",
+        "icon": "trash-2",
         "onClick": "[Function]",
         "tooltip": "Delete",
         "type": "extraButton"
@@ -240,7 +240,7 @@
         "type": "extraButton"
       },
       {
-        "icon": "cross",
+        "icon": "trash-2",
         "onClick": "[Function]",
         "tooltip": "Delete",
         "type": "extraButton"
@@ -257,7 +257,7 @@
         "type": "extraButton"
       },
       {
-        "icon": "cross",
+        "icon": "trash-2",
         "onClick": "[Function]",
         "tooltip": "Delete",
         "type": "extraButton"
@@ -274,7 +274,7 @@
         "type": "extraButton"
       },
       {
-        "icon": "cross",
+        "icon": "trash-2",
         "onClick": "[Function]",
         "tooltip": "Delete",
         "type": "extraButton"
@@ -291,7 +291,7 @@
         "type": "extraButton"
       },
       {
-        "icon": "cross",
+        "icon": "trash-2",
         "onClick": "[Function]",
         "tooltip": "Delete",
         "type": "extraButton"
@@ -308,7 +308,7 @@
         "type": "extraButton"
       },
       {
-        "icon": "cross",
+        "icon": "trash-2",
         "onClick": "[Function]",
         "tooltip": "Delete",
         "type": "extraButton"
@@ -325,7 +325,7 @@
         "type": "extraButton"
       },
       {
-        "icon": "cross",
+        "icon": "trash-2",
         "onClick": "[Function]",
         "tooltip": "Delete",
         "type": "extraButton"
