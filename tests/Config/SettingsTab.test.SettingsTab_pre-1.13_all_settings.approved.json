@@ -85,6 +85,11 @@
         "onClick": "[Function]",
         "tooltip": "Delete",
         "type": "extraButton"
+      },
+      {
+        "icon": "grip-vertical",
+        "tooltip": "Drag to reorder",
+        "type": "extraButton"
       }
     ]
   },
@@ -101,6 +106,11 @@
         "icon": "trash-2",
         "onClick": "[Function]",
         "tooltip": "Delete",
+        "type": "extraButton"
+      },
+      {
+        "icon": "grip-vertical",
+        "tooltip": "Drag to reorder",
         "type": "extraButton"
       }
     ]

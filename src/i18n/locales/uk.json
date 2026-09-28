@@ -294,6 +294,7 @@
       },
       "customStatuses": {
         "description": "",
+        "dragToReorder": "",
         "emptyState": "",
         "heading": "Користувацькі статуси"
       },

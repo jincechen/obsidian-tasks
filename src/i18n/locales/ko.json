@@ -294,6 +294,7 @@
       },
       "customStatuses": {
         "description": "",
+        "dragToReorder": "",
         "emptyState": "",
         "heading": "사용자 정의 상태"
       },

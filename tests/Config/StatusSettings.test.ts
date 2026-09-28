@@ -104,6 +104,18 @@ describe('StatusSettings', () => {
         expect(result2).toEqual(false);
     });
 
+    it('should move a status', () => {
+        const settings = new StatusSettings();
+        const { pro, imp, con } = setThreeCustomStatuses(settings);
+
+        expect(StatusSettings.moveStatus(settings.customStatuses, 2, 0)).toEqual(true);
+        expect(settings.customStatuses).toStrictEqual([con, pro, imp]);
+
+        expect(StatusSettings.moveStatus(settings.customStatuses, 1, 1)).toEqual(false);
+        expect(StatusSettings.moveStatus(settings.customStatuses, 0, 3)).toEqual(false);
+        expect(settings.customStatuses).toStrictEqual([con, pro, imp]);
+    });
+
     it('should delete all custom statuses', () => {
         // Arrange
         const settings = new StatusSettings();

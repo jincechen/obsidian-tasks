@@ -128,3 +128,15 @@ textarea.tasks-global-query-textarea {
     font-family: var(--font-monospace);
     resize: vertical;
 }
+
+.tasks-settings .tasks-status-drag-handle {
+    cursor: grab;
+}
+
+.tasks-settings .tasks-status-drop-above {
+    box-shadow: inset 0 2px 0 var(--interactive-accent);
+}
+
+.tasks-settings .tasks-status-drop-below {
+    box-shadow: inset 0 -2px 0 var(--interactive-accent);
+}

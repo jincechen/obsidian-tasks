@@ -80,6 +80,7 @@
               }
             ],
             "onDelete": "[Function]",
+            "onReorder": "[Function]",
             "search": {
               "match": "[Function]",
               "placeholder": "Filter statuses…"

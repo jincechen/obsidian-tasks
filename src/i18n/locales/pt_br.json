@@ -294,6 +294,7 @@
       },
       "customStatuses": {
         "description": "",
+        "dragToReorder": "",
         "emptyState": "",
         "heading": "Status Personalizados"
       },

@@ -581,6 +581,7 @@ export class SettingsTab extends PluginSettingTab {
                         current.customStatuses.splice(index, 1);
                         updateAndSaveStatusSettings(current, this);
                     },
+                    onReorder: (oldIndex, newIndex) => this.moveCustomStatus(oldIndex, newIndex),
                     addItem: {
                         name: i18n.t('settings.statuses.buttons.addStatus'),
                         action: () => this.openAddStatusModal(),
@@ -1163,8 +1164,8 @@ export class SettingsTab extends PluginSettingTab {
             i18n.t('settings.statuses.customStatuses.heading'),
             SettingsTab.customStatusesDescription(),
             (sectionEl) => {
-                statusSettings.customStatuses.forEach((status) => {
-                    this.createRowForTaskStatus(sectionEl, status, false);
+                statusSettings.customStatuses.forEach((status, index) => {
+                    this.makeStatusRowDraggable(this.createRowForTaskStatus(sectionEl, status, false), index);
                 });
 
                 const addStatus = new Setting(sectionEl).addButton((button) => {
@@ -1500,7 +1501,11 @@ export class SettingsTab extends PluginSettingTab {
     /**
      * A row to view and edit one status.
      */
-    private createRowForTaskStatus(containerEl: HTMLElement, status: StatusConfiguration, isCoreStatus: boolean) {
+    private createRowForTaskStatus(
+        containerEl: HTMLElement,
+        status: StatusConfiguration,
+        isCoreStatus: boolean,
+    ): Setting {
         const setting = new Setting(containerEl).setName(status.name || i18n.t('settings.statuses.unnamed'));
         SettingsTab.decorateStatusRow(setting, status);
 
@@ -1524,6 +1529,55 @@ export class SettingsTab extends PluginSettingTab {
                     });
             });
         }
+        return setting;
+    }
+
+    private moveCustomStatus(fromIndex: number, toIndex: number): void {
+        const { statusSettings } = getSettings();
+        if (StatusSettings.moveStatus(statusSettings.customStatuses, fromIndex, toIndex)) {
+            updateAndSaveStatusSettings(statusSettings, this);
+        }
+    }
+
+    /**
+     * Let a custom status row be dragged to a new position by its handle, in the legacy settings.
+     */
+    private makeStatusRowDraggable(setting: Setting, index: number): void {
+        const rowEl = setting.settingEl;
+        const clearDropIndicator = () => rowEl.removeClass('tasks-status-drop-above', 'tasks-status-drop-below');
+        const dropsBelow = (e: DragEvent) => {
+            const rect = rowEl.getBoundingClientRect();
+            return e.clientY > rect.top + rect.height / 2;
+        };
+
+        setting.addExtraButton((btn) => {
+            btn.setIcon('grip-vertical').setTooltip(i18n.t('settings.statuses.customStatuses.dragToReorder'));
+            btn.extraSettingsEl.addClass('tasks-status-drag-handle');
+            // Only the handle starts a drag, so the row's buttons still work.
+            btn.extraSettingsEl.addEventListener('mousedown', () => (rowEl.draggable = true));
+            btn.extraSettingsEl.addEventListener('mouseup', () => (rowEl.draggable = false));
+        });
+
+        rowEl.addEventListener('dragstart', (e) => e.dataTransfer?.setData('text/plain', String(index)));
+        rowEl.addEventListener('dragend', () => (rowEl.draggable = false));
+        rowEl.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const below = dropsBelow(e);
+            rowEl.toggleClass('tasks-status-drop-above', !below);
+            rowEl.toggleClass('tasks-status-drop-below', below);
+        });
+        rowEl.addEventListener('dragleave', clearDropIndicator);
+        rowEl.addEventListener('drop', (e) => {
+            e.preventDefault();
+            clearDropIndicator();
+            const dragged = e.dataTransfer?.getData('text/plain');
+            if (!dragged) {
+                return;
+            }
+            const fromIndex = Number(dragged);
+            const insertAt = dropsBelow(e) ? index + 1 : index;
+            this.moveCustomStatus(fromIndex, fromIndex < insertAt ? insertAt - 1 : insertAt);
+        });
     }
 
     private static parseCommaSeparatedFolders(input: string): string[] {

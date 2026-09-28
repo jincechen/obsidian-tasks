@@ -294,6 +294,7 @@
       },
       "customStatuses": {
         "description": "Each symbol can only be used once. Later duplicates are ignored.",
+        "dragToReorder": "Drag to reorder",
         "emptyState": "No custom statuses yet.",
         "heading": "Custom statuses"
       },
