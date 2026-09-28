@@ -419,7 +419,7 @@ describe('Reusing HtmlQueryResultsRenderer', () => {
 });
 
 describe('HtmlQueryResultsRenderer - task buttons', () => {
-    it.failing('should make the edit and postpone buttons usable from the keyboard', async () => {
+    it('should make the edit and postpone buttons usable from the keyboard', async () => {
         const allTasks = [new TaskBuilder().dueDate('2023-12-03').build()];
         const { query, renderer } = makeHtmlRenderer('', createTestTasksFile('query.md'), allTasks);
         const container = await renderTasks(State.Warm, renderer, allTasks, query);
