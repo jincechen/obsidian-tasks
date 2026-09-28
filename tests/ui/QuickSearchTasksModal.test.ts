@@ -123,22 +123,19 @@ describe('Rendering matching tasks', () => {
     it.each([
         [false, '#task Do Stuff'],
         [true, 'Do Stuff'],
-    ])(
-        'should honour "Remove global filter from description" setting: %s',
-        (removeGlobalFilter: boolean, expectedDescription: string) => {
-            GlobalFilter.getInstance().set('#task');
-            GlobalFilter.getInstance().setRemoveGlobalFilter(removeGlobalFilter);
+    ])('should honour "Hide global filter" setting: %s', (removeGlobalFilter: boolean, expectedDescription: string) => {
+        GlobalFilter.getInstance().set('#task');
+        GlobalFilter.getInstance().setRemoveGlobalFilter(removeGlobalFilter);
 
-            const taskListWithGlobalFilter = fromMarkdown('- [ ] #task Do Stuff');
+        const taskListWithGlobalFilter = fromMarkdown('- [ ] #task Do Stuff');
 
-            const modal = new QuickSearchTasksModal({} as any, () => taskListWithGlobalFilter, jest.fn());
-            const element = document.createElement('div');
+        const modal = new QuickSearchTasksModal({} as any, () => taskListWithGlobalFilter, jest.fn());
+        const element = document.createElement('div');
 
-            modal.renderSuggestion(taskListWithGlobalFilter[0], element);
+        modal.renderSuggestion(taskListWithGlobalFilter[0], element);
 
-            expect(getDescriptionTextContent(element)).toEqual(expectedDescription);
-        },
-    );
+        expect(getDescriptionTextContent(element)).toEqual(expectedDescription);
+    });
 
     it('should only check the checkbox for completed tasks', () => {
         const modal = new QuickSearchTasksModal({} as any, () => tasks, jest.fn());

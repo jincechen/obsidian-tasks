@@ -116,7 +116,7 @@ The auto-suggest menu supports powerful keyboard control:
 - You can use the [[Create or edit Task#Date abbreviations|date abbreviations offered by "Create or edit task"]], followed by a space character.
 - The filtering matches anywhere. For example, if you haven't yet added any dates to the task, typing `du` would then offer `📅 due date` and `⏳ scheduled date`.
 - You can use the up/down arrow keys on your keyboard, then press `<enter>` to select from the menu.
-- The menu is controlled by the [[#Minimum match length for auto-suggest]] setting. The higher its value, the more you have to type before the menu pops up.
+- The menu is controlled by the [[#Minimum characters]] setting. The higher its value, the more you have to type before the menu pops up.
 
 Things to be aware of, to make sure your Tasks searches work as you intend:
 
@@ -191,8 +191,8 @@ In Obsidian plugins that load first have suggestions prioritized. Given that, it
 #### Configure Plugin Specific Settings
 **Tasks Plugin:**
 
-- Go to Settings → Tasks → Auto-suggest
-- Set "Minimum match length for auto suggest" to **1**
+- Go to Settings → Tasks → Editing
+- Set "Minimum characters" to **1**
 - Why: This allows other plugins to show suggestions when Tasks has no matches
 
 **Natural Language Dates:**
@@ -325,7 +325,7 @@ Our second task looks like this. Note that the due date is shown in the Descript
 
 ### How do I see fewer or more suggestions?
 
-In the Tasks settings, change the [[#Maximum number of auto-suggestions to show]] slider to the value you want (and re-start Obsidian).
+In the Tasks settings, change the [[#Maximum suggestions]] slider to the value you want (and re-start Obsidian).
 
 Now the auto-suggest menu will show at most the number of options that you have specified.
 
@@ -335,15 +335,15 @@ For more on filtering, and some examples, see [[#What keywords may I type to mak
 
 > [!released]
 >
-> - The default value for [[#Maximum number of auto-suggestions to show]] was changed from 6 to 20 in Tasks 7.5.0.
+> - The default value for [[#Maximum suggestions]] was changed from 6 to 20 in Tasks 7.5.0.
 >   - This new value only takes effect in new Tasks installations: the value in existing vaults will not be updated.
 >   - We recommend increasing the value in your vault, for a better experience with auto-suggest.
 
 ### How do I make the menu pop up less?
 
-Increase the [[#Minimum match length for auto-suggest]] value in settings (and re-start Obsidian) so that the menu will only appear when you have typed a few characters from your chosen menu option.
+Increase the [[#Minimum characters]] value in settings (and re-start Obsidian) so that the menu will only appear when you have typed a few characters from your chosen menu option.
 
-For example, if you set the `Minimum match length for auto-suggest` to 3, you would need to type in your task "pri" or "hig" or "med" or "low" to get auto-suggest for the priority emoji(s).
+For example, if you set `Minimum characters` to 3, you would need to type in your task "pri" or "hig" or "med" or "low" to get auto-suggest for the priority emoji(s).
 
 ### What keywords may I type to make auto-suggest write the emoji for me?
 
@@ -354,7 +354,7 @@ As you type, the options are filtered. For example, if you haven't yet added any
 - `📅 due date`
 - `⏳ scheduled date`
 
-Similarly, you can type some fraction of the word `start` (of whatever length is needed by the 'Minimum match length' setting) and you will get a suggestion to turn it into the emoji. Pressing `<enter>` then immediately adds the start emoji: 🛫.
+Similarly, you can type some fraction of the word `start` (of whatever length is needed by the 'Minimum characters' setting) and you will get a suggestion to turn it into the emoji. Pressing `<enter>` then immediately adds the start emoji: 🛫.
 
 <!-- include: Suggestor.test.auto-complete_with__emoji__symbols_show_all_suggested_text.approved.md -->
 | Searchable Text | Text that is added |
@@ -435,7 +435,7 @@ Therefore it is the user's responsibility to manage conflicts between auto-sugge
 The Tasks auto-suggest will only appear on lines that start `- [ ]` and contain the global filter (if one is set).
 If you want to use auto-suggest features from another plugin on such lines, make sure that plugin's settings for auto-suggest
 appearance do not overlap with the keywords listed above,
-then increase the [[#Minimum match length for auto-suggest]] value in the Tasks settings to more characters than used to activate the other plugin's auto-suggest,
+then increase the [[#Minimum characters]] value in the Tasks settings to more characters than used to activate the other plugin's auto-suggest,
 and re-start Obsidian.
 
 ## Settings
@@ -446,11 +446,11 @@ These are the settings currently available for this feature:
 
 ![settings-auto-suggest-task-content](../images/settings-auto-suggest-task-content.png)
 
-### Auto-suggest task content
+### Auto-suggest
 
 This allows the entire auto-suggest feature to be disabled. It is turned on by default.
 
-### Minimum match length for auto-suggest
+### Minimum characters
 
 By default, the auto-suggest menu pops up before you have even typed any non-space characters.
 As you become more familiar with the options it offers, this can get annoying, and you may
@@ -460,7 +460,7 @@ You can make the menu pop up less often, by increasing this setting from 0 to 1,
 which will mean that the menu will only pop up when you have typed
 at least the specified number of characters to find a match.
 
-### Maximum number of auto-suggestions to show
+### Maximum suggestions
 
 How many suggestions should be shown when an auto-suggest menu pops up (including the "⏎" option).
 

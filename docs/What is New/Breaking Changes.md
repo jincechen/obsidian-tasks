@@ -31,7 +31,7 @@ Tasks queries no longer execute JavaScript by default. This affects `filter by f
 Some users may also be affected if they rely on undocumented JavaScript expressions inside `{{...}}` placeholders.
 
 If you use these instructions, your queries will now show an error until you enable the
-setting **Tasks → Searches → Enable custom searches**.
+setting **Tasks → Queries → Allow JavaScript in queries**.
 
 This change was made because JavaScript in Tasks queries can run inside Obsidian and could
 access or modify vault contents, local files, or other system resources. Only enable this

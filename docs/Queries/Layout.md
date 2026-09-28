@@ -74,7 +74,7 @@ The following query elements exist:
 | `backlink`        | Shown   | Task backlink for tasks         | [[Backlinks]]                                       |
 | `nested backlink` | Shown   | Backlink on nested tasks        | [[#Hide and Show Nested Backlink\|Nested Backlink]] |
 | `urgency`         | Hidden  | Task urgency score              | [[Urgency]]                                         |
-| `task count`      | Shown   | Total number of tasks           | [[#Task count location]]                            |
+| `task count`      | Shown   | Total number of tasks           | [[#Task count position]]                            |
 | `group count`     | Hidden  | Number of tasks in leaf groups  | [[Grouping#Showing the number of tasks in a group\|Number of tasks in a group]] |
 
 > [!released]
@@ -95,17 +95,17 @@ hide task count
 show group count
 ```
 
-### Task count location
+### Task count position
 
 By default, the task count is shown at the **bottom** of query results. You can change this to display at the **top** instead, via the Tasks plugin settings:
 
-1. Open **Settings → Tasks → Search results**.
-2. Set **Task count location** to **Top** or **Bottom**.
+1. Open **Settings → Tasks → Display**.
+2. Set **Task count position** to **Top** or **Bottom**.
 
 This is a global setting that applies to all task queries. Individual queries can still use `hide task count` to hide the count entirely.
 
 > [!released]
-> The 'Task count location' setting was introduced in Tasks 7.24.0.
+> The 'Task count position' setting was introduced in Tasks 7.24.0.
 
 ### Toolbar
 

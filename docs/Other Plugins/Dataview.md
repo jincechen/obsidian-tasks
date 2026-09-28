@@ -26,7 +26,7 @@ please see its [documentation](https://blacksmithgu.github.io/obsidian-dataview/
 > [!released]
 Introduced in Dataview 0.5.42
 
-If you use the "Set Done Date on every completed task" option in Tasks, you can configure Dataview so that clicking a task's checkbox from a Dataview query result will add or remove the `✅ YYYY-MM-DD` completion date just like clicking the checkbox in a Task query result or using the command `Tasks: Toggle Done`.
+If you use the "Add done date" option in Tasks, you can configure Dataview so that clicking a task's checkbox from a Dataview query result will add or remove the `✅ YYYY-MM-DD` completion date just like clicking the checkbox in a Task query result or using the command `Tasks: Toggle Done`.
 
 0. Make sure Dataview is up to date by checking for updates in "Settings" -> "Community Plugins" -> "Check for Updates".
 1. In "Settings" -> "Dataview", scroll down to and enable the "Automatic Task Completion" setting.

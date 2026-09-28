@@ -57,13 +57,13 @@ Use this setting to control where the recurring task is inserted. The default is
 > [!released]
 > Control of the location (or order) of the new task was introduced in Tasks 3.8.0
 
-### Remove scheduled date on recurrence
+### Drop scheduled date on recurrence
 
 Use this setting to control whether the Scheduled date should be removed from the next occurrence. The Scheduled date is only removed the task also has a Start or Due date.
 
 This is useful when you want the Start and Due dates to carry forward to the next recurrence, but you will set the Scheduled date in future, once you know when you intend to work on it.
 
-![Setting for Remove scheduled date on recurrence](../images/settings-recurrence-remove-scheduled-date.png)
+![Setting for Drop scheduled date on recurrence](../images/settings-recurrence-remove-scheduled-date.png)
 
 > [!released]
 > The option to remove the scheduled date on recurrence was introduced in Tasks 7.19.0.
@@ -202,7 +202,7 @@ When a task has multiple dates, one of them is selected as reference date based 
 > 3. **Start** date
 
 > [!Info] Priority of date fields if Scheduled date might be removed
-> When the [[#Remove scheduled date on recurrence]] setting is enabled, the Start date is prioritized over the Scheduled date because the Scheduled date will be removed from the next occurrence:
+> When the [[#Drop scheduled date on recurrence]] setting is enabled, the Start date is prioritized over the Scheduled date because the Scheduled date will be removed from the next occurrence:
 >
 > 1. **Due** date
 > 2. **Start** date

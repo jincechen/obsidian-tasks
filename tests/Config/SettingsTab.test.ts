@@ -134,8 +134,8 @@ describe('SettingsTab post-1.13', () => {
 
     it('all settings', () => {
         // TODO Show the 'Global Query' modal
-        // TODO Show the 'Enable custom searches' modal.
-        // TODO Show options in the 'Task count location' dropdown.
+        // TODO Show the 'Allow JavaScript in queries' modal.
+        // TODO Show options in the 'Task count position' dropdown.
         verifyAsJson(serializeForApproval(settingsTab.getSettingDefinitions()));
     });
 });
