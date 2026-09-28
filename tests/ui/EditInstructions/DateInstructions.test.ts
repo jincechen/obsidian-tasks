@@ -125,6 +125,7 @@ describe('RemoveTaskDate', () => {
 
         expect(instruction.instructionDisplayName()).toEqual('Remove start date');
         expect(instruction.isCheckedForTask(taskWithNoDates)).toEqual(false);
+        expect(instruction.isEnabledForTask(taskWithNoDates)).toEqual(true);
     });
 
     it('should refuse to remove scheduled date from task with inferred scheduled date', () => {
@@ -132,6 +133,7 @@ describe('RemoveTaskDate', () => {
         const instruction = new RemoveTaskDate('scheduledDate', task);
 
         expect(instruction.instructionDisplayName()).toEqual('Cannot remove inferred scheduled date');
+        expect(instruction.isEnabledForTask(task)).toEqual(false);
 
         const newTasks = instruction.apply(task);
         expect(newTasks.length).toEqual(1);
