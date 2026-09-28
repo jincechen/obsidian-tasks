@@ -325,16 +325,19 @@ export const lastModalState: {
     title: string | null;
     html: string | null;
     opened: boolean;
+    modal: Modal | null;
 } = {
     title: null,
     html: null,
     opened: false,
+    modal: null,
 };
 
 export function resetLastModalState(): void {
     lastModalState.title = null;
     lastModalState.html = null;
     lastModalState.opened = false;
+    lastModalState.modal = null;
 }
 
 // Minimal Modal mock for tests that inspect modal text produced by UI callbacks.
@@ -358,6 +361,7 @@ export class Modal {
     public open(): void {
         lastModalState.opened = true;
         lastModalState.html = this.contentEl.innerHTML;
+        lastModalState.modal = this;
     }
 
     public close(): void {
@@ -411,9 +415,28 @@ export class ButtonComponent {
         return this;
     }
 
-    public onClick(_callback: () => void): this {
+    public setCta(): this {
+        return this.setClass('mod-cta');
+    }
+
+    public setWarning(): this {
+        return this.setClass('mod-warning');
+    }
+
+    public setDisabled(disabled: boolean): this {
+        this.buttonEl.disabled = disabled;
         return this;
     }
+
+    public onClick(callback: () => void): this {
+        this.buttonEl.addEventListener('click', callback);
+        return this;
+    }
+}
+
+// Keeps a callback on a recorded setting or control, hidden from approval output.
+function storeCallback(target: Record<string, unknown>, name: string, callback: unknown): void {
+    Object.defineProperty(target, name, { value: callback, enumerable: false, configurable: true });
 }
 
 export const recordedLegacySettings: Array<Record<string, unknown>> = [];
@@ -469,8 +492,18 @@ export class Setting {
         return this;
     }
 
-    public addToggle(_callback: (toggle: unknown) => void): this {
+    public addToggle(callback: (toggle: unknown) => void): this {
         (this.record.controls as string[]).push('toggle');
+
+        const fakeToggle = {
+            setValue: (_value: boolean) => fakeToggle,
+            onChange: (onChange: (value: boolean) => unknown) => {
+                storeCallback(this.record, 'onToggleChange', onChange);
+                return fakeToggle;
+            },
+        };
+
+        callback(fakeToggle);
         return this;
     }
 
@@ -498,8 +531,7 @@ export class Setting {
             },
             onClick: (callback: () => void) => {
                 control.onClick = '[Function]';
-                // Keep the callback for tests to call, hidden from approval output.
-                Object.defineProperty(control, 'callback', { value: callback, enumerable: false });
+                storeCallback(control, 'callback', callback);
                 return fakeButton;
             },
             setCta: () => {
@@ -535,8 +567,9 @@ export class Setting {
                 control.tooltip = tooltip;
                 return fakeExtraButton;
             },
-            onClick: (_callback: () => void) => {
+            onClick: (callback: () => void) => {
                 control.onClick = '[Function]';
+                storeCallback(control, 'callback', callback);
                 return fakeExtraButton;
             },
         };
