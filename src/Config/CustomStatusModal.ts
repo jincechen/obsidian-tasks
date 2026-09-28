@@ -49,6 +49,13 @@ export class CustomStatusModal extends Modal {
         );
     }
 
+    /**
+     * Return any problems that prevent the modal's contents from being saved.
+     */
+    public validationErrors(): string[] {
+        return validator.validate(this.statusConfiguration());
+    }
+
     display() {
         const { contentEl } = this;
 
@@ -149,7 +156,7 @@ export class CustomStatusModal extends Modal {
             .setButtonText(i18n.t('common.save'))
             .setCta()
             .onClick(() => {
-                const errors = validator.validate(this.statusConfiguration());
+                const errors = this.validationErrors();
                 if (errors.length > 0) {
                     const message =
                         errors.join('\n') + '\n\n' + i18n.t('modals.customStatusModal.fixErrorsBeforeSaving');
