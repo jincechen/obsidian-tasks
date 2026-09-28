@@ -187,6 +187,12 @@
         "name": "Provide access keys in dialogs"
       }
     },
+    "display": {
+      "heading": "Display"
+    },
+    "editing": {
+      "heading": "Editing"
+    },
     "format": {
       "description": {
         "line1": "The format that Tasks uses to read and write tasks.",
@@ -197,6 +203,9 @@
         "tasksEmojiFormat": "Tasks emoji format"
       },
       "name": "Task format"
+    },
+    "general": {
+      "heading": "General"
     },
     "globalFilter": {
       "filter": {
@@ -230,6 +239,15 @@
       "line1": "You can define named instructions here, that you can re-use in multiple queries. A preset called '{{name}}' can be used in Tasks queries with either '{{instruction1}}' or '{{instruction2}}'.",
       "line2": "Any open Tasks queries are reloaded automatically when presets are edited.",
       "name": "Presets"
+    },
+    "queries": {
+      "globalQuery": {
+        "notSet": "Not set.",
+        "summary": "Current: {{firstLine}}",
+        "summaryMultiline_one": "Current: {{firstLine}} (and {{count}} more line)",
+        "summaryMultiline_other": "Current: {{firstLine}} (and {{count}} more lines)"
+      },
+      "heading": "Queries"
     },
     "recurringTasks": {
       "heading": "Recurring tasks",
@@ -269,8 +287,7 @@
           "line4": "This setting is stored on this device only; enable it separately on each device where you use this vault."
         },
         "name": "Enable custom searches"
-      },
-      "heading": "Searches"
+      }
     },
     "seeTheDocumentation": "See the documentation",
     "statuses": {
@@ -344,9 +361,6 @@
         "todo": "To do"
       },
       "unnamed": "(unnamed)"
-    },
-    "taskEntry": {
-      "heading": "Task entry"
     }
   }
 }

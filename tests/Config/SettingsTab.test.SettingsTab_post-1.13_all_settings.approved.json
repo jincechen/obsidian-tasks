@@ -1,9 +1,13 @@
 [
   {
+    "heading": "General",
     "items": [
       {
         "name": "Task format",
         "desc": "<p>The format that Tasks uses to read and write tasks.</p><p><b>Important:</b> Tasks currently only supports one format at a time. Selecting Dataview will currently <b>stop Tasks reading its own emoji signifiers</b>.</p>",
+        "aliases": [
+          "General"
+        ],
         "render": "[Function]"
       },
       {
@@ -20,6 +24,7 @@
       {
         "name": "Task statuses",
         "desc": "<p><b>Core statuses</b></p><p>These are the core statuses that Tasks supports natively, with no need for custom CSS styling or theming.</p><p><b>Custom statuses</b></p><p>You can add and edit your own custom statuses in the Custom statuses section.</p><p>You should first <b>select and install a CSS snippet or theme</b> to style custom checkboxes. Then, set up your custom statuses to match your chosen CSS checkboxes.</p><p><a href=\"https://publish.obsidian.md/tasks/Getting+Started/Statuses\">See the documentation to get started!</a></p>",
+        "displayValue": "[Function]",
         "items": [
           {
             "heading": "Core statuses",
@@ -122,11 +127,20 @@
     "type": "group"
   },
   {
-    "heading": "Searches",
+    "heading": "Queries",
     "items": [
+      {
+        "name": "Global query",
+        "desc": "<p>Instructions automatically included at the start of every Tasks block.</p><p>Not set.</p>",
+        "aliases": [
+          "Queries"
+        ],
+        "render": "[Function]"
+      },
       {
         "name": "Presets",
         "desc": "<p>You can define named instructions here, that you can re-use in multiple queries. A preset called '<code>name</code>' can be used in Tasks queries with either '<code>preset name</code>' or '<code>{{preset.name}}</code>'.</p><p>Any open Tasks queries are reloaded automatically when presets are edited.</p><p><a href=\"https://publish.obsidian.md/tasks/Queries/Presets\">See the documentation</a></p>",
+        "displayValue": "[Function]",
         "items": [
           {
             "addItem": {
@@ -192,18 +206,8 @@
         "type": "page"
       },
       {
-        "name": "Global query",
-        "desc": "Instructions automatically included at the start of every Tasks block.",
-        "render": "[Function]"
-      },
-      {
         "name": "Enable custom searches",
         "desc": "Enables '<code>filter by function</code>', '<code>sort by function</code>', and '<code>group by function</code>', which execute JavaScript in Tasks queries.",
-        "render": "[Function]"
-      },
-      {
-        "name": "Task count location",
-        "desc": "Choose whether the task count is shown at the top or bottom of query results.",
         "render": "[Function]"
       }
     ],
@@ -229,13 +233,7 @@
         "name": "Set cancelled date on every cancelled task",
         "desc": "Enabling this will add a timestamp ❌ YYYY-MM-DD at the end when a task is toggled to cancelled.",
         "render": "[Function]"
-      }
-    ],
-    "type": "group"
-  },
-  {
-    "heading": "Dates from file names",
-    "items": [
+      },
       {
         "name": "Use filename as Scheduled date for undated tasks",
         "desc": "<p>Save time entering Scheduled (⏳) dates. If this option is enabled, any undated tasks will be given a default Scheduled date extracted from their file name.</p><p>By default, Tasks plugin will match both <code>YYYY-MM-DD</code> and <code>YYYYMMDD</code> date formats. Undated tasks have none of Due (📅 ), Scheduled (⏳) and Start (🛫) dates.</p>",
@@ -279,13 +277,13 @@
     "type": "group"
   },
   {
-    "heading": "Task entry",
+    "heading": "Editing",
     "items": [
       {
         "name": "Auto-suggest task content",
         "desc": "Enabling this will open an intelligent suggest menu while typing inside a recognized task line.",
         "aliases": [
-          "Task entry"
+          "Editing"
         ],
         "render": "[Function]"
       },
@@ -300,6 +298,20 @@
         "desc": "How many suggestions should be shown when an auto-suggest menu pops up (including the \"⏎\" option).",
         "render": "[Function]",
         "visible": "[Function]"
+      }
+    ],
+    "type": "group"
+  },
+  {
+    "heading": "Display",
+    "items": [
+      {
+        "name": "Task count location",
+        "desc": "Choose whether the task count is shown at the top or bottom of query results.",
+        "aliases": [
+          "Display"
+        ],
+        "render": "[Function]"
       },
       {
         "name": "Provide access keys in dialogs",

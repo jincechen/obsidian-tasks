@@ -187,6 +187,12 @@
         "name": "Cung cấp phím truy cập trong hộp thoại"
       }
     },
+    "display": {
+      "heading": ""
+    },
+    "editing": {
+      "heading": ""
+    },
     "format": {
       "description": {
         "line1": "Định dạng mà Tasks sử dụng để đọc và viết nhiệm vụ.",
@@ -197,6 +203,9 @@
         "tasksEmojiFormat": "Định dạng Emoji của Tasks"
       },
       "name": "Định dạng nhiệm vụ"
+    },
+    "general": {
+      "heading": ""
     },
     "globalFilter": {
       "filter": {
@@ -230,6 +239,15 @@
       "line1": "Bạn có thể định nghĩa các hướng dẫn được đặt tên ở đây, mà bạn có thể sử dụng lại trong nhiều truy vấn. Một preset có tên '{{name}}' có thể được sử dụng trong truy vấn Tasks với '{{instruction1}}' hoặc '{{instruction2}}'.",
       "line2": "Bất kỳ truy vấn Tasks nào đang mở sẽ được tải lại tự động khi các preset được chỉnh sửa.",
       "name": "Preset"
+    },
+    "queries": {
+      "globalQuery": {
+        "notSet": "",
+        "summary": "",
+        "summaryMultiline_one": "",
+        "summaryMultiline_other": ""
+      },
+      "heading": ""
     },
     "recurringTasks": {
       "heading": "Nhiệm vụ định kỳ",
@@ -269,8 +287,7 @@
           "line4": ""
         },
         "name": ""
-      },
-      "heading": ""
+      }
     },
     "seeTheDocumentation": "Xem tài liệu",
     "statuses": {
@@ -344,9 +361,6 @@
         "todo": ""
       },
       "unnamed": ""
-    },
-    "taskEntry": {
-      "heading": ""
     }
   }
 }

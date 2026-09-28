@@ -187,6 +187,12 @@
         "name": "Zugriffsschlüssel in Dialogen bereitstellen"
       }
     },
+    "display": {
+      "heading": ""
+    },
+    "editing": {
+      "heading": ""
+    },
     "format": {
       "description": {
         "line1": "Das Format, das Tasks zum Lesen und Schreiben von Aufgaben verwendet.",
@@ -197,6 +203,9 @@
         "tasksEmojiFormat": "Tasks Emoji Format"
       },
       "name": "Aufgabenformat"
+    },
+    "general": {
+      "heading": ""
     },
     "globalFilter": {
       "filter": {
@@ -230,6 +239,15 @@
       "line1": "",
       "line2": "",
       "name": ""
+    },
+    "queries": {
+      "globalQuery": {
+        "notSet": "",
+        "summary": "",
+        "summaryMultiline_one": "",
+        "summaryMultiline_other": ""
+      },
+      "heading": ""
     },
     "recurringTasks": {
       "heading": "Wiederkehrende Aufgaben",
@@ -269,8 +287,7 @@
           "line4": ""
         },
         "name": ""
-      },
-      "heading": ""
+      }
     },
     "seeTheDocumentation": "Vgl. die Dokumentation",
     "statuses": {
@@ -344,9 +361,6 @@
         "todo": ""
       },
       "unnamed": ""
-    },
-    "taskEntry": {
-      "heading": ""
     }
   }
 }

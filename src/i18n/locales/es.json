@@ -187,6 +187,12 @@
         "name": "Proporcionar teclas de acceso en los cuadros de diálogo"
       }
     },
+    "display": {
+      "heading": ""
+    },
+    "editing": {
+      "heading": ""
+    },
     "format": {
       "description": {
         "line1": "El formato que utiliza Tasks para leer y escribir tareas.",
@@ -197,6 +203,9 @@
         "tasksEmojiFormat": "Formato de emoji de Tasks"
       },
       "name": "Formato de tarea"
+    },
+    "general": {
+      "heading": ""
     },
     "globalFilter": {
       "filter": {
@@ -230,6 +239,15 @@
       "line1": "Aquí puedes definir instrucciones con nombre que puedes reutilizar en varias consultas. Un preajuste llamado '{{name}}' se puede usar en consultas de Tasks con '{{instruction1}}' o '{{instruction2}}'.",
       "line2": "Las consultas de Tasks que estén abiertas se recargan automáticamente al editar los preajustes.",
       "name": "Preajustes"
+    },
+    "queries": {
+      "globalQuery": {
+        "notSet": "",
+        "summary": "",
+        "summaryMultiline_one": "",
+        "summaryMultiline_other": ""
+      },
+      "heading": ""
     },
     "recurringTasks": {
       "heading": "Tareas recurrentes",
@@ -269,8 +287,7 @@
           "line4": "Este ajuste se guarda solo en este dispositivo; actívalo por separado en cada dispositivo donde uses esta bóveda."
         },
         "name": "Habilitar búsquedas personalizadas"
-      },
-      "heading": "Búsquedas"
+      }
     },
     "seeTheDocumentation": "Consulta la documentación",
     "statuses": {
@@ -344,9 +361,6 @@
         "todo": ""
       },
       "unnamed": ""
-    },
-    "taskEntry": {
-      "heading": ""
     }
   }
 }

@@ -187,6 +187,12 @@
         "name": "Autoriser les raccourcis claviers dans les boîtes de dialogue"
       }
     },
+    "display": {
+      "heading": ""
+    },
+    "editing": {
+      "heading": ""
+    },
     "format": {
       "description": {
         "line1": "Le format utilisé par Tasks pour lire et écrire les tâches",
@@ -197,6 +203,9 @@
         "tasksEmojiFormat": "Format emoji de Tasks"
       },
       "name": "Format de tâche"
+    },
+    "general": {
+      "heading": ""
     },
     "globalFilter": {
       "filter": {
@@ -230,6 +239,15 @@
       "line1": "Vous pouvez définir ici des instructions à réutiliser dans plusieurs requêtes. Un préréglage appelé '{{name}}' pourra être appliqué dans les requêtes Tasks avec '{{instruction1}}' ou '{{instruction2}}'.",
       "line2": "Toutes les requêtes Tasks ouvertes sont rechargées automatiquement quand les préréglages sont modifiés.",
       "name": "Préréglages"
+    },
+    "queries": {
+      "globalQuery": {
+        "notSet": "",
+        "summary": "",
+        "summaryMultiline_one": "",
+        "summaryMultiline_other": ""
+      },
+      "heading": ""
     },
     "recurringTasks": {
       "heading": "Tâches récurrentes",
@@ -269,8 +287,7 @@
           "line4": "Ce réglage est stocké seulement sur cet appareil; activez-le séparément sur chaque appareil sur lequel vous utilisez ce coffre."
         },
         "name": "Activer les requêtes personnalisées"
-      },
-      "heading": "Requêtes"
+      }
     },
     "seeTheDocumentation": "Voir la documentation",
     "statuses": {
@@ -344,9 +361,6 @@
         "todo": ""
       },
       "unnamed": ""
-    },
-    "taskEntry": {
-      "heading": ""
     }
   }
 }

@@ -1,5 +1,10 @@
 [
   {
+    "name": "General",
+    "heading": true,
+    "controls": []
+  },
+  {
     "name": "Task format",
     "desc": "<p>The format that Tasks uses to read and write tasks.</p><p><b>Important:</b> Tasks currently only supports one format at a time. Selecting Dataview will currently <b>stop Tasks reading its own emoji signifiers</b>.</p><p>Reload Obsidian to apply this change.</p><p><a href=\"https://publish.obsidian.md/tasks/Reference/Task+Formats/About+Task+Formats\">See the documentation</a></p>",
     "controls": [
@@ -150,9 +155,16 @@
     ]
   },
   {
-    "name": "Searches",
+    "name": "Queries",
     "heading": true,
     "controls": []
+  },
+  {
+    "name": "Global query",
+    "desc": "<p>Instructions automatically included at the start of every Tasks block.</p><p><a href=\"https://publish.obsidian.md/tasks/Queries/Global+Query\">See the documentation</a></p>",
+    "controls": [
+      "textArea"
+    ]
   },
   {
     "name": "Presets",
@@ -310,24 +322,10 @@
     ]
   },
   {
-    "name": "Global query",
-    "desc": "<p>Instructions automatically included at the start of every Tasks block.</p><p><a href=\"https://publish.obsidian.md/tasks/Queries/Global+Query\">See the documentation</a></p>",
-    "controls": [
-      "textArea"
-    ]
-  },
-  {
     "name": "Enable custom searches",
     "desc": "<p>Enables '<code>filter by function</code>', '<code>sort by function</code>', and '<code>group by function</code>', which execute JavaScript in Tasks queries.</p><p>Malicious JavaScript in a Tasks query or Markdown file could run inside Obsidian and access or modify your vault contents, local files, or other system resources.</p><p><b>Only enable this if you trust the current and future contents of this vault, including files you may later download, copy, or sync from other people.</b></p><p>This setting is stored on this device only; enable it separately on each device where you use this vault.</p><p><a href=\"https://publish.obsidian.md/tasks/Scripting/JavaScript+in+Tasks+Queries\">See the documentation</a></p>",
     "controls": [
       "toggle"
-    ]
-  },
-  {
-    "name": "Task count location",
-    "desc": "Choose whether the task count is shown at the top or bottom of query results.",
-    "controls": [
-      "dropdown"
     ]
   },
   {
@@ -355,11 +353,6 @@
     "controls": [
       "toggle"
     ]
-  },
-  {
-    "name": "Dates from file names",
-    "heading": true,
-    "controls": []
   },
   {
     "name": "Use filename as Scheduled date for undated tasks",
@@ -402,7 +395,7 @@
     ]
   },
   {
-    "name": "Task entry",
+    "name": "Editing",
     "heading": true,
     "controls": []
   },
@@ -425,6 +418,18 @@
     "desc": "<p>How many suggestions should be shown when an auto-suggest menu pops up (including the \"⏎\" option).</p><p>Reload Obsidian to apply this change.</p>",
     "controls": [
       "slider"
+    ]
+  },
+  {
+    "name": "Display",
+    "heading": true,
+    "controls": []
+  },
+  {
+    "name": "Task count location",
+    "desc": "Choose whether the task count is shown at the top or bottom of query results.",
+    "controls": [
+      "dropdown"
     ]
   },
   {

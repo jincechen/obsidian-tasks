@@ -22,6 +22,7 @@ import { Status } from '../Statuses/Status';
 import type { StatusCollection } from '../Statuses/StatusCollection';
 import { createStatusRegistryReport } from '../Statuses/StatusRegistryReport';
 import { i18n } from '../i18n/i18n';
+import { htmlEncodeString } from '../lib/HTMLCharacterEntities';
 import type { TasksEvents } from '../Obsidian/TasksEvents';
 import * as Themes from './Themes';
 import { type Settings, TASK_FORMATS, getSettings, updateSettings } from './Settings';
@@ -239,6 +240,24 @@ export class SettingsTab extends PluginSettingTab {
         ]);
     }
 
+    /**
+     * A one-line summary of the global query.
+     */
+    private static globalQuerySummary(): string {
+        const lines = getSettings()
+            .globalQuery.split('\n')
+            .map((line) => line.trim())
+            .filter((line) => line !== '');
+        if (lines.length === 0) {
+            return i18n.t('settings.queries.globalQuery.notSet');
+        }
+        // The summary is shown as HTML, so escape the user's text.
+        const firstLine = code(htmlEncodeString(lines[0]));
+        return lines.length > 1
+            ? i18n.t('settings.queries.globalQuery.summaryMultiline', { firstLine, count: lines.length - 1 })
+            : i18n.t('settings.queries.globalQuery.summary', { firstLine });
+    }
+
     // -----------------------------------------------------------------------
     // Declarative settings API (Obsidian 1.13.0+)
     //
@@ -331,20 +350,21 @@ export class SettingsTab extends PluginSettingTab {
 
     public getSettingDefinitions(): SettingDefinitionItem[] {
         return [
-            this.globalDefaultsGroup(),
-            this.searchesGroup(),
+            this.generalGroup(),
+            this.queriesGroup(),
             this.datesGroup(),
-            this.datesFromFilenamesGroup(),
             this.recurringTasksGroup(),
-            this.taskEntryGroup(),
+            this.editingGroup(),
+            this.displayGroup(),
         ];
     }
 
-    // ---- Task format (general, no heading) --------------------------------
+    // ---- General ------------------------------------------------------------
 
     private taskFormatDefinition(): SettingGroupItem {
         return {
             name: i18n.t('settings.format.name'),
+            aliases: [i18n.t('settings.general.heading')],
             desc: SettingsTab.createFragmentWithHTML(SettingsTab.taskFormatDescription()),
             render: this.withDocs(
                 this.withReload('taskFormat', (setting, refreshReloadButton) => {
@@ -364,11 +384,10 @@ export class SettingsTab extends PluginSettingTab {
         };
     }
 
-    // ---- Global defaults (filter + query) ---------------------------------
-
-    private globalDefaultsGroup(): SettingDefinitionItem {
+    private generalGroup(): SettingDefinitionItem {
         return {
             type: 'group',
+            heading: i18n.t('settings.general.heading'),
             items: [
                 this.taskFormatDefinition(),
                 {
@@ -420,20 +439,27 @@ export class SettingsTab extends PluginSettingTab {
             GlobalQuery.getInstance().set(value);
             await this.plugin.saveSettings();
             this.events.triggerReloadOpenSearchResults();
+            // Update the summary of the global query.
+            this.rebuildSettingsTab();
         }).open();
     }
 
-    // ---- Searches & search results ---------------------------------------
+    // ---- Queries ----------------------------------------------------------
 
-    private searchesGroup(): SettingDefinitionItem {
+    private queriesGroup(): SettingDefinitionItem {
         return {
             type: 'group',
-            heading: i18n.t('settings.searches.heading'),
+            heading: i18n.t('settings.queries.heading'),
             items: [
-                this.presetsPage(),
                 {
                     name: i18n.t('settings.globalQuery.heading'),
-                    desc: i18n.t('settings.globalQuery.query.shortDescription'),
+                    aliases: [i18n.t('settings.queries.heading')],
+                    desc: SettingsTab.createFragmentWithHTML(
+                        paras([
+                            i18n.t('settings.globalQuery.query.shortDescription'),
+                            SettingsTab.globalQuerySummary(),
+                        ]),
+                    ),
                     render: this.withDocs((setting) => {
                         setting.addExtraButton((btn) =>
                             btn
@@ -443,6 +469,7 @@ export class SettingsTab extends PluginSettingTab {
                         );
                     }, docs.globalQuery),
                 },
+                this.presetsPage(),
                 {
                     name: i18n.t('settings.searches.enableCustomSearches.name'),
                     desc: SettingsTab.createFragmentWithHTML(SettingsTab.customSearchesDescription()),
@@ -450,26 +477,6 @@ export class SettingsTab extends PluginSettingTab {
                         (setting) => this.renderEnableCustomSearchesToggle(setting),
                         docs.customSearches,
                     ),
-                },
-                {
-                    name: i18n.t('settings.searchResults.taskCountLocation.name'),
-                    desc: i18n.t('settings.searchResults.taskCountLocation.description'),
-                    render: (setting) => {
-                        setting.addDropdown((dropdown) => {
-                            dropdown.addOption('top', i18n.t('settings.searchResults.taskCountLocation.options.top'));
-                            dropdown.addOption(
-                                'bottom',
-                                i18n.t('settings.searchResults.taskCountLocation.options.bottom'),
-                            );
-                            dropdown.setValue(getSettings().searchResults.taskCountLocation).onChange(async (value) => {
-                                updateSettings({
-                                    searchResults: { taskCountLocation: value as 'top' | 'bottom' },
-                                });
-                                await this.plugin.saveSettings();
-                                this.events.triggerReloadOpenSearchResults();
-                            });
-                        });
-                    },
                 },
             ],
         };
@@ -576,6 +583,7 @@ export class SettingsTab extends PluginSettingTab {
             desc: SettingsTab.createFragmentWithHTML(
                 SettingsTab.presetsDescription() + para(link(docs.presets, i18n.t('settings.seeTheDocumentation'))),
             ),
+            displayValue: () => String(Object.keys(getSettings().presets).length),
             items: this.presetsSettingsUI.getPresetsDefinitions(() => this.rebuildSettingsTab()),
         };
     }
@@ -597,6 +605,11 @@ export class SettingsTab extends PluginSettingTab {
             type: 'page',
             name: i18n.t('settings.statuses.heading'),
             desc: SettingsTab.createFragmentWithHTML(SettingsTab.statusesDescription()),
+            displayValue: () =>
+                String(
+                    getSettings().statusSettings.coreStatuses.length +
+                        getSettings().statusSettings.customStatuses.length,
+                ),
             status: () => (this.statusesChangedSinceLoad() ? 'warning' : null),
             items: [
                 {
@@ -907,17 +920,6 @@ export class SettingsTab extends PluginSettingTab {
                     desc: i18n.t('settings.dates.cancelledDate.description'),
                     render: this.renderToggleWithDocs('setCancelledDate', docs.cancelledDate),
                 },
-            ],
-        };
-    }
-
-    // ---- Dates from file names -------------------------------------------
-
-    private datesFromFilenamesGroup(): SettingDefinitionItem {
-        return {
-            type: 'group',
-            heading: i18n.t('settings.datesFromFileNames.heading'),
-            items: [
                 {
                     name: i18n.t('settings.datesFromFileNames.scheduledDate.toggle.name'),
                     aliases: [i18n.t('settings.datesFromFileNames.heading')],
@@ -1000,16 +1002,16 @@ export class SettingsTab extends PluginSettingTab {
         };
     }
 
-    // ---- Task entry (auto-suggest + dialog access keys) -------------------
+    // ---- Editing (auto-suggest) -------------------------------------------
 
-    private taskEntryGroup(): SettingDefinitionItem {
+    private editingGroup(): SettingDefinitionItem {
         return {
             type: 'group',
-            heading: i18n.t('settings.taskEntry.heading'),
+            heading: i18n.t('settings.editing.heading'),
             items: [
                 {
                     name: i18n.t('settings.autoSuggest.toggle.name'),
-                    aliases: [i18n.t('settings.taskEntry.heading')],
+                    aliases: [i18n.t('settings.editing.heading')],
                     desc: i18n.t('settings.autoSuggest.toggle.description'),
                     render: this.withDocs(
                         this.withReload('autoSuggestInEditor', (setting, refreshReloadButton) => {
@@ -1059,6 +1061,38 @@ export class SettingsTab extends PluginSettingTab {
                         });
                     }),
                 },
+            ],
+        };
+    }
+
+    // ---- Display ------------------------------------------------------------
+
+    private displayGroup(): SettingDefinitionItem {
+        return {
+            type: 'group',
+            heading: i18n.t('settings.display.heading'),
+            items: [
+                {
+                    name: i18n.t('settings.searchResults.taskCountLocation.name'),
+                    aliases: [i18n.t('settings.display.heading')],
+                    desc: i18n.t('settings.searchResults.taskCountLocation.description'),
+                    render: (setting) => {
+                        setting.addDropdown((dropdown) => {
+                            dropdown.addOption('top', i18n.t('settings.searchResults.taskCountLocation.options.top'));
+                            dropdown.addOption(
+                                'bottom',
+                                i18n.t('settings.searchResults.taskCountLocation.options.bottom'),
+                            );
+                            dropdown.setValue(getSettings().searchResults.taskCountLocation).onChange(async (value) => {
+                                updateSettings({
+                                    searchResults: { taskCountLocation: value as 'top' | 'bottom' },
+                                });
+                                await this.plugin.saveSettings();
+                                this.events.triggerReloadOpenSearchResults();
+                            });
+                        });
+                    },
+                },
                 {
                     name: i18n.t('settings.dialogs.accessKeys.name'),
                     desc: i18n.t('settings.dialogs.accessKeys.description'),
@@ -1080,11 +1114,11 @@ export class SettingsTab extends PluginSettingTab {
 
         this.displayGeneral(containerEl);
         this.displayStatuses(containerEl);
-        this.displaySearches(containerEl);
+        this.displayQueries(containerEl);
         this.displayDates(containerEl);
-        this.displayDatesFromFileNames(containerEl);
         this.displayRecurringTasks(containerEl);
-        this.displayTaskEntry(containerEl);
+        this.displayEditing(containerEl);
+        this.displayDisplay(containerEl);
     }
 
     /**
@@ -1105,6 +1139,8 @@ export class SettingsTab extends PluginSettingTab {
     }
 
     private displayGeneral(containerEl: HTMLElement) {
+        new Setting(containerEl).setName(i18n.t('settings.general.heading')).setHeading();
+
         new Setting(containerEl)
             .setName(i18n.t('settings.format.name'))
             .setDesc(
@@ -1279,15 +1315,8 @@ export class SettingsTab extends PluginSettingTab {
         setting.infoEl.remove();
     }
 
-    private displaySearches(containerEl: HTMLElement) {
-        new Setting(containerEl).setName(i18n.t('settings.searches.heading')).setHeading();
-
-        this.addCollapsibleSection(
-            containerEl,
-            i18n.t('settings.presets.name'),
-            SettingsTab.presetsDescription() + para(link(docs.presets, i18n.t('settings.seeTheDocumentation'))),
-            (sectionEl) => this.presetsSettingsUI.renderPresetsSettings(sectionEl),
-        );
+    private displayQueries(containerEl: HTMLElement) {
+        new Setting(containerEl).setName(i18n.t('settings.queries.heading')).setHeading();
 
         makeMultilineTextSetting(
             new Setting(containerEl)
@@ -1311,6 +1340,13 @@ export class SettingsTab extends PluginSettingTab {
                 }),
         );
 
+        this.addCollapsibleSection(
+            containerEl,
+            i18n.t('settings.presets.name'),
+            SettingsTab.presetsDescription() + para(link(docs.presets, i18n.t('settings.seeTheDocumentation'))),
+            (sectionEl) => this.presetsSettingsUI.renderPresetsSettings(sectionEl),
+        );
+
         new Setting(containerEl)
             .setName(i18n.t('settings.searches.enableCustomSearches.name'))
             .setDesc(
@@ -1322,20 +1358,6 @@ export class SettingsTab extends PluginSettingTab {
             .addToggle((toggle) => {
                 toggle.setValue(EnableJsInTasksQueries.getInstance().get()).onChange(async (value) => {
                     EnableJsInTasksQueries.getInstance().set(value);
-
-                    this.events.triggerReloadOpenSearchResults();
-                });
-            });
-
-        new Setting(containerEl)
-            .setName(i18n.t('settings.searchResults.taskCountLocation.name'))
-            .setDesc(i18n.t('settings.searchResults.taskCountLocation.description'))
-            .addDropdown((dropdown) => {
-                dropdown.addOption('top', i18n.t('settings.searchResults.taskCountLocation.options.top'));
-                dropdown.addOption('bottom', i18n.t('settings.searchResults.taskCountLocation.options.bottom'));
-                dropdown.setValue(getSettings().searchResults.taskCountLocation).onChange(async (value) => {
-                    updateSettings({ searchResults: { taskCountLocation: value as 'top' | 'bottom' } });
-                    await this.plugin.saveSettings();
 
                     this.events.triggerReloadOpenSearchResults();
                 });
@@ -1365,10 +1387,6 @@ export class SettingsTab extends PluginSettingTab {
                     });
                 });
         }
-    }
-
-    private displayDatesFromFileNames(containerEl: HTMLElement) {
-        new Setting(containerEl).setName(i18n.t('settings.datesFromFileNames.heading')).setHeading();
 
         let scheduledDateExtraFormat: Setting | null = null;
         let scheduledDateFolders: Setting | null = null;
@@ -1459,8 +1477,8 @@ export class SettingsTab extends PluginSettingTab {
             });
     }
 
-    private displayTaskEntry(containerEl: HTMLElement) {
-        new Setting(containerEl).setName(i18n.t('settings.taskEntry.heading')).setHeading();
+    private displayEditing(containerEl: HTMLElement) {
+        new Setting(containerEl).setName(i18n.t('settings.editing.heading')).setHeading();
         let autoSuggestMinimumMatchLength: Setting | null = null;
         let autoSuggestMaximumSuggestions: Setting | null = null;
 
@@ -1518,6 +1536,24 @@ export class SettingsTab extends PluginSettingTab {
             });
         setSettingVisibility(autoSuggestMinimumMatchLength, getSettings().autoSuggestInEditor);
         setSettingVisibility(autoSuggestMaximumSuggestions, getSettings().autoSuggestInEditor);
+    }
+
+    private displayDisplay(containerEl: HTMLElement) {
+        new Setting(containerEl).setName(i18n.t('settings.display.heading')).setHeading();
+
+        new Setting(containerEl)
+            .setName(i18n.t('settings.searchResults.taskCountLocation.name'))
+            .setDesc(i18n.t('settings.searchResults.taskCountLocation.description'))
+            .addDropdown((dropdown) => {
+                dropdown.addOption('top', i18n.t('settings.searchResults.taskCountLocation.options.top'));
+                dropdown.addOption('bottom', i18n.t('settings.searchResults.taskCountLocation.options.bottom'));
+                dropdown.setValue(getSettings().searchResults.taskCountLocation).onChange(async (value) => {
+                    updateSettings({ searchResults: { taskCountLocation: value as 'top' | 'bottom' } });
+                    await this.plugin.saveSettings();
+
+                    this.events.triggerReloadOpenSearchResults();
+                });
+            });
 
         new Setting(containerEl)
             .setName(i18n.t('settings.dialogs.accessKeys.name'))
