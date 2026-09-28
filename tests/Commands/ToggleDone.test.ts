@@ -1,6 +1,7 @@
 import moment from 'moment';
 import type { EditorPosition } from 'obsidian';
 import { getNewCursorPosition, toggleLine } from '../../src/Commands/ToggleDone';
+import { changesForLines, selectedLineNumbers } from '../../src/Commands/CreateEditorCallback';
 import { GlobalFilter } from '../../src/Config/GlobalFilter';
 import { StatusRegistry } from '../../src/Statuses/StatusRegistry';
 import { Status } from '../../src/Statuses/Status';
@@ -357,5 +358,35 @@ describe('ToggleDone', () => {
 - [2] Recurring task should start with TODO| 🔁 every day 📅 2022-09-04 ✅ 2022-09-04`,
             );
         });
+    });
+
+    it('should toggle each selected line to its next status', () => {
+        StatusRegistry.getInstance().resetToDefaultStatuses();
+        const lines = [
+            '- [ ] todo',
+            '- [x] done',
+            '',
+            '- [/] in progress 🔁 every day 📅 2022-09-04',
+            '- [-] cancelled',
+            'after',
+        ];
+        const selection = { anchor: { line: 0, ch: 3 }, head: { line: 5, ch: 0 } };
+
+        const lineNumbers = selectedLineNumbers([selection]);
+        const changes = changesForLines(lineNumbers, (line) => lines[line], lines.length, toggleLine, 'a.md');
+        for (const change of [...changes].reverse()) {
+            lines.splice(change.from.line, 1, ...change.text.split('\n'));
+        }
+
+        expect(lineNumbers).toEqual([0, 1, 2, 3, 4]);
+        expect(lines).toEqual([
+            '- [x] todo ✅ 2022-09-04',
+            '- [ ] done',
+            '',
+            '- [ ] in progress 🔁 every day 📅 2022-09-05',
+            '- [x] in progress 🔁 every day 📅 2022-09-04 ✅ 2022-09-04',
+            '- [ ] cancelled',
+            'after',
+        ]);
     });
 });
