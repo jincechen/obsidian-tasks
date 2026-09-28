@@ -176,7 +176,8 @@ Recommendations:
         await vault.modify(file, updatedFileLines.join('\n'));
     } catch (e) {
         if (e instanceof WarningWorthRetrying) {
-            if (e.message) warnAndNotice(e.message);
+            // These problems are usually temporary, so only log them, rather than interrupt the user.
+            if (e.message) console.warn(e.message);
             await retry();
             return;
         } else if (e instanceof RetryWithoutWarning) {
