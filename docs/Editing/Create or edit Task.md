@@ -22,7 +22,7 @@ Use the command 'Tasks: Create or edit task' to launch the modal.
 
 You can choose which task fields are displayed in the modal. This saves space, if there are fields that you never use.
 
-To choose the displayed fields, click on the Gear, and turn off the unwanted fields.
+To choose the displayed fields, click the **Choose fields to show** button, next to the modal's close button, and turn off the unwanted fields.
 
 By default, all fields are displayed.
 
@@ -74,16 +74,6 @@ Description field became resizable in Tasks 2.0.0.
 ### Priority
 
 See [[Priority|priority]].
-
-### Recurrence
-
-Here you can make the task recur, so that when it is marked as done, a new task is created, with newer dates.
-
-> [!Tip]
-> A task with a recurrence rule is required to also have at least one of Due, Scheduled or Starts dates.<br>
-> See [[Recurring Tasks#Recurring tasks must have at least one date|Recurring tasks must have at least one date]].
-
-See [[Recurring Tasks|recurring tasks (repetition)]].
 
 ### Dates
 
@@ -151,6 +141,16 @@ Supported abbreviations:
 | `weekend`    | `sat`         |
 | `we`         | `sat`         |
 
+### Recurrence
+
+Here you can make the task recur, so that when it is marked as done, a new task is created, with newer dates.
+
+> [!Tip]
+> A task with a recurrence rule is required to also have at least one of Due, Scheduled or Starts dates.<br>
+> See [[Recurring Tasks#Recurring tasks must have at least one date|Recurring tasks must have at least one date]].
+
+See [[Recurring Tasks|recurring tasks (repetition)]].
+
 ### Dependencies
 
 > [!released]
@@ -169,15 +169,15 @@ Use the "Dependencies" area of the modal to specify relationships between tasks,
 > ![A task which requires two tasks to be done first, and, when done, will allow one other task to be started on.](task-dependencies-party.png)
 > <span class="caption">A task which requires two tasks, 'Invite the guests' and 'Make the food' to be done first, and, when done, will allow one other task, 'Tidy up after party', to be started on.</span>
 
-#### Before this
+#### Blocked by
 
-Use the "Before this" region to find and link to any tasks that **must be finished before the task being edited can be started**.
+Use the **Blocked by** field (formerly "Before this") to find and link to any tasks that **must be finished before the task being edited can be started**.
 
 This is marked **1** and **2** in the image above.
 
-#### After this
+#### Blocks
 
-Use the "After this" region to find and link to any tasks that **can only be started after the task being edited is finished**.
+Use the **Blocks** field (formerly "After this") to find and link to any tasks that **can only be started after the task being edited is finished**.
 
 This is areas **3** and **4** in the image above.
 
@@ -185,7 +185,7 @@ This is areas **3** and **4** in the image above.
 
 Understanding the search query:
 
-- In either "Before this" or "After this", start typing any text from the description of a required task.
+- In either **Blocked by** or **Blocks**, start typing any text from the description of a required task.
 - Currently only task descriptions are searched, and not file paths.
 - You can type bits of words, in any order, and capitalisation does not matter.
 - For example, you could quickly find `Invite the guests` with `inv gu`, or `gu inv`.
