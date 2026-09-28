@@ -302,6 +302,10 @@ export function setTooltip(element: HTMLElement, text: string): void {
     element.setAttribute('test-tooltip', text);
 }
 
+export function displayTooltip(element: HTMLElement, text: string): void {
+    element.setAttribute('test-displayed-tooltip', text);
+}
+
 export function debounce<T extends unknown[], V>(
     cb: (...args: [...T]) => V,
     _timeout?: number,
@@ -430,6 +434,53 @@ export class ButtonComponent {
 
     public onClick(callback: () => void): this {
         this.buttonEl.addEventListener('click', callback);
+        return this;
+    }
+}
+
+// Minimal TextComponent and TextAreaComponent mocks, backed by real DOM elements.
+export class TextComponent {
+    public inputEl: HTMLInputElement;
+
+    constructor(containerEl: HTMLElement) {
+        this.inputEl = document.createElement('input');
+        containerEl.appendChild(this.inputEl);
+    }
+
+    public setPlaceholder(placeholder: string): this {
+        this.inputEl.placeholder = placeholder;
+        return this;
+    }
+
+    public getValue(): string {
+        return this.inputEl.value;
+    }
+
+    public setValue(value: string): this {
+        this.inputEl.value = value;
+        return this;
+    }
+}
+
+export class TextAreaComponent {
+    public inputEl: HTMLTextAreaElement;
+
+    constructor(containerEl: HTMLElement) {
+        this.inputEl = document.createElement('textarea');
+        containerEl.appendChild(this.inputEl);
+    }
+
+    public setPlaceholder(placeholder: string): this {
+        this.inputEl.placeholder = placeholder;
+        return this;
+    }
+
+    public getValue(): string {
+        return this.inputEl.value;
+    }
+
+    public setValue(value: string): this {
+        this.inputEl.value = value;
         return this;
     }
 }
