@@ -22,7 +22,7 @@
     type="text"
     class:tasks-modal-error={!isRecurrenceValid}
     class="tasks-modal-date-input"
-    placeholder="Try 'every day when done'"
+    placeholder="e.g. every week"
     {accesskey}
 />
-<code class="tasks-modal-parsed-date">{recurrenceSymbol} {@html parsedRecurrence}</code>
+<span class="tasks-modal-parsed-date tasks-modal-parsed-message">{recurrenceSymbol} {@html parsedRecurrence}</span>

@@ -7,53 +7,53 @@
     <section class="tasks-modal-priority-section">
       <label for="priority-none" id="priority">Priority</label>
       <div class="task-modal-priority-option-container">
-        <input type="radio" id="priority-lowest" value="lowest" />
-        <label for="priority-lowest">
-          <span>Lowest</span>
-          <span>⏬</span>
-        </label>
-      </div>
-      <div class="task-modal-priority-option-container">
-        <input type="radio" id="priority-low" value="low" />
-        <label for="priority-low">
-          <span>Low</span>
-          <span>🔽</span>
-        </label>
-      </div>
-      <div class="task-modal-priority-option-container">
-        <input type="radio" id="priority-none" value="none" />
-        <label for="priority-none"><span>Normal</span></label>
-      </div>
-      <div class="task-modal-priority-option-container">
-        <input type="radio" id="priority-medium" value="medium" />
-        <label for="priority-medium">
-          <span>Medium</span>
-          <span>🔼</span>
+        <input type="radio" id="priority-highest" value="highest" />
+        <label for="priority-highest">
+          <span class="tasks-priority-label">Highest</span>
+          <span class="tasks-priority-emoji">🔺</span>
         </label>
       </div>
       <div class="task-modal-priority-option-container">
         <input type="radio" id="priority-high" value="high" />
         <label for="priority-high">
-          <span>High</span>
-          <span>⏫</span>
+          <span class="tasks-priority-label">High</span>
+          <span class="tasks-priority-emoji">⏫</span>
         </label>
       </div>
       <div class="task-modal-priority-option-container">
-        <input type="radio" id="priority-highest" value="highest" />
-        <label for="priority-highest">
-          <span>Highest</span>
-          <span>🔺</span>
+        <input type="radio" id="priority-medium" value="medium" />
+        <label for="priority-medium">
+          <span class="tasks-priority-label">Medium</span>
+          <span class="tasks-priority-emoji">🔼</span>
+        </label>
+      </div>
+      <div class="task-modal-priority-option-container">
+        <input type="radio" id="priority-none" value="none" />
+        <label for="priority-none"><span class="tasks-priority-label">Normal</span></label>
+      </div>
+      <div class="task-modal-priority-option-container">
+        <input type="radio" id="priority-low" value="low" />
+        <label for="priority-low">
+          <span class="tasks-priority-label">Low</span>
+          <span class="tasks-priority-emoji">🔽</span>
+        </label>
+      </div>
+      <div class="task-modal-priority-option-container">
+        <input type="radio" id="priority-lowest" value="lowest" />
+        <label for="priority-lowest">
+          <span class="tasks-priority-label">Lowest</span>
+          <span class="tasks-priority-emoji">⏬</span>
         </label>
       </div>
     </section>
     <hr id="line-after-priority" />
     <section class="tasks-modal-dates-section">
       <label for="recurrence">Recurs</label>
-      <input id="recurrence" type="text" class="tasks-modal-date-input" placeholder="Try 'every day when done'" />
-      <code class="tasks-modal-parsed-date">
+      <input id="recurrence" type="text" class="tasks-modal-date-input" placeholder="e.g. every week" />
+      <span class="tasks-modal-parsed-date tasks-modal-parsed-message">
         🔁
         <i>not recurring</i>
-      </code>
+      </span>
       <label for="due">Due</label>
       <input id="due" type="text" class="tasks-modal-date-input" placeholder="Try 'Mon' or 'tm' then space" />
       <div class="tasks-modal-parsed-date">
@@ -66,10 +66,10 @@
         type="text"
         class="tasks-modal-date-input tasks-modal-error"
         placeholder="Try 'Mon' or 'tm' then space" />
-      <code class="tasks-modal-parsed-date">
+      <span class="tasks-modal-parsed-date tasks-modal-parsed-message">
         ⏳
         <i>invalid scheduled date</i>
-      </code>
+      </span>
       <label for="start">Start</label>
       <input id="start" type="text" class="tasks-modal-date-input" placeholder="Try 'Mon' or 'tm' then space" />
       <div class="tasks-modal-parsed-date">
