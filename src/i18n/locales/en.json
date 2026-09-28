@@ -183,6 +183,10 @@
         "description": "Turn off if the keyboard shortcuts in Tasks dialogs clash with other shortcuts or assistive technology.",
         "name": "Dialog keyboard shortcuts"
       },
+      "editorIcons": {
+        "description": "Show task properties compactly in Live Preview, in the chosen property style. Put the cursor on a property to see and edit its text.",
+        "name": "Render properties in Live Preview"
+      },
       "heading": "Display",
       "signifiers": {
         "description": "How task properties such as dates and priority are shown in results, dialogs and menus. Your notes are not changed.",

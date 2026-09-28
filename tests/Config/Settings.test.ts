@@ -97,6 +97,7 @@ describe('resetSettings behaviour', () => {
 
     it('should default to emojis, and keep a saved choice of icons', () => {
         expect(getSettings().signifierDisplay).toEqual('emoji');
+        expect(getSettings().showIconsInEditor).toEqual(true);
 
         updateSettings({ signifierDisplay: 'icons' });
         expect(getSettings().signifierDisplay).toEqual('icons');
