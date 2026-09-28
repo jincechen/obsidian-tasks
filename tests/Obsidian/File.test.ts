@@ -1,7 +1,10 @@
 import { readFileSync } from 'fs';
 import { verify } from 'approvals/lib/Providers/Jest/JestApprovals';
-import { findLineNumberOfTaskToToggle } from '../../src/Obsidian/File';
+import * as obsidian from 'obsidian';
+import type { MetadataCache, Vault, Workspace } from 'obsidian';
+import { findLineNumberOfTaskToToggle, initializeFile, replaceTaskWithTasks } from '../../src/Obsidian/File';
 import type { MockTogglingDataForTesting } from '../../src/lib/MockDataCreator';
+import { TaskBuilder } from '../TestingTools/TaskBuilder';
 
 /**
  * A function to help test File.findLineNumberOfTaskToToggle()
@@ -105,4 +108,31 @@ describe('replaceTaskWithTasks', () => {
     });
 
     // --------------------------------------------------------------------------------
+});
+
+describe('replaceTaskWithTasks - notices', () => {
+    beforeEach(() => {
+        jest.useFakeTimers();
+        jest.spyOn(console, 'warn').mockImplementation(() => {});
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        jest.useRealTimers();
+        jest.restoreAllMocks();
+    });
+
+    it.failing('should not show a notice for each retry, only when giving up', async () => {
+        const noticeSpy = jest.spyOn(obsidian, 'Notice').mockImplementation(() => ({}) as obsidian.Notice);
+        // The file is never found, so every attempt is retried, until Tasks gives up.
+        const vault = { getFileByPath: () => null } as unknown as Vault;
+        initializeFile({ metadataCache: {} as MetadataCache, vault, workspace: {} as Workspace });
+        const task = new TaskBuilder().path('some file.md').build();
+
+        await replaceTaskWithTasks({ originalTask: task, newTasks: task });
+        await jest.runAllTimersAsync();
+
+        const messages = noticeSpy.mock.calls.map((call) => call[0]);
+        expect(messages).toEqual([expect.stringContaining('Could not find the correct task line to update')]);
+    });
 });
