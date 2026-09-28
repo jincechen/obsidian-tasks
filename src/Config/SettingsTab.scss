@@ -108,6 +108,18 @@
     gap: var(--size-2-3);
 }
 
+.tasks-status-drag-handle {
+    cursor: grab;
+}
+
+.tasks-status-row.tasks-drop-above {
+    box-shadow: inset 0 2px 0 var(--interactive-accent);
+}
+
+.tasks-status-row.tasks-drop-below {
+    box-shadow: inset 0 -2px 0 var(--interactive-accent);
+}
+
 .tasks-status-label {
     color: var(--text-faint);
     font-size: var(--font-ui-small);

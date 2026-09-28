@@ -105,6 +105,20 @@ export class StatusSettings {
     }
 
     /**
+     * Move the status at `fromIndex` to `toIndex`.
+     * @returns false if either index is out of range, or they are the same.
+     */
+    public static moveStatus(statuses: StatusConfiguration[], fromIndex: number, toIndex: number) {
+        const inRange = (i: number) => i >= 0 && i < statuses.length;
+        if (fromIndex === toIndex || !inRange(fromIndex) || !inRange(toIndex)) {
+            return false;
+        }
+        const [status] = statuses.splice(fromIndex, 1);
+        statuses.splice(toIndex, 0, status);
+        return true;
+    }
+
+    /**
      * Delete all custom statuses.
      *
      * This is static so that it can be called from modal onClick() call-backs.

@@ -18,6 +18,7 @@ _In recent [Tasks releases](https://github.com/obsidian-tasks-group/obsidian-tas
   - In Live Preview, click a date's emoji or icon to pick a date, as in search results.
   - Remove the copy button from the search results toolbar.
   - 'Toggle statuses' and 'Set status to' commands work on all selected lines.
+  - Reorder custom statuses by dragging them in the settings.
   - Fix query results sometimes being shown twice, or not updating, while tasks are edited.
   - **Documentation**
     - Add [[How to read the user guide off-line]].
