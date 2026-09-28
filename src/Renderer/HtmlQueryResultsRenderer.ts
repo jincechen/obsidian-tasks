@@ -1,6 +1,6 @@
 import type { App, Component, TFile } from 'obsidian';
 import { getSettings } from '../Config/Settings';
-import { postponeButtonTitle, shouldShowPostponeButton } from '../DateTime/Postponer';
+import { getDateFieldToPostpone, postponeButtonTitle, shouldShowPostponeButton } from '../DateTime/Postponer';
 import type { IQuery } from '../IQuery';
 import { QueryLayout } from '../Layout/QueryLayout';
 import { TaskLayout } from '../Layout/TaskLayout';
@@ -188,12 +188,13 @@ export class HtmlQueryResultsRenderer extends QueryResultsRendererBase {
             this.addBacklinks(extrasSpan, task, shortMode, isFilenameUnique);
         }
 
-        if (!this.query.queryLayoutOptions.hideEditButton) {
-            this.addEditButton(extrasSpan, task);
+        if (!this.query.queryLayoutOptions.hidePostponeButton && shouldShowPostponeButton(task)) {
+            const postponeButton = this.addPostponeButton(extrasSpan, task, shortMode);
+            HtmlQueryResultsRenderer.placeNextToPostponedDate(listItem, task, postponeButton);
         }
 
-        if (!this.query.queryLayoutOptions.hidePostponeButton && shouldShowPostponeButton(task)) {
-            this.addPostponeButton(extrasSpan, task, shortMode);
+        if (!this.query.queryLayoutOptions.hideEditButton) {
+            this.addEditButton(extrasSpan, task);
         }
 
         this.currentULElement().appendChild(listItem);
@@ -317,6 +318,16 @@ export class HtmlQueryResultsRenderer extends QueryResultsRendererBase {
         }
     }
 
+    /**
+     * Move the postpone button next to the date that it postpones, if that date is shown.
+     */
+    private static placeNextToPostponedDate(listItem: HTMLElement, task: Task, button: HTMLElement) {
+        const dateClasses = { dueDate: 'task-due', scheduledDate: 'task-scheduled', startDate: 'task-start' };
+        const dateField = getDateFieldToPostpone(task);
+        const dateSpan = dateField && listItem.querySelector(`:scope > .tasks-list-text > .${dateClasses[dateField]}`);
+        dateSpan?.after(button);
+    }
+
     private addPostponeButton(listItem: HTMLElement, task: Task, shortMode: boolean) {
         const amount = 1;
         const timeUnit = 'day';
@@ -340,6 +351,7 @@ export class HtmlQueryResultsRenderer extends QueryResultsRendererBase {
         button.addEventListener('contextmenu', async (ev: MouseEvent) => {
             showMenu(ev, new PostponeMenu(button, task));
         });
+        return button;
     }
 
     private addTaskCount(queryResult: QueryResult) {
