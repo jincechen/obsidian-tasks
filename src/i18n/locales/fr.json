@@ -14,6 +14,7 @@
   },
   "modals": {
     "customStatusModal": {
+      "duplicateSymbol": "",
       "editAvailableAsCommand": {
         "description": "Activer cette option rendra ce statut disponible comme commande pour que vous puissiez y assigner un raccourci clavier à utiliser pour activer le statut.",
         "name": "Disponible comme commande"
@@ -49,9 +50,9 @@
         "required": ""
       },
       "query": {
-        "description": "",
         "name": "",
-        "placeholder": ""
+        "placeholder": "",
+        "required": ""
       },
       "title": ""
     }
@@ -223,7 +224,12 @@
       "buttons": {
         "addNewPreset": "Ajouter un préréglage"
       },
+      "deleteConfirm": {
+        "message": "",
+        "title": ""
+      },
       "description": "",
+      "dragToReorder": "",
       "emptyState": "",
       "name": "Préréglages"
     },
@@ -306,9 +312,12 @@
       },
       "tools": {
         "addUnknown": {
+          "added_one": "",
+          "added_other": "",
           "button": "",
           "description": "",
-          "name": ""
+          "name": "",
+          "noneFound": ""
         },
         "heading": "",
         "importFromTheme": {
@@ -323,7 +332,11 @@
           "noteTitle": ""
         },
         "reset": {
-          "button": "",
+          "confirm": {
+            "button": "",
+            "message": "",
+            "title": ""
+          },
           "description": "",
           "name": ""
         }

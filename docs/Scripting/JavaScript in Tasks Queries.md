@@ -42,6 +42,7 @@ To enable JavaScript in Tasks queries:
 2. Go to **Tasks**.
 3. Find **Queries**.
 4. Enable **Allow JavaScript in queries**.
+5. Turn on **I understand the risks**, and select **Allow**.
 
 Only enable this if you trust the current and future contents of this vault, including files you may later download, copy, or sync from other people.
 

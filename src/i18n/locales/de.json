@@ -14,6 +14,7 @@
   },
   "modals": {
     "customStatusModal": {
+      "duplicateSymbol": "",
       "editAvailableAsCommand": {
         "description": "WennBei Aktivierung können Sie diesen Status als Befehl nutzen und ihm eine Tastenkombination zuordnen, um den Status umzuschalten.",
         "name": "Verfügbar als Befehl"
@@ -49,9 +50,9 @@
         "required": ""
       },
       "query": {
-        "description": "",
         "name": "",
-        "placeholder": ""
+        "placeholder": "",
+        "required": ""
       },
       "title": ""
     }
@@ -223,7 +224,12 @@
       "buttons": {
         "addNewPreset": ""
       },
+      "deleteConfirm": {
+        "message": "",
+        "title": ""
+      },
       "description": "",
+      "dragToReorder": "",
       "emptyState": "",
       "name": ""
     },
@@ -306,9 +312,12 @@
       },
       "tools": {
         "addUnknown": {
+          "added_one": "",
+          "added_other": "",
           "button": "",
           "description": "",
-          "name": ""
+          "name": "",
+          "noneFound": ""
         },
         "heading": "",
         "importFromTheme": {
@@ -323,7 +332,11 @@
           "noteTitle": ""
         },
         "reset": {
-          "button": "",
+          "confirm": {
+            "button": "",
+            "message": "",
+            "title": ""
+          },
           "description": "",
           "name": ""
         }

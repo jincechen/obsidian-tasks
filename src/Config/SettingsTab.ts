@@ -1,7 +1,5 @@
 import {
     ButtonComponent,
-    type ConfirmationButton,
-    ConfirmationModal,
     Menu,
     Modal,
     Notice,
@@ -34,6 +32,7 @@ import { GlobalQueryModal } from './GlobalQueryModal';
 import { PresetsSettingsUI } from './PresetsSettingsUI';
 import { EnableJsInTasksQueries } from './EnableJsInTasksQueries';
 import { humanizeStatusType } from './StatusTypeLabels';
+import { ConfirmModal } from './ConfirmModal';
 
 /**
  * A snapshot of the settings when the plugin loaded.
@@ -475,66 +474,18 @@ export class SettingsTab extends PluginSettingTab {
     }
 
     /**
-     * Show a {@link ConfirmationModal} explaining the risks of enabling custom
-     * searches (which let queries execute arbitrary JavaScript). The user must
-     * tick a checkbox before the Enable button is available. Calls back with
-     * `true` if the user enabled, `false` if they cancelled or closed.
+     * Ask the user to acknowledge the risks of enabling custom searches,
+     * which let queries execute arbitrary JavaScript.
      */
     private confirmEnableCustomSearches(callback: (confirmed: boolean) => void): void {
-        // The version check is always true in practice: this method is only
-        // called from the declarative settings path, which requires 1.13.0+.
-        if (requireApiVersion('1.13.0')) {
-            const modal = new ConfirmationModal(this.app);
-            modal.setTitle(i18n.t('settings.queries.javaScript.name'));
-
-            modal.contentEl.createEl('p', {
-                cls: 'setting-item-description',
-                text: i18n.t('settings.queries.javaScript.confirm.risk'),
-            });
-            const warningEl = modal.contentEl.createEl('p', { cls: 'setting-item-description mod-warning' });
-            warningEl.createEl('b', {
-                text: i18n.t('settings.queries.javaScript.confirm.trust'),
-            });
-
-            let acknowledged = false;
-            let enableBtn: ConfirmationButton | null = null;
-            modal.addCheckbox(i18n.t('settings.queries.javaScript.confirm.acknowledge'), (value) => {
-                acknowledged = value;
-                if (enableBtn) {
-                    enableBtn.setDisabled(!acknowledged);
-                }
-            });
-
-            let decided = false;
-            // Cancel first: on desktop, DOM order decides and the primary action
-            // belongs on the right. Mobile reorders Cancel with CSS regardless.
-            modal.addCancelButton();
-            modal.addButton((btn) => {
-                enableBtn = btn;
-                btn.setButtonText(i18n.t('settings.queries.javaScript.confirm.allow'))
-                    .setCta()
-                    .setDisabled(true)
-                    .onClick(() => {
-                        if (!acknowledged) {
-                            return true; // keep the modal open
-                        }
-                        decided = true;
-                        callback(true);
-                        return undefined;
-                    });
-            });
-
-            const originalOnClose = modal.onClose.bind(modal);
-            modal.onClose = () => {
-                originalOnClose();
-                if (!decided) {
-                    callback(false);
-                }
-            };
-            modal.open();
-        } else {
-            callback(false);
-        }
+        new ConfirmModal(this.app, {
+            title: i18n.t('settings.queries.javaScript.name'),
+            paragraphs: [i18n.t('settings.queries.javaScript.confirm.risk')],
+            warning: i18n.t('settings.queries.javaScript.confirm.trust'),
+            acknowledgement: i18n.t('settings.queries.javaScript.confirm.acknowledge'),
+            confirmText: i18n.t('settings.queries.javaScript.confirm.allow'),
+            onDecision: callback,
+        }).open();
     }
 
     // ---- Presets (sub-page) ----------------------------------------------
@@ -632,19 +583,7 @@ export class SettingsTab extends PluginSettingTab {
                     },
                     addItem: {
                         name: i18n.t('settings.statuses.buttons.addStatus'),
-                        action: () => {
-                            const draft = new StatusConfiguration('', '', '', false, StatusType.TODO);
-                            const modal = new CustomStatusModal(this.plugin, draft, false);
-                            modal.onClose = () => {
-                                if (!modal.saved) {
-                                    return;
-                                }
-                                const { statusSettings: current } = getSettings();
-                                StatusSettings.addStatus(current.customStatuses, modal.statusConfiguration());
-                                updateAndSaveStatusSettings(current, this);
-                            };
-                            modal.open();
-                        },
+                        action: () => this.openAddStatusModal(),
                     },
                     items: statusSettings.customStatuses.map((status) => statusRow(status, false)),
                 },
@@ -681,9 +620,9 @@ export class SettingsTab extends PluginSettingTab {
                             render: (setting) => {
                                 setting.addButton((button) => {
                                     button
-                                        .setButtonText(i18n.t('settings.statuses.tools.reset.button'))
+                                        .setButtonText(i18n.t('settings.statuses.tools.reset.confirm.button'))
                                         .setWarning()
-                                        .onClick(() => this.resetCustomStatuses());
+                                        .onClick(() => this.confirmResetCustomStatuses());
                                 });
                             },
                         },
@@ -691,6 +630,52 @@ export class SettingsTab extends PluginSettingTab {
                 },
             ],
         };
+    }
+
+    private openAddStatusModal(): void {
+        const draft = new StatusConfiguration('', '', '', false, StatusType.TODO);
+        const modal = new CustomStatusModal(this.plugin, draft, false);
+        modal.onClose = () => {
+            if (!modal.saved) {
+                return;
+            }
+            const { statusSettings } = getSettings();
+            StatusSettings.addStatus(statusSettings.customStatuses, modal.statusConfiguration());
+            updateAndSaveStatusSettings(statusSettings, this);
+        };
+        modal.open();
+    }
+
+    private addUnknownStatuses(): void {
+        const tasks = this.plugin.getTasks();
+        const unknownStatuses = StatusRegistry.getInstance().findUnknownStatuses(tasks.map((task) => task.status));
+        if (unknownStatuses.length === 0) {
+            new Notice(i18n.t('settings.statuses.tools.addUnknown.noneFound'));
+            return;
+        }
+        const { statusSettings } = getSettings();
+        unknownStatuses.forEach((s) => {
+            StatusSettings.addStatus(statusSettings.customStatuses, s);
+        });
+        updateAndSaveStatusSettings(statusSettings, this);
+        new Notice(i18n.t('settings.statuses.tools.addUnknown.added', { count: unknownStatuses.length }));
+    }
+
+    private confirmResetCustomStatuses(): void {
+        new ConfirmModal(this.app, {
+            title: i18n.t('settings.statuses.tools.reset.confirm.title'),
+            paragraphs: [i18n.t('settings.statuses.tools.reset.confirm.message')],
+            confirmText: i18n.t('settings.statuses.tools.reset.confirm.button'),
+            destructive: true,
+            onDecision: (confirmed) => {
+                if (!confirmed) {
+                    return;
+                }
+                const { statusSettings } = getSettings();
+                StatusSettings.resetAllCustomStatuses(statusSettings);
+                updateAndSaveStatusSettings(statusSettings, this);
+            },
+        }).open();
     }
 
     /**
@@ -701,25 +686,6 @@ export class SettingsTab extends PluginSettingTab {
         return (
             JSON.stringify(getSettings().statusSettings) !== JSON.stringify(getSettingsAtPluginLoad().statusSettings)
         );
-    }
-
-    private addUnknownStatuses(): void {
-        const { statusSettings: current } = getSettings();
-        const tasks = this.plugin.getTasks();
-        const unknownStatuses = StatusRegistry.getInstance().findUnknownStatuses(tasks.map((task) => task.status));
-        if (unknownStatuses.length === 0) {
-            return;
-        }
-        unknownStatuses.forEach((s) => {
-            StatusSettings.addStatus(current.customStatuses, s);
-        });
-        updateAndSaveStatusSettings(current, this);
-    }
-
-    private resetCustomStatuses(): void {
-        const { statusSettings: current } = getSettings();
-        StatusSettings.resetAllCustomStatuses(current);
-        updateAndSaveStatusSettings(current, this);
     }
 
     private reloadNotice: Notice | null = null;
@@ -1205,13 +1171,7 @@ export class SettingsTab extends PluginSettingTab {
                     button
                         .setButtonText(i18n.t('settings.statuses.buttons.addStatus'))
                         .setCta()
-                        .onClick(() => {
-                            StatusSettings.addStatus(
-                                statusSettings.customStatuses,
-                                new StatusConfiguration('', '', '', false, StatusType.TODO),
-                            );
-                            updateAndSaveStatusSettings(statusSettings, this);
-                        });
+                        .onClick(() => this.openAddStatusModal());
                 });
                 addStatus.infoEl.remove();
             },
@@ -1250,9 +1210,9 @@ export class SettingsTab extends PluginSettingTab {
                 .setDesc(i18n.t('settings.statuses.tools.reset.description'))
                 .addButton((button) => {
                     button
-                        .setButtonText(i18n.t('settings.statuses.tools.reset.button'))
+                        .setButtonText(i18n.t('settings.statuses.tools.reset.confirm.button'))
                         .setWarning()
-                        .onClick(() => this.resetCustomStatuses());
+                        .onClick(() => this.confirmResetCustomStatuses());
                 });
         });
     }
@@ -1289,21 +1249,15 @@ export class SettingsTab extends PluginSettingTab {
             (sectionEl) => this.presetsSettingsUI.renderPresetsSettings(sectionEl),
         );
 
-        new Setting(containerEl)
+        const enableCustomSearchesSetting = new Setting(containerEl)
             .setName(i18n.t('settings.queries.javaScript.name'))
             .setDesc(
                 SettingsTab.legacyDescription(
                     para(SettingsTab.customSearchesDescription()) + SettingsTab.customSearchesRisks(),
                     { docsUrl: docs.customSearches },
                 ),
-            )
-            .addToggle((toggle) => {
-                toggle.setValue(EnableJsInTasksQueries.getInstance().get()).onChange(async (value) => {
-                    EnableJsInTasksQueries.getInstance().set(value);
-
-                    this.events.triggerReloadOpenSearchResults();
-                });
-            });
+            );
+        this.renderEnableCustomSearchesToggle(enableCustomSearchesSetting);
     }
 
     private displayDates(containerEl: HTMLElement) {

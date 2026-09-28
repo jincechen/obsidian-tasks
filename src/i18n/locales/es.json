@@ -14,6 +14,7 @@
   },
   "modals": {
     "customStatusModal": {
+      "duplicateSymbol": "",
       "editAvailableAsCommand": {
         "description": "Si se activa, este estado estará disponible como comando para que puedas asignarle un atajo de teclado y alternar el estado con él.",
         "name": "Disponible como comando"
@@ -49,9 +50,9 @@
         "required": ""
       },
       "query": {
-        "description": "",
         "name": "",
-        "placeholder": ""
+        "placeholder": "",
+        "required": ""
       },
       "title": ""
     }
@@ -223,7 +224,12 @@
       "buttons": {
         "addNewPreset": "Añadir nuevo preajuste"
       },
+      "deleteConfirm": {
+        "message": "",
+        "title": ""
+      },
       "description": "",
+      "dragToReorder": "",
       "emptyState": "",
       "name": "Preajustes"
     },
@@ -306,9 +312,12 @@
       },
       "tools": {
         "addUnknown": {
+          "added_one": "",
+          "added_other": "",
           "button": "",
           "description": "",
-          "name": ""
+          "name": "",
+          "noneFound": ""
         },
         "heading": "",
         "importFromTheme": {
@@ -323,7 +332,11 @@
           "noteTitle": ""
         },
         "reset": {
-          "button": "",
+          "confirm": {
+            "button": "",
+            "message": "",
+            "title": ""
+          },
           "description": "",
           "name": ""
         }

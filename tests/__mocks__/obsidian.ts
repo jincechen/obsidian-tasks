@@ -81,11 +81,19 @@ export class Menu {
     }
 }
 
+// Records the messages of Notices shown by tests.
+export const noticeMessages: Array<string | DocumentFragment> = [];
+
 export class Notice {
+    public containerEl = document.createElement('div');
+    public messageEl = document.createElement('div');
+
     /**
      * @public
      */
-    constructor(_message: string | DocumentFragment, _timeout?: number) {}
+    constructor(message: string | DocumentFragment, _timeout?: number) {
+        noticeMessages.push(message);
+    }
 
     /**
      * Change the message of this notice.
@@ -294,6 +302,10 @@ export function setTooltip(element: HTMLElement, text: string): void {
     element.setAttribute('test-tooltip', text);
 }
 
+export function displayTooltip(element: HTMLElement, text: string): void {
+    element.setAttribute('test-displayed-tooltip', text);
+}
+
 export function debounce<T extends unknown[], V>(
     cb: (...args: [...T]) => V,
     _timeout?: number,
@@ -317,16 +329,19 @@ export const lastModalState: {
     title: string | null;
     html: string | null;
     opened: boolean;
+    modal: Modal | null;
 } = {
     title: null,
     html: null,
     opened: false,
+    modal: null,
 };
 
 export function resetLastModalState(): void {
     lastModalState.title = null;
     lastModalState.html = null;
     lastModalState.opened = false;
+    lastModalState.modal = null;
 }
 
 // Minimal Modal mock for tests that inspect modal text produced by UI callbacks.
@@ -350,6 +365,7 @@ export class Modal {
     public open(): void {
         lastModalState.opened = true;
         lastModalState.html = this.contentEl.innerHTML;
+        lastModalState.modal = this;
     }
 
     public close(): void {
@@ -403,9 +419,75 @@ export class ButtonComponent {
         return this;
     }
 
-    public onClick(_callback: () => void): this {
+    public setCta(): this {
+        return this.setClass('mod-cta');
+    }
+
+    public setWarning(): this {
+        return this.setClass('mod-warning');
+    }
+
+    public setDisabled(disabled: boolean): this {
+        this.buttonEl.disabled = disabled;
         return this;
     }
+
+    public onClick(callback: () => void): this {
+        this.buttonEl.addEventListener('click', callback);
+        return this;
+    }
+}
+
+// Minimal TextComponent and TextAreaComponent mocks, backed by real DOM elements.
+export class TextComponent {
+    public inputEl: HTMLInputElement;
+
+    constructor(containerEl: HTMLElement) {
+        this.inputEl = document.createElement('input');
+        containerEl.appendChild(this.inputEl);
+    }
+
+    public setPlaceholder(placeholder: string): this {
+        this.inputEl.placeholder = placeholder;
+        return this;
+    }
+
+    public getValue(): string {
+        return this.inputEl.value;
+    }
+
+    public setValue(value: string): this {
+        this.inputEl.value = value;
+        return this;
+    }
+}
+
+export class TextAreaComponent {
+    public inputEl: HTMLTextAreaElement;
+
+    constructor(containerEl: HTMLElement) {
+        this.inputEl = document.createElement('textarea');
+        containerEl.appendChild(this.inputEl);
+    }
+
+    public setPlaceholder(placeholder: string): this {
+        this.inputEl.placeholder = placeholder;
+        return this;
+    }
+
+    public getValue(): string {
+        return this.inputEl.value;
+    }
+
+    public setValue(value: string): this {
+        this.inputEl.value = value;
+        return this;
+    }
+}
+
+// Keeps a callback on a recorded setting or control, hidden from approval output.
+function storeCallback(target: Record<string, unknown>, name: string, callback: unknown): void {
+    Object.defineProperty(target, name, { value: callback, enumerable: false, configurable: true });
 }
 
 export const recordedLegacySettings: Array<Record<string, unknown>> = [];
@@ -463,8 +545,18 @@ export class Setting {
         return this;
     }
 
-    public addToggle(_callback: (toggle: unknown) => void): this {
+    public addToggle(callback: (toggle: unknown) => void): this {
         (this.record.controls as string[]).push('toggle');
+
+        const fakeToggle = {
+            setValue: (_value: boolean) => fakeToggle,
+            onChange: (onChange: (value: boolean) => unknown) => {
+                storeCallback(this.record, 'onToggleChange', onChange);
+                return fakeToggle;
+            },
+        };
+
+        callback(fakeToggle);
         return this;
     }
 
@@ -490,8 +582,9 @@ export class Setting {
                 control.text = text;
                 return fakeButton;
             },
-            onClick: (_callback: () => void) => {
+            onClick: (callback: () => void) => {
                 control.onClick = '[Function]';
+                storeCallback(control, 'callback', callback);
                 return fakeButton;
             },
             setCta: () => {
@@ -527,8 +620,9 @@ export class Setting {
                 control.tooltip = tooltip;
                 return fakeExtraButton;
             },
-            onClick: (_callback: () => void) => {
+            onClick: (callback: () => void) => {
                 control.onClick = '[Function]';
+                storeCallback(control, 'callback', callback);
                 return fakeExtraButton;
             },
         };

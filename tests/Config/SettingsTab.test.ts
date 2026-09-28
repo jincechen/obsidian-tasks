@@ -1,12 +1,21 @@
 import { verifyAsJson } from 'approvals/lib/Providers/Jest/JestApprovals';
+import { Setting } from 'obsidian';
 import {
     lastModalState,
+    noticeMessages,
     recordedLegacySettings,
     resetLastModalState,
     resetRecordedLegacySettings,
 } from '../__mocks__/obsidian';
 
 import { SettingsTab } from '../../src/Config/SettingsTab';
+import { getSettings, resetSettings, updateSettings } from '../../src/Config/Settings';
+import { EnableJsInTasksQueries } from '../../src/Config/EnableJsInTasksQueries';
+import { StatusSettings } from '../../src/Config/StatusSettings';
+import { Status } from '../../src/Statuses/Status';
+import { StatusConfiguration, StatusType } from '../../src/Statuses/StatusConfiguration';
+import { StatusRegistry } from '../../src/Statuses/StatusRegistry';
+import { i18n } from '../../src/i18n/i18n';
 
 // Convert the declarative settings tree into approval-friendly JSON.
 // This preserves visible text/HTML and replaces callbacks with stable markers.
@@ -150,5 +159,178 @@ describe('SettingsTab pre-1.13', () => {
         settingsTab.display();
 
         verifyAsJson(serializeForApproval(recordedLegacySettings));
+    });
+});
+
+describe('SettingsTab adding statuses', () => {
+    const settingsTab = new SettingsTab({ plugin, events });
+
+    beforeEach(() => {
+        resetSettings();
+        resetRecordedLegacySettings();
+        resetLastModalState();
+        noticeMessages.length = 0;
+    });
+
+    afterEach(() => {
+        resetSettings();
+        StatusRegistry.getInstance().resetToDefaultStatuses();
+    });
+
+    function customSymbols() {
+        return getSettings().statusSettings.customStatuses.map((status) => status.symbol);
+    }
+
+    function clickLegacyButton(text: string) {
+        const controls = recordedLegacySettings.flatMap((record) => record.controls as Array<Record<string, unknown>>);
+        (controls.find((control) => control.text === text)!.callback as () => void)();
+    }
+
+    function findDefinition(items: unknown[], name: string): Record<string, unknown> | undefined {
+        for (const item of items as Array<Record<string, unknown>>) {
+            const found = item.name === name ? item : findDefinition((item.items as unknown[]) ?? [], name);
+            if (found) {
+                return found;
+            }
+        }
+        return undefined;
+    }
+
+    const addAllUnknownName = () => i18n.t('settings.statuses.tools.addUnknown.name');
+    const addAllUnknownButton = () => i18n.t('settings.statuses.tools.addUnknown.button');
+
+    it('pre-1.13: add new task status opens the status editor', () => {
+        const symbolsBefore = customSymbols();
+        settingsTab.display();
+
+        clickLegacyButton(i18n.t('settings.statuses.buttons.addStatus'));
+
+        expect(customSymbols()).toEqual(symbolsBefore);
+        expect(lastModalState.opened).toBe(true);
+    });
+
+    it('pre-1.13: add all unknown statuses says when none are found', () => {
+        settingsTab.display();
+
+        clickLegacyButton(addAllUnknownButton());
+
+        expect(noticeMessages).toEqual([i18n.t('settings.statuses.tools.addUnknown.noneFound')]);
+    });
+
+    it('post-1.13: add all unknown statuses says how many were added', () => {
+        const unknownStatus = new Status(new StatusConfiguration('?', 'Question', 'x', false, StatusType.TODO));
+        plugin.getTasks.mockReturnValueOnce([{ status: unknownStatus }]);
+
+        const addAllUnknown = findDefinition(settingsTab.getSettingDefinitions(), addAllUnknownName());
+        (addAllUnknown!.action as () => void)();
+
+        expect(customSymbols()).toContain('?');
+        expect(noticeMessages).toContain(i18n.t('settings.statuses.tools.addUnknown.added', { count: 1 }));
+    });
+});
+
+describe('SettingsTab destructive actions', () => {
+    const settingsTab = new SettingsTab({ plugin, events });
+
+    beforeEach(() => {
+        resetSettings();
+        const statusSettings = new StatusSettings();
+        StatusSettings.deleteAllCustomStatuses(statusSettings);
+        StatusSettings.addStatus(
+            statusSettings.customStatuses,
+            new StatusConfiguration('!', 'Important', 'x', false, StatusType.TODO),
+        );
+        updateSettings({ statusSettings, presets: { 'my preset': 'not done' } });
+        EnableJsInTasksQueries.getInstance().set(false);
+        resetRecordedLegacySettings();
+        resetLastModalState();
+    });
+
+    afterEach(() => {
+        resetSettings();
+        StatusRegistry.getInstance().resetToDefaultStatuses();
+        EnableJsInTasksQueries.getInstance().set(true);
+    });
+
+    const resetName = () => i18n.t('settings.statuses.tools.reset.name');
+    const resetButtonName = () => i18n.t('settings.statuses.tools.reset.confirm.button');
+
+    function customSymbols() {
+        return getSettings().statusSettings.customStatuses.map((status) => status.symbol);
+    }
+
+    function findLegacyButton(text: string) {
+        const controls = recordedLegacySettings.flatMap((record) => record.controls as Array<Record<string, unknown>>);
+        return controls.find((control) => control.text === text)!;
+    }
+
+    function findDefinition(items: unknown[], name: string): Record<string, unknown> | undefined {
+        for (const item of items as Array<Record<string, unknown>>) {
+            const found = item.name === name ? item : findDefinition((item.items as unknown[]) ?? [], name);
+            if (found) {
+                return found;
+            }
+        }
+        return undefined;
+    }
+
+    function clickConfirmButton() {
+        const buttons = lastModalState.modal!.contentEl.querySelectorAll('.modal-button-container button');
+        (buttons[buttons.length - 1] as HTMLButtonElement).click();
+    }
+
+    const defaultCustomSymbols = new StatusSettings().customStatuses.map((status) => status.symbol);
+
+    it('pre-1.13: reset custom statuses asks for confirmation first', () => {
+        settingsTab.display();
+        (findLegacyButton(resetButtonName()).callback as () => void)();
+
+        expect(customSymbols()).toEqual(['!']);
+        expect(lastModalState.opened).toBe(true);
+
+        clickConfirmButton();
+        expect(customSymbols()).toEqual(defaultCustomSymbols);
+    });
+
+    it('post-1.13: reset custom statuses asks for confirmation first', () => {
+        const reset = findDefinition(settingsTab.getSettingDefinitions(), resetName());
+        (reset!.render as (setting: Setting) => void)(new Setting(document.createElement('div')));
+        (findLegacyButton(resetButtonName()).callback as () => void)();
+
+        expect(customSymbols()).toEqual(['!']);
+        expect(lastModalState.opened).toBe(true);
+
+        clickConfirmButton();
+        expect(customSymbols()).toEqual(defaultCustomSymbols);
+    });
+
+    it('pre-1.13: enabling custom searches asks for confirmation first', () => {
+        settingsTab.display();
+        const name = i18n.t('settings.queries.javaScript.name');
+        const record = recordedLegacySettings.find((r) => r.name === name);
+        (record!.onToggleChange as (value: boolean) => void)(true);
+
+        expect(EnableJsInTasksQueries.getInstance().get()).toBe(false);
+        expect(lastModalState.opened).toBe(true);
+
+        const acknowledge = i18n.t('settings.queries.javaScript.confirm.acknowledge');
+        (recordedLegacySettings.find((r) => r.name === acknowledge)!.onToggleChange as (value: boolean) => void)(true);
+        clickConfirmButton();
+        expect(EnableJsInTasksQueries.getInstance().get()).toBe(true);
+    });
+
+    it('pre-1.13: deleting a preset asks for confirmation first', () => {
+        settingsTab.display();
+        const presetControls = recordedLegacySettings
+            .map((r) => r.controls as Array<Record<string, unknown> | string>)
+            .find((controls) => controls.includes('textArea') && controls.some((c) => typeof c === 'object'));
+        const deleteButton = presetControls!.find((c) => typeof c === 'object' && c.tooltip === 'Delete');
+        ((deleteButton as Record<string, unknown>).callback as () => void)();
+
+        expect(Object.keys(getSettings().presets)).toEqual(['my preset']);
+        expect(lastModalState.opened).toBe(true);
+
+        clickConfirmButton();
+        expect(Object.keys(getSettings().presets)).toEqual([]);
     });
 });

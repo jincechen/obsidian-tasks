@@ -14,6 +14,7 @@
   },
   "modals": {
     "customStatusModal": {
+      "duplicateSymbol": "The symbol '{{symbol}}' is already used by another status.",
       "editAvailableAsCommand": {
         "description": "Make this status available as a command, so you can give it a hotkey.",
         "name": "Available as command"
@@ -49,9 +50,9 @@
         "required": "Required"
       },
       "query": {
-        "description": "Optional. You can fill this in later.",
         "name": "Query",
-        "placeholder": "not done\npath includes Work"
+        "placeholder": "not done\npath includes Work",
+        "required": "Required"
       },
       "title": "Edit preset"
     }
@@ -223,7 +224,12 @@
       "buttons": {
         "addNewPreset": "Add preset"
       },
+      "deleteConfirm": {
+        "message": "Queries that use this preset will show an error.",
+        "title": "Delete preset '{{name}}'?"
+      },
       "description": "Reusable query snippets. Use {{instruction1}} or {{instruction2}} in any query.",
+      "dragToReorder": "Drag to reorder",
       "emptyState": "No presets yet.",
       "name": "Presets"
     },
@@ -306,9 +312,12 @@
       },
       "tools": {
         "addUnknown": {
+          "added_one": "Tasks: Added {{count}} status.",
+          "added_other": "Tasks: Added {{count}} statuses.",
           "button": "Add",
           "description": "Add any status symbols used in your notes that are not set up yet.",
-          "name": "Add statuses found in vault"
+          "name": "Add statuses found in vault",
+          "noneFound": "Tasks: No unknown statuses found."
         },
         "heading": "Tools",
         "importFromTheme": {
@@ -323,7 +332,11 @@
           "noteTitle": "Status report"
         },
         "reset": {
-          "button": "Reset",
+          "confirm": {
+            "button": "Reset",
+            "message": "All your custom statuses will be replaced with the defaults. This cannot be undone.",
+            "title": "Reset custom statuses?"
+          },
           "description": "Replace all custom statuses with the defaults.",
           "name": "Reset custom statuses"
         }

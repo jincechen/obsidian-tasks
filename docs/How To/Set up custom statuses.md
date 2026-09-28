@@ -59,9 +59,6 @@ Suppose that you wanted to create a set of 3 statuses that cycle between each ot
 
 1. Open the Tasks settings pane
 1. Scroll down and click on 'Add status'
-    - This will create a new, empty status:
-    - ![Settings after adding a new empty status](../images/settings-custom-statuses-added-1.png)
-1. Click on the pencil icon
     - This will open the [[Editing a Status|status edit modal]].
     - Notice the red colouring, to indicate values which are not yet valid.
     - If you aren't sure why something is invalid, click on the Checkmark button and an explanatory notice will pop up for a few seconds.
