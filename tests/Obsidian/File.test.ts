@@ -122,7 +122,7 @@ describe('replaceTaskWithTasks - notices', () => {
         jest.restoreAllMocks();
     });
 
-    it.failing('should not show a notice for each retry, only when giving up', async () => {
+    it('should not show a notice for each retry, only when giving up', async () => {
         const noticeSpy = jest.spyOn(obsidian, 'Notice').mockImplementation(() => ({}) as obsidian.Notice);
         // The file is never found, so every attempt is retried, until Tasks gives up.
         const vault = { getFileByPath: () => null } as unknown as Vault;
