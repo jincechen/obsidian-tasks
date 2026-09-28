@@ -213,6 +213,12 @@ a.tasks-edit svg, a.tasks-postpone svg {
     cursor: text;
 }
 
+/* Date signifiers in Live Preview, which open the date picker when clicked */
+.tasks-editor-date-trigger,
+.tasks-editor-property.tasks-editor-date-trigger {
+    cursor: pointer;
+}
+
 .tasks-editor-property > .tasks-icon + .tasks-editor-property-value,
 .tasks-editor-property > .tasks-editor-property-emoji + .tasks-editor-property-value {
     margin-inline-start: 0.25em;

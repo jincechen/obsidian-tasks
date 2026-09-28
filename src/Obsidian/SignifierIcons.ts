@@ -1,4 +1,5 @@
 import { GlobalFilter } from '../Config/GlobalFilter';
+import type { AllTaskDateFields } from '../DateTime/DateFieldTypes';
 import { PriorityTools } from '../lib/PriorityTools';
 import { Priority } from '../Task/Priority';
 import { TaskRegularExpressions } from '../Task/TaskRegularExpressions';
@@ -195,4 +196,20 @@ export function propertyRangesForLine(
         return findDataviewFieldRanges(line);
     }
     return signifierDisplay === 'icons' ? findSignifierRanges(line) : [];
+}
+
+const dateFieldsByIconId: Record<string, AllTaskDateFields> = {
+    [TasksIcon.createdDate]: 'createdDate',
+    [TasksIcon.startDate]: 'startDate',
+    [TasksIcon.scheduledDate]: 'scheduledDate',
+    [TasksIcon.dueDate]: 'dueDate',
+    [TasksIcon.doneDate]: 'doneDate',
+    [TasksIcon.cancelledDate]: 'cancelledDate',
+};
+
+/**
+ * The date field of a property, such as 'dueDate', or null if it is not a date.
+ */
+export function dateFieldOf(property: SignifierRange): AllTaskDateFields | null {
+    return dateFieldsByIconId[property.iconId] ?? null;
 }
