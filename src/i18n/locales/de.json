@@ -13,6 +13,7 @@
   },
   "modals": {
     "customStatusModal": {
+      "duplicateSymbol": "",
       "editAvailableAsCommand": {
         "description": "WennBei Aktivierung können Sie diesen Status als Befehl nutzen und ihm eine Tastenkombination zuordnen, um den Status umzuschalten.",
         "name": "Verfügbar als Befehl"

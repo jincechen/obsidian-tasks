@@ -13,6 +13,7 @@
   },
   "modals": {
     "customStatusModal": {
+      "duplicateSymbol": "",
       "editAvailableAsCommand": {
         "description": "Si se activa, este estado estará disponible como comando para que puedas asignarle un atajo de teclado y alternar el estado con él.",
         "name": "Disponible como comando"

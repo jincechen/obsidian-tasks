@@ -13,6 +13,7 @@
   },
   "modals": {
     "customStatusModal": {
+      "duplicateSymbol": "",
       "editAvailableAsCommand": {
         "description": "Activer cette option rendra ce statut disponible comme commande pour que vous puissiez y assigner un raccourci clavier à utiliser pour activer le statut.",
         "name": "Disponible comme commande"

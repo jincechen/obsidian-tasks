@@ -13,6 +13,7 @@
   },
   "modals": {
     "customStatusModal": {
+      "duplicateSymbol": "The symbol '{{symbol}}' is already used by another status.",
       "editAvailableAsCommand": {
         "description": "If enabled this status will be available as a command so you can assign a hotkey and toggle the status using it.",
         "name": "Available as command"

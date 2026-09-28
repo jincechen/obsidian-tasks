@@ -13,6 +13,7 @@
   },
   "modals": {
     "customStatusModal": {
+      "duplicateSymbol": "",
       "editAvailableAsCommand": {
         "description": "Nếu bật, trạng thái này sẽ khả dụng dưới dạng lệnh để bạn có thể gán phím tắt và chuyển đổi trạng thái bằng lệnh đó.",
         "name": "Khả dụng dưới dạng lệnh"

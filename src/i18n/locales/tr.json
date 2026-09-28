@@ -13,6 +13,7 @@
   },
   "modals": {
     "customStatusModal": {
+      "duplicateSymbol": "",
       "editAvailableAsCommand": {
         "description": "Etkinleştirilirse bu durum bir komut olarak kullanılabilir hale gelir; böylece kısayol tuşu atayabilir ve durumu bu tuş ile değiştirebilirsiniz.",
         "name": "Komut olarak kullanılabilir"

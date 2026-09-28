@@ -13,6 +13,7 @@
   },
   "modals": {
     "customStatusModal": {
+      "duplicateSymbol": "",
       "editAvailableAsCommand": {
         "description": "Se ativado, este status estará disponível como um comando para que você possa atribuir uma tecla de atalho e alternar o status usando-a.",
         "name": "Disponível como comando"

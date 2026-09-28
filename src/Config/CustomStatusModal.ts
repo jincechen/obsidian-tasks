@@ -4,6 +4,7 @@ import { StatusConfiguration, StatusType } from '../Statuses/StatusConfiguration
 import { StatusValidator } from '../Statuses/StatusValidator';
 import { Status } from '../Statuses/Status';
 import { i18n } from '../i18n/i18n';
+import { getSettings } from './Settings';
 
 const validator = new StatusValidator();
 
@@ -17,6 +18,7 @@ export class CustomStatusModal extends Modal {
     saved: boolean = false;
     error: boolean = false;
     private isCoreStatus: boolean;
+    private readonly originalSymbol: string;
     constructor(
         public plugin: Plugin,
         statusType: StatusConfiguration,
@@ -29,6 +31,7 @@ export class CustomStatusModal extends Modal {
                 : i18n.t('modals.customStatusModal.title.editCustomStatus'),
         );
         this.statusSymbol = statusType.symbol;
+        this.originalSymbol = statusType.symbol;
         this.statusName = statusType.name;
         this.statusNextSymbol = statusType.nextStatusSymbol;
         this.statusAvailableAsCommand = statusType.availableAsCommand;
@@ -53,7 +56,21 @@ export class CustomStatusModal extends Modal {
      * Return any problems that prevent the modal's contents from being saved.
      */
     public validationErrors(): string[] {
-        return validator.validate(this.statusConfiguration());
+        return [...validator.validate(this.statusConfiguration()), ...this.duplicateSymbolErrors()];
+    }
+
+    private duplicateSymbolErrors(): string[] {
+        // Only check a changed symbol, so that statuses that are already duplicates can still be edited.
+        if (this.isCoreStatus || this.statusSymbol === this.originalSymbol) {
+            return [];
+        }
+        const { coreStatuses, customStatuses } = getSettings().statusSettings;
+        const isUsed = [...coreStatuses, ...customStatuses].some((status) => status.symbol === this.statusSymbol);
+        return isUsed ? [i18n.t('modals.customStatusModal.duplicateSymbol', { symbol: this.statusSymbol })] : [];
+    }
+
+    private validateSymbol(): string[] {
+        return [...validator.validateSymbol(this.statusConfiguration()), ...this.duplicateSymbolErrors()];
     }
 
     display() {
@@ -72,13 +89,13 @@ export class CustomStatusModal extends Modal {
                 statusSymbolText = text;
                 text.setValue(this.statusSymbol).onChange((v) => {
                     this.statusSymbol = v;
-                    CustomStatusModal.setValid(text, validator.validateSymbol(this.statusConfiguration()));
+                    CustomStatusModal.setValid(text, this.validateSymbol());
                 });
             })
             .setDisabled(this.isCoreStatus)
             .then((_setting) => {
                 // Show any error if the initial value loaded is incorrect.
-                CustomStatusModal.setValid(statusSymbolText, validator.validateSymbol(this.statusConfiguration()));
+                CustomStatusModal.setValid(statusSymbolText, this.validateSymbol());
             });
 
         let statusNameText: TextComponent;

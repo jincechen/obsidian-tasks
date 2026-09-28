@@ -15,7 +15,7 @@ describe('CustomStatusModal', () => {
         return i18n.t('modals.customStatusModal.duplicateSymbol', { symbol });
     }
 
-    it.failing('should reject a symbol already used by another status', () => {
+    it('should reject a symbol already used by another status', () => {
         // The default custom statuses include '/'.
         const status = new StatusConfiguration('!', 'Important', 'x', false, StatusType.TODO);
         const modal = new CustomStatusModal(plugin, status, false);
@@ -23,5 +23,12 @@ describe('CustomStatusModal', () => {
         modal.statusSymbol = '/';
 
         expect(modal.validationErrors()).toContain(duplicateSymbolError('/'));
+    });
+
+    it('should accept an unchanged symbol', () => {
+        const status = new StatusConfiguration('/', 'In Progress', 'x', false, StatusType.IN_PROGRESS);
+        const modal = new CustomStatusModal(plugin, status, false);
+
+        expect(modal.validationErrors()).toEqual([]);
     });
 });

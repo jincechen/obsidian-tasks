@@ -13,6 +13,7 @@
   },
   "modals": {
     "customStatusModal": {
+      "duplicateSymbol": "",
       "editAvailableAsCommand": {
         "description": "如果启用，此状态将作为命令可用,因此您可以指定快捷键并使用它切换状态。",
         "name": "可用作命令"
