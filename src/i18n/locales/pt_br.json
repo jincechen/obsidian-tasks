@@ -184,6 +184,10 @@
         "name": ""
       },
       "heading": "",
+      "subtaskProgress": {
+        "description": "",
+        "name": ""
+      },
       "taskCountLocation": {
         "description": "",
         "name": "",

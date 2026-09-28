@@ -21,6 +21,7 @@ import { createStatusRegistryReport } from '../Statuses/StatusRegistryReport';
 import { i18n } from '../i18n/i18n';
 import { htmlEncodeString } from '../lib/HTMLCharacterEntities';
 import type { TasksEvents } from '../Obsidian/TasksEvents';
+import { refreshEditorDecorations } from '../Obsidian/EditorDecorations';
 import * as Themes from './Themes';
 import { type Settings, TASK_FORMATS, getSettings, updateSettings } from './Settings';
 import { GlobalFilter } from './GlobalFilter';
@@ -1007,14 +1008,32 @@ export class SettingsTab extends PluginSettingTab {
 
     // ---- Display ------------------------------------------------------------
 
+    private async setShowSubtaskProgress(value: boolean) {
+        updateSettings({ showSubtaskProgress: value });
+        await this.plugin.saveSettings();
+        this.events.triggerReloadOpenSearchResults();
+        refreshEditorDecorations(this.app);
+    }
+
     private displayGroup(): SettingDefinitionItem {
         return {
             type: 'group',
             heading: i18n.t('settings.display.heading'),
             items: [
                 {
-                    name: i18n.t('settings.display.taskCountLocation.name'),
+                    name: i18n.t('settings.display.subtaskProgress.name'),
                     aliases: [i18n.t('settings.display.heading')],
+                    desc: i18n.t('settings.display.subtaskProgress.description'),
+                    render: (setting) => {
+                        setting.addToggle((toggle) => {
+                            toggle
+                                .setValue(getSettings().showSubtaskProgress)
+                                .onChange(async (value) => await this.setShowSubtaskProgress(value));
+                        });
+                    },
+                },
+                {
+                    name: i18n.t('settings.display.taskCountLocation.name'),
                     desc: i18n.t('settings.display.taskCountLocation.description'),
                     render: (setting) => {
                         setting.addDropdown((dropdown) => {
@@ -1438,6 +1457,15 @@ export class SettingsTab extends PluginSettingTab {
 
     private displayDisplay(containerEl: HTMLElement) {
         new Setting(containerEl).setName(i18n.t('settings.display.heading')).setHeading();
+
+        new Setting(containerEl)
+            .setName(i18n.t('settings.display.subtaskProgress.name'))
+            .setDesc(i18n.t('settings.display.subtaskProgress.description'))
+            .addToggle((toggle) => {
+                toggle
+                    .setValue(getSettings().showSubtaskProgress)
+                    .onChange(async (value) => await this.setShowSubtaskProgress(value));
+            });
 
         new Setting(containerEl)
             .setName(i18n.t('settings.display.taskCountLocation.name'))

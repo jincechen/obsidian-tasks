@@ -184,6 +184,10 @@
         "name": "Dialog keyboard shortcuts"
       },
       "heading": "Display",
+      "subtaskProgress": {
+        "description": "Show a progress bar after tasks that have subtasks, in query results and Live Preview. Use 'hide progress' to hide it in a query.",
+        "name": "Subtask progress"
+      },
       "taskCountLocation": {
         "description": "Where query results show the number of tasks.",
         "name": "Task count position",
