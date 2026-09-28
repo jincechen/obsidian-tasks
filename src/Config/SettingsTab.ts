@@ -1008,6 +1008,22 @@ export class SettingsTab extends PluginSettingTab {
 
     // ---- Display ------------------------------------------------------------
 
+    private async setSignifierDisplay(value: 'icons' | 'emoji') {
+        updateSettings({ signifierDisplay: value });
+        await this.plugin.saveSettings();
+        this.events.triggerReloadOpenSearchResults();
+    }
+
+    private addSignifierDisplayDropdown(setting: Setting) {
+        setting.addDropdown((dropdown) => {
+            dropdown
+                .addOption('emoji', i18n.t('settings.display.signifiers.options.emoji'))
+                .addOption('icons', i18n.t('settings.display.signifiers.options.icons'))
+                .setValue(getSettings().signifierDisplay)
+                .onChange(async (value) => await this.setSignifierDisplay(value as 'icons' | 'emoji'));
+        });
+    }
+
     private async setShowSubtaskProgress(value: boolean) {
         updateSettings({ showSubtaskProgress: value });
         await this.plugin.saveSettings();
@@ -1021,8 +1037,13 @@ export class SettingsTab extends PluginSettingTab {
             heading: i18n.t('settings.display.heading'),
             items: [
                 {
-                    name: i18n.t('settings.display.subtaskProgress.name'),
+                    name: i18n.t('settings.display.signifiers.name'),
                     aliases: [i18n.t('settings.display.heading')],
+                    desc: i18n.t('settings.display.signifiers.description'),
+                    render: (setting) => this.addSignifierDisplayDropdown(setting),
+                },
+                {
+                    name: i18n.t('settings.display.subtaskProgress.name'),
                     desc: i18n.t('settings.display.subtaskProgress.description'),
                     render: (setting) => {
                         setting.addToggle((toggle) => {
@@ -1457,6 +1478,11 @@ export class SettingsTab extends PluginSettingTab {
 
     private displayDisplay(containerEl: HTMLElement) {
         new Setting(containerEl).setName(i18n.t('settings.display.heading')).setHeading();
+
+        const signifierDisplaySetting = new Setting(containerEl)
+            .setName(i18n.t('settings.display.signifiers.name'))
+            .setDesc(i18n.t('settings.display.signifiers.description'));
+        this.addSignifierDisplayDropdown(signifierDisplaySetting);
 
         new Setting(containerEl)
             .setName(i18n.t('settings.display.subtaskProgress.name'))

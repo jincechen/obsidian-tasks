@@ -184,6 +184,14 @@
         "name": "Dialog keyboard shortcuts"
       },
       "heading": "Display",
+      "signifiers": {
+        "description": "How task properties such as dates and priority are shown in results, dialogs and menus. Your notes are not changed.",
+        "name": "Property style",
+        "options": {
+          "emoji": "Emoji",
+          "icons": "Icons"
+        }
+      },
       "subtaskProgress": {
         "description": "Show a progress bar after tasks that have subtasks, in query results and Live Preview. Use 'hide progress' to hide it in a query.",
         "name": "Subtask progress"

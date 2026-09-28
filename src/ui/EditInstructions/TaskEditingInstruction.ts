@@ -34,4 +34,9 @@ export interface TaskEditingInstruction {
      * Instructions that cannot be applied are shown disabled in menus.
      */
     isEnabledForTask?(task: Task): boolean;
+
+    /**
+     * Optional: the name of the icon to show next to this instruction in menus.
+     */
+    instructionIcon?(): string | null;
 }

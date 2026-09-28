@@ -147,6 +147,12 @@ limit 1
         await verifyRenderedHtml(allTasks, 'hide scheduled date\nhide priority');
     });
 
+    it('fully populated task - icons in short mode', async () => {
+        updateSettings({ signifierDisplay: 'icons' });
+        const allTasks = [TaskBuilder.createFullyPopulatedTask()];
+        await verifyRenderedHtml(allTasks, 'short mode');
+    });
+
     const showTree = 'show tree\n';
     const hideTree = 'hide tree\n';
 

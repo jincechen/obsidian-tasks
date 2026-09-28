@@ -184,6 +184,14 @@
         "name": ""
       },
       "heading": "",
+      "signifiers": {
+        "description": "",
+        "name": "",
+        "options": {
+          "emoji": "",
+          "icons": ""
+        }
+      },
       "subtaskProgress": {
         "description": "",
         "name": ""

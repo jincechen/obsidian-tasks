@@ -76,6 +76,7 @@ export interface Settings {
     autoSuggestMinMatch: number;
     autoSuggestMaxItems: number;
     provideAccessKeys: boolean;
+    signifierDisplay: 'icons' | 'emoji';
     showSubtaskProgress: boolean;
     useFilenameAsScheduledDate: boolean;
     filenameAsScheduledDateFormat: string;
@@ -126,6 +127,7 @@ const defaultSettings: Readonly<Settings> = {
     autoSuggestMinMatch: 0,
     autoSuggestMaxItems: 20,
     provideAccessKeys: true,
+    signifierDisplay: 'emoji',
     showSubtaskProgress: false,
     useFilenameAsScheduledDate: false,
     filenameAsScheduledDateFormat: '',

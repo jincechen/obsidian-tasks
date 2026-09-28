@@ -306,11 +306,16 @@
     "heading": "Display",
     "items": [
       {
-        "name": "Subtask progress",
-        "desc": "Show a progress bar after tasks that have subtasks, in query results and Live Preview. Use 'hide progress' to hide it in a query.",
+        "name": "Property style",
+        "desc": "How task properties such as dates and priority are shown in results, dialogs and menus. Your notes are not changed.",
         "aliases": [
           "Display"
         ],
+        "render": "[Function]"
+      },
+      {
+        "name": "Subtask progress",
+        "desc": "Show a progress bar after tasks that have subtasks, in query results and Live Preview. Use 'hide progress' to hide it in a query.",
         "render": "[Function]"
       },
       {
