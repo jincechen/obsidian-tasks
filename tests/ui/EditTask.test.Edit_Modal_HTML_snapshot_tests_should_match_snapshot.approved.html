@@ -15,75 +15,73 @@
     <section class="tasks-modal-priority-section">
       <label for="priority-none" id="priority">Priority</label>
       <div class="task-modal-priority-option-container">
-        <input type="radio" id="priority-lowest" value="lowest" accesskey="o" />
-        <label for="priority-lowest">
-          <span>L</span>
-          <span class="accesskey">o</span>
-          <span>west</span>
-          <span>⏬</span>
-        </label>
-      </div>
-      <div class="task-modal-priority-option-container">
-        <input type="radio" id="priority-low" value="low" accesskey="l" />
-        <label for="priority-low">
-          <span></span>
-          <span class="accesskey">L</span>
-          <span>ow</span>
-          <span>🔽</span>
-        </label>
-      </div>
-      <div class="task-modal-priority-option-container">
-        <input type="radio" id="priority-none" value="none" accesskey="n" />
-        <label for="priority-none">
-          <span></span>
-          <span class="accesskey">N</span>
-          <span>ormal</span>
-        </label>
-      </div>
-      <div class="task-modal-priority-option-container">
-        <input type="radio" id="priority-medium" value="medium" accesskey="m" />
-        <label for="priority-medium">
-          <span></span>
-          <span class="accesskey">M</span>
-          <span>edium</span>
-          <span>🔼</span>
+        <input type="radio" id="priority-highest" value="highest" accesskey="i" />
+        <label for="priority-highest">
+          <span class="tasks-priority-label">
+            <span>H</span>
+            <span class="accesskey">i</span>
+            <span>ghest</span>
+          </span>
+          <span class="tasks-priority-emoji">🔺</span>
         </label>
       </div>
       <div class="task-modal-priority-option-container">
         <input type="radio" id="priority-high" value="high" accesskey="h" />
         <label for="priority-high">
-          <span></span>
-          <span class="accesskey">H</span>
-          <span>igh</span>
-          <span>⏫</span>
+          <span class="tasks-priority-label">
+            <span></span>
+            <span class="accesskey">H</span>
+            <span>igh</span>
+          </span>
+          <span class="tasks-priority-emoji">⏫</span>
         </label>
       </div>
       <div class="task-modal-priority-option-container">
-        <input type="radio" id="priority-highest" value="highest" accesskey="i" />
-        <label for="priority-highest">
-          <span>H</span>
-          <span class="accesskey">i</span>
-          <span>ghest</span>
-          <span>🔺</span>
+        <input type="radio" id="priority-medium" value="medium" accesskey="m" />
+        <label for="priority-medium">
+          <span class="tasks-priority-label">
+            <span></span>
+            <span class="accesskey">M</span>
+            <span>edium</span>
+          </span>
+          <span class="tasks-priority-emoji">🔼</span>
+        </label>
+      </div>
+      <div class="task-modal-priority-option-container">
+        <input type="radio" id="priority-none" value="none" accesskey="n" />
+        <label for="priority-none">
+          <span class="tasks-priority-label">
+            <span></span>
+            <span class="accesskey">N</span>
+            <span>ormal</span>
+          </span>
+        </label>
+      </div>
+      <div class="task-modal-priority-option-container">
+        <input type="radio" id="priority-low" value="low" accesskey="l" />
+        <label for="priority-low">
+          <span class="tasks-priority-label">
+            <span></span>
+            <span class="accesskey">L</span>
+            <span>ow</span>
+          </span>
+          <span class="tasks-priority-emoji">🔽</span>
+        </label>
+      </div>
+      <div class="task-modal-priority-option-container">
+        <input type="radio" id="priority-lowest" value="lowest" accesskey="o" />
+        <label for="priority-lowest">
+          <span class="tasks-priority-label">
+            <span>L</span>
+            <span class="accesskey">o</span>
+            <span>west</span>
+          </span>
+          <span class="tasks-priority-emoji">⏬</span>
         </label>
       </div>
     </section>
     <hr id="line-after-priority" />
     <section class="tasks-modal-dates-section">
-      <label for="recurrence">
-        <span class="accesskey">R</span>
-        ecurs
-      </label>
-      <input
-        id="recurrence"
-        type="text"
-        class="tasks-modal-date-input"
-        placeholder="Try 'every day when done'"
-        accesskey="r" />
-      <code class="tasks-modal-parsed-date">
-        🔁
-        <i>not recurring</i>
-      </code>
       <label for="due">
         <span class="accesskey">D</span>
         ue
@@ -113,10 +111,10 @@
         class="tasks-modal-date-input tasks-modal-error"
         placeholder="Try 'Mon' or 'tm' then space"
         accesskey="s" />
-      <code class="tasks-modal-parsed-date">
+      <span class="tasks-modal-parsed-date tasks-modal-parsed-message">
         ⏳
         <i>invalid scheduled date</i>
-      </code>
+      </span>
       <label for="start">
         St
         <span class="accesskey">a</span>
@@ -137,11 +135,20 @@
           aria-label="Pick Start date"
           tabindex="-1" />
       </div>
+      <label for="recurrence">
+        <span class="accesskey">R</span>
+        ecurs
+      </label>
+      <input id="recurrence" type="text" class="tasks-modal-date-input" placeholder="e.g. every week" accesskey="r" />
+      <span class="tasks-modal-parsed-date tasks-modal-parsed-message">
+        🔁
+        <i>not recurring</i>
+      </span>
       <div class="future-dates-only" id="only-future-dates">
         <label for="forwardOnly">
           Only
           <span class="accesskey">f</span>
-          uture dates:
+          uture dates
         </label>
         <input id="forwardOnly" type="checkbox" class="task-list-item-checkbox tasks-modal-checkbox" accesskey="f" />
       </div>
@@ -150,7 +157,7 @@
     <section class="tasks-modal-dependencies-section">
       <label for="before_this">
         <span class="accesskey">B</span>
-        efore this
+        locked by
       </label>
       <span>
         <input
@@ -158,7 +165,7 @@
           id="before_this"
           class="tasks-modal-dependency-input"
           type="text"
-          placeholder="Search for tasks that the task being edited depends on..." />
+          placeholder="Search tasks that must be done first…" />
         <iframe
           style="display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; border: 0; opacity: 0; pointer-events: none; z-index: -1;"
           aria-hidden="true"
@@ -166,17 +173,17 @@
           src="about:blank"></iframe>
       </span>
       <label for="after_this">
-        Aft
-        <span class="accesskey">e</span>
-        r this
+        Bloc
+        <span class="accesskey">k</span>
+        s
       </label>
       <span>
         <input
-          accesskey="e"
+          accesskey="k"
           id="after_this"
           class="tasks-modal-dependency-input"
           type="text"
-          placeholder="Search for tasks that depend on this task being done..." />
+          placeholder="Search tasks waiting on this one…" />
         <iframe
           style="display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; border: 0; opacity: 0; pointer-events: none; z-index: -1;"
           aria-hidden="true"
