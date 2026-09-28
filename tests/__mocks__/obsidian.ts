@@ -81,11 +81,19 @@ export class Menu {
     }
 }
 
+// Records the messages of Notices shown by tests.
+export const noticeMessages: Array<string | DocumentFragment> = [];
+
 export class Notice {
+    public containerEl = document.createElement('div');
+    public messageEl = document.createElement('div');
+
     /**
      * @public
      */
-    constructor(_message: string | DocumentFragment, _timeout?: number) {}
+    constructor(message: string | DocumentFragment, _timeout?: number) {
+        noticeMessages.push(message);
+    }
 
     /**
      * Change the message of this notice.
@@ -488,8 +496,10 @@ export class Setting {
                 control.text = text;
                 return fakeButton;
             },
-            onClick: (_callback: () => void) => {
+            onClick: (callback: () => void) => {
                 control.onClick = '[Function]';
+                // Keep the callback for tests to call, hidden from approval output.
+                Object.defineProperty(control, 'callback', { value: callback, enumerable: false });
                 return fakeButton;
             },
             setCta: () => {

@@ -1,12 +1,18 @@
 import { verifyAsJson } from 'approvals/lib/Providers/Jest/JestApprovals';
 import {
     lastModalState,
+    noticeMessages,
     recordedLegacySettings,
     resetLastModalState,
     resetRecordedLegacySettings,
 } from '../__mocks__/obsidian';
 
 import { SettingsTab } from '../../src/Config/SettingsTab';
+import { getSettings, resetSettings } from '../../src/Config/Settings';
+import { Status } from '../../src/Statuses/Status';
+import { StatusConfiguration, StatusType } from '../../src/Statuses/StatusConfiguration';
+import { StatusRegistry } from '../../src/Statuses/StatusRegistry';
+import { i18n } from '../../src/i18n/i18n';
 
 // Convert the declarative settings tree into approval-friendly JSON.
 // This preserves visible text/HTML and replaces callbacks with stable markers.
@@ -150,5 +156,73 @@ describe('SettingsTab pre-1.13', () => {
         settingsTab.display();
 
         verifyAsJson(serializeForApproval(recordedLegacySettings));
+    });
+});
+
+describe('SettingsTab adding statuses', () => {
+    const settingsTab = new SettingsTab({ plugin, events });
+
+    beforeEach(() => {
+        resetSettings();
+        resetRecordedLegacySettings();
+        resetLastModalState();
+        noticeMessages.length = 0;
+    });
+
+    afterEach(() => {
+        resetSettings();
+        StatusRegistry.getInstance().resetToDefaultStatuses();
+    });
+
+    function customSymbols() {
+        return getSettings().statusSettings.customStatuses.map((status) => status.symbol);
+    }
+
+    function clickLegacyButton(text: string) {
+        const controls = recordedLegacySettings.flatMap((record) => record.controls as Array<Record<string, unknown>>);
+        (controls.find((control) => control.text === text)!.callback as () => void)();
+    }
+
+    function findDefinition(items: unknown[], name: string): Record<string, unknown> | undefined {
+        for (const item of items as Array<Record<string, unknown>>) {
+            const found = item.name === name ? item : findDefinition((item.items as unknown[]) ?? [], name);
+            if (found) {
+                return found;
+            }
+        }
+        return undefined;
+    }
+
+    const addAllUnknownName = () => i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.name');
+
+    it.failing('pre-1.13: add new task status opens the status editor', () => {
+        const symbolsBefore = customSymbols();
+        settingsTab.display();
+
+        clickLegacyButton(i18n.t('settings.statuses.customStatuses.buttons.addNewStatus.name'));
+
+        expect(customSymbols()).toEqual(symbolsBefore);
+        expect(lastModalState.opened).toBe(true);
+    });
+
+    it.failing('pre-1.13: add all unknown statuses says when none are found', () => {
+        settingsTab.display();
+
+        clickLegacyButton(addAllUnknownName());
+
+        expect(noticeMessages).toEqual([i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.noneFound')]);
+    });
+
+    it.failing('post-1.13: add all unknown statuses says how many were added', () => {
+        const unknownStatus = new Status(new StatusConfiguration('?', 'Question', 'x', false, StatusType.TODO));
+        plugin.getTasks.mockReturnValueOnce([{ status: unknownStatus }]);
+
+        const addAllUnknown = findDefinition(settingsTab.getSettingDefinitions(), addAllUnknownName());
+        (addAllUnknown!.action as () => void)();
+
+        expect(customSymbols()).toContain('?');
+        expect(noticeMessages).toContain(
+            i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.added', { count: 1 }),
+        );
     });
 });
