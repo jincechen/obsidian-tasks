@@ -337,6 +337,7 @@
           "line3": "<b>Nota:</b> Qualquer status com o mesmo símbolo de um status anterior será ignorado. Você pode confirmar os status que foram realmente carregados executando o comando 'Criar ou editar tarefa' e olhando a lista suspensa de Status.",
           "line4": "Veja a documentação para começar!"
         },
+        "dragToReorder": "",
         "emptyState": "",
         "heading": "Status Personalizados"
       },

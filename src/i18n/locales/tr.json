@@ -337,6 +337,7 @@
           "line3": "<b>Not:</b> Daha önce yer alan durumlarla aynı simgeye sahip durumlar yok sayılır. Gerçekte yüklenen durumları 'Görev oluştur veya düzenle' komutunu çalıştırıp Durum açılır menüsüne bakarak doğrulayabilirsiniz.",
           "line4": "Başlamak için belgelere bakın!"
         },
+        "dragToReorder": "",
         "emptyState": "",
         "heading": "Özel Durumlar"
       },

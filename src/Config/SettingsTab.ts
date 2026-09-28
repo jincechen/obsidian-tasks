@@ -625,6 +625,7 @@ export class SettingsTab extends PluginSettingTab {
                         current.customStatuses.splice(index, 1);
                         updateAndSaveStatusSettings(current, this);
                     },
+                    onReorder: (oldIndex, newIndex) => moveCustomStatus(oldIndex, newIndex, this),
                     addItem: {
                         name: i18n.t('settings.statuses.buttons.addStatus'),
                         action: () => {
@@ -1806,8 +1807,8 @@ export class SettingsTab extends PluginSettingTab {
         const { statusSettings } = getSettings();
 
         /* -------------------- One row per custom status in the settings -------------------- */
-        statusSettings.customStatuses.forEach((status_type) => {
-            createRowForTaskStatus(
+        statusSettings.customStatuses.forEach((status_type, index) => {
+            const row = createRowForTaskStatus(
                 containerEl,
                 status_type,
                 statusSettings.customStatuses,
@@ -1816,6 +1817,7 @@ export class SettingsTab extends PluginSettingTab {
                 settings.plugin,
                 false, // isCoreStatus
             );
+            makeStatusRowDraggable(row, index, settings);
         });
 
         containerEl.createDiv();
@@ -1955,7 +1957,7 @@ function createRowForTaskStatus(
     settings: SettingsTab,
     plugin: TasksPlugin,
     isCoreStatus: boolean,
-) {
+): Setting {
     //const taskStatusDiv = containerEl.createEl('div');
 
     const taskStatusPreview = containerEl.createEl('pre');
@@ -1999,6 +2001,55 @@ function createRowForTaskStatus(
     });
 
     setting.infoEl.remove();
+    return setting;
+}
+
+function moveCustomStatus(fromIndex: number, toIndex: number, settings: SettingsTab) {
+    const { statusSettings } = getSettings();
+    if (StatusSettings.moveStatus(statusSettings.customStatuses, fromIndex, toIndex)) {
+        updateAndSaveStatusSettings(statusSettings, settings);
+    }
+}
+
+/**
+ * Let a custom status row be dragged to a new position by its handle.
+ */
+function makeStatusRowDraggable(setting: Setting, index: number, settings: SettingsTab) {
+    const rowEl = setting.settingEl;
+    const clearDropIndicator = () => rowEl.removeClass('tasks-status-drop-above', 'tasks-status-drop-below');
+    const dropsBelow = (e: DragEvent) => {
+        const rect = rowEl.getBoundingClientRect();
+        return e.clientY > rect.top + rect.height / 2;
+    };
+
+    setting.addExtraButton((btn) => {
+        btn.setIcon('grip-vertical').setTooltip(i18n.t('settings.statuses.customStatuses.dragToReorder'));
+        btn.extraSettingsEl.addClass('tasks-status-drag-handle');
+        // Only the handle starts a drag, so the row's buttons still work.
+        btn.extraSettingsEl.addEventListener('mousedown', () => (rowEl.draggable = true));
+        btn.extraSettingsEl.addEventListener('mouseup', () => (rowEl.draggable = false));
+    });
+
+    rowEl.addEventListener('dragstart', (e) => e.dataTransfer?.setData('text/plain', String(index)));
+    rowEl.addEventListener('dragend', () => (rowEl.draggable = false));
+    rowEl.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const below = dropsBelow(e);
+        rowEl.toggleClass('tasks-status-drop-above', !below);
+        rowEl.toggleClass('tasks-status-drop-below', below);
+    });
+    rowEl.addEventListener('dragleave', clearDropIndicator);
+    rowEl.addEventListener('drop', (e) => {
+        e.preventDefault();
+        clearDropIndicator();
+        const dragged = e.dataTransfer?.getData('text/plain');
+        if (!dragged) {
+            return;
+        }
+        const fromIndex = Number(dragged);
+        const insertAt = dropsBelow(e) ? index + 1 : index;
+        moveCustomStatus(fromIndex, fromIndex < insertAt ? insertAt - 1 : insertAt, settings);
+    });
 }
 
 function addCustomStatesToSettings(

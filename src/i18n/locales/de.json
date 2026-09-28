@@ -337,6 +337,7 @@
           "line3": "Hinweis: Status mit dem gleichen Symbol wie ein früherer Status ignorieren wir. Bestätigen Sie die tatsächlich geladenen Status, indem Sie den 'Aufgabe erstellen oder bearbeiten'-Befehl ausführen und das Status-Dropdown anschauen.",
           "line4": "Nutzen Sie die Dokumentation, um loszulegen!"
         },
+        "dragToReorder": "",
         "emptyState": "",
         "heading": "Benutzerdefinierte Status"
       },

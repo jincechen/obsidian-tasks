@@ -337,6 +337,7 @@
           "line3": "<b>注意</b>任何与更早的状态具有相同符号的状态都将被忽略.您可以通过运行“Create or edit task”命令并查看“Status”下拉列表来确认实际加载的状态。",
           "line4": "参阅文档！"
         },
+        "dragToReorder": "",
         "emptyState": "",
         "heading": "自定义状态"
       },

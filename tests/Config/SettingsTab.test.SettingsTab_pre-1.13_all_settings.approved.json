@@ -279,6 +279,11 @@
         "onClick": "[Function]",
         "tooltip": "Edit",
         "type": "extraButton"
+      },
+      {
+        "icon": "grip-vertical",
+        "tooltip": "Drag to reorder",
+        "type": "extraButton"
       }
     ]
   },
@@ -294,6 +299,11 @@
         "icon": "pencil",
         "onClick": "[Function]",
         "tooltip": "Edit",
+        "type": "extraButton"
+      },
+      {
+        "icon": "grip-vertical",
+        "tooltip": "Drag to reorder",
         "type": "extraButton"
       }
     ]

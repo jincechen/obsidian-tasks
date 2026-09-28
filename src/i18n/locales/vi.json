@@ -337,6 +337,7 @@
           "line3": "<b>Lưu ý</b> Bất kỳ trạng thái nào có cùng ký hiệu với bất kỳ trạng thái trước đó nào sẽ bị bỏ qua. Bạn có thể xác nhận các trạng thái thực sự được tải bằng cách chạy lệnh 'Tạo hoặc chỉnh sửa nhiệm vụ' và xem menu thả xuống Trạng thái.",
           "line4": "Xem tài liệu để bắt đầu!"
         },
+        "dragToReorder": "",
         "emptyState": "",
         "heading": "Trạng thái tùy chỉnh"
       },

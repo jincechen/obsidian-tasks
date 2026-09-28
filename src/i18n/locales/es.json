@@ -337,6 +337,7 @@
           "line3": "<b>Nota:</b> cualquier estado con el mismo símbolo que un estado anterior se ignorará. Puedes confirmar los estados realmente cargados ejecutando el comando 'Crear o editar tarea' y consultando el menú desplegable de Estado.",
           "line4": "¡Consulta la documentación para empezar!"
         },
+        "dragToReorder": "",
         "emptyState": "",
         "heading": "Estados personalizados"
       },
