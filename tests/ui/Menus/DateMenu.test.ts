@@ -1,6 +1,7 @@
 import moment from 'moment/moment';
 
 import { DateMenu } from '../../../src/ui/Menus/DateMenu';
+import type { MenuItem } from '../../__mocks__/obsidian';
 import { TaskBuilder } from '../../TestingTools/TaskBuilder';
 import { TaskLayoutComponent } from '../../../src/Layout/TaskLayoutOptions';
 import { TestableTaskSaver, menuToString } from './MenuTestingHelpers';
@@ -83,5 +84,15 @@ describe('DateMenu', () => {
               ---
               Remove cancelled date"
         `);
+    });
+
+    it.failing('should disable the item for removing an inferred scheduled date', () => {
+        const task = new TaskBuilder().scheduledDate(today).scheduledDateIsInferred(true).build();
+        const menu = new DateMenu(TaskLayoutComponent.ScheduledDate, task);
+
+        // @ts-expect-error TS2339: Property 'items' does not exist on type 'DateMenu'.
+        const items: MenuItem[] = menu.items;
+        const removeItem = items.find((item) => item.title === 'Cannot remove inferred scheduled date');
+        expect(removeItem?.disabled).toEqual(true);
     });
 });
