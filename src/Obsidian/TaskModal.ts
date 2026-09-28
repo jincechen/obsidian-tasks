@@ -1,10 +1,11 @@
-import { type App, setIcon } from 'obsidian';
+import { type App, setIcon, setTooltip } from 'obsidian';
 import { Modal } from 'obsidian';
 
 import EditTask from '../ui/EditTask.svelte';
 import type { Task } from '../Task/Task';
 import { StatusRegistry } from '../Statuses/StatusRegistry';
 import { Status } from '../Statuses/Status';
+import { placeBesideCloseButton } from '../ui/ModalHeaderButton';
 import { OptionsModal } from './OptionsModal';
 
 export interface TaskModalParams {
@@ -49,11 +50,14 @@ export class TaskModal extends Modal {
                 'modal-close-button',
                 'mod-raised',
                 'clickable-icon',
-                // But overload the 'inset-inline-end' property for a correct position:
+                // Fallback position, until placeBesideCloseButton() measures the close button:
                 'modal-option-button',
             ],
         });
-        setIcon(optionsButton, 'settings');
+        setIcon(optionsButton, 'sliders-horizontal');
+        optionsButton.setAttribute('aria-label', 'Choose fields to show');
+        setTooltip(optionsButton, 'Choose fields to show');
+        placeBesideCloseButton(this.modalEl, optionsButton);
         optionsButton.onclick = () => {
             const optionsModal = new OptionsModal({
                 app: this.app,
