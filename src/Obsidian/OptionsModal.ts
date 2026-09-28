@@ -39,7 +39,6 @@ export class OptionsModal extends Modal {
                     this.close();
                 },
                 onClose: () => {
-                    this.onClose();
                     this.close();
                 },
             },

@@ -731,7 +731,7 @@ describe('Edit Modal labels and ids', () => {
         return renderAndCheckModal(task, () => {}).container;
     }
 
-    it.failing('should have unique element ids', () => {
+    it('should have unique element ids', () => {
         const container = renderFullyPopulatedModal();
 
         const ids = Array.from(container.querySelectorAll('[id]')).map((element) => element.id);
@@ -739,7 +739,7 @@ describe('Edit Modal labels and ids', () => {
         expect(duplicateIds).toEqual([]);
     });
 
-    it.failing('should associate every label with a form control', () => {
+    it('should associate every label with a form control', () => {
         const container = renderFullyPopulatedModal();
 
         const labels = Array.from(container.querySelectorAll<HTMLLabelElement>('label[for]'));

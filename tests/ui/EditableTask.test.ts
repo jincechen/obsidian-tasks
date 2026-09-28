@@ -272,7 +272,7 @@ describe('parseAndValidateRecurrence() tests', () => {
         return editableTask;
     };
 
-    it.failing('should return well-formed HTML when there is no recurrence rule', () => {
+    it('should return well-formed HTML when there is no recurrence rule', () => {
         const editableTask = noRecurrenceRule(EditableTask.fromTask(emptyTask, [emptyTask]));
 
         expect(editableTask.parseAndValidateRecurrence().parsedRecurrence).toEqual('<i>not recurring</i>');
@@ -280,7 +280,6 @@ describe('parseAndValidateRecurrence() tests', () => {
 
     it.each([
         // editable task, expected parsed recurrence, expected recurrence validity
-        [noRecurrenceRule, '<i>not recurring</>', true],
         [invalidRecurrenceRule, '<i>invalid recurrence rule</i>', false],
         [withRecurrenceRuleButNoHappensDate, '<i>due, scheduled or start date required</i>', false],
         [withRecurrenceRuleAndHappensDate, 'every month when done', true],

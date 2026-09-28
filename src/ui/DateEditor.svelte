@@ -33,6 +33,8 @@
 
     // 'weekend' abbreviation omitted due to lack of space.
     const datePlaceholder = "Try 'Mon' or 'tm' then space";
+
+    const dateLabel = id.charAt(0).toUpperCase() + id.slice(1) + ' date';
 </script>
 
 <label for={id}>{@html labelContentWithAccessKey(id, accesskey)}</label>
@@ -53,7 +55,8 @@
             class="tasks-modal-date-editor-picker"
             type="date"
             bind:value={pickedDate}
-            id="date-editor-picker"
+            id="date-editor-picker-{id}"
+            aria-label="Pick {dateLabel}"
             on:input={onDatePicked}
             tabindex="-1"
         />

@@ -145,7 +145,7 @@
     }
 </script>
 
-<label for={type}>{@html labelContentWithAccessKey(labelText, accesskey)}</label>
+<label for={id}>{@html labelContentWithAccessKey(labelText, accesskey)}</label>
 <!-- svelte-ignore a11y-accesskey -->
 <span bind:clientWidth={inputWidth}>
     <input
