@@ -69,6 +69,8 @@ Changing from one `DONE` status to another:
 
 There is also a command 'Tasks: Toggle statuses'.
 
+It toggles the task on the cursor's line, or each task on the selected lines, each to its own next status.
+
 Obsidian allows you to assign a [hotkey](https://help.obsidian.md/Customization/Custom+hotkeys) to commands, for ease of use.
 
 | Where                         | Viewing Mode | Works? |
