@@ -18,7 +18,6 @@ import {
 import { StatusConfiguration, StatusType } from '../Statuses/StatusConfiguration';
 import type TasksPlugin from '../main';
 import { StatusRegistry } from '../Statuses/StatusRegistry';
-import { Status } from '../Statuses/Status';
 import type { StatusCollection } from '../Statuses/StatusCollection';
 import { createStatusRegistryReport } from '../Statuses/StatusRegistryReport';
 import { i18n } from '../i18n/i18n';
@@ -34,6 +33,7 @@ import { GlobalQuery } from './GlobalQuery';
 import { GlobalQueryModal } from './GlobalQueryModal';
 import { PresetsSettingsUI } from './PresetsSettingsUI';
 import { EnableJsInTasksQueries } from './EnableJsInTasksQueries';
+import { humanizeStatusType } from './StatusTypeLabels';
 
 /**
  * A snapshot of the settings when the plugin loaded.
@@ -591,19 +591,7 @@ export class SettingsTab extends PluginSettingTab {
                                     ),
                                 ),
                     ],
-                    items: [
-                        ...statusSettings.coreStatuses.map((status) => statusRow(status, true)),
-                        {
-                            name: i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.name'),
-                            desc: i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.tooltip'),
-                            // List headings are not searchable, so this
-                            // always-present row carries the heading as an alias.
-                            aliases: [i18n.t('settings.statuses.coreStatuses.heading')],
-                            action: async () => {
-                                await this.createStatusRegistryReport();
-                            },
-                        },
-                    ],
+                    items: statusSettings.coreStatuses.map((status) => statusRow(status, true)),
                 },
                 {
                     type: 'list',
@@ -662,24 +650,42 @@ export class SettingsTab extends PluginSettingTab {
                 },
                 {
                     type: 'list',
+                    heading: i18n.t('settings.statuses.tools.heading'),
                     items: [
                         {
-                            name: i18n.t('settings.statuses.buttons.importFromTheme.name'),
-                            desc: i18n.t('settings.statuses.buttons.importFromTheme.description'),
+                            name: i18n.t('settings.statuses.tools.importFromTheme.name'),
+                            desc: i18n.t('settings.statuses.tools.importFromTheme.description'),
                             searchable: false,
                             action: (el) => this.showImportFromThemeMenu(el),
                         },
                         {
-                            name: i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.name'),
-                            desc: i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.description'),
+                            name: i18n.t('settings.statuses.tools.addUnknown.name'),
+                            desc: i18n.t('settings.statuses.tools.addUnknown.description'),
                             searchable: false,
                             action: () => this.addUnknownStatuses(),
                         },
                         {
-                            name: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.name'),
-                            desc: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.description'),
-                            aliases: [i18n.t('settings.statuses.customStatuses.heading')],
-                            action: () => this.resetCustomStatuses(),
+                            name: i18n.t('settings.statuses.tools.report.name'),
+                            desc: i18n.t('settings.statuses.tools.report.description'),
+                            // List headings are not searchable, so this
+                            // always-present row carries the page name as an alias.
+                            aliases: [i18n.t('settings.statuses.heading')],
+                            action: async () => {
+                                await this.createStatusRegistryReport();
+                            },
+                        },
+                        {
+                            name: i18n.t('settings.statuses.tools.reset.name'),
+                            desc: i18n.t('settings.statuses.tools.reset.description'),
+                            searchable: false,
+                            render: (setting) => {
+                                setting.addButton((button) => {
+                                    button
+                                        .setButtonText(i18n.t('settings.statuses.tools.reset.button'))
+                                        .setWarning()
+                                        .onClick(() => this.resetCustomStatuses());
+                                });
+                            },
                         },
                     ],
                 },
@@ -788,27 +794,35 @@ export class SettingsTab extends PluginSettingTab {
     }
 
     /**
-     * Builds one list row for a single status. The row's `name` is the
-     * status's friendly name, with the symbol and its toggle transition
-     * prepended as a `<code>` chip, and the status type shown as a flair; a
-     * pencil extraButton opens the existing edit modal. Deletion is wired by
-     * the list's `onDelete`, so no per-row delete button is needed.
+     * Lay out a status row as "[/] In progress (type) ... Next → [x]".
+     */
+    private static decorateStatusRow(setting: Setting, status: StatusConfiguration): void {
+        const { coreStatuses, customStatuses } = getSettings().statusSettings;
+        const next = [...coreStatuses, ...customStatuses].find((s) => s.symbol === status.nextStatusSymbol);
+        setting.settingEl.addClass('tasks-status-row');
+        setting.nameEl.createEl('code', {
+            cls: 'tasks-status-symbol',
+            text: `[${status.symbol || ' '}]`,
+            prepend: true,
+        });
+        setting.nameEl.createSpan({ cls: 'flair', text: humanizeStatusType(status.type) });
+        const nextEl = setting.controlEl.createSpan({ cls: 'tasks-status-next' });
+        if (next?.name) {
+            nextEl.setAttribute('aria-label', next.name);
+        }
+        nextEl.createSpan({ cls: 'tasks-status-label', text: `${i18n.t('settings.statuses.row.next')} →` });
+        nextEl.createEl('code', { cls: 'tasks-status-symbol', text: `[${status.nextStatusSymbol || ' '}]` });
+    }
+
+    /**
+     * One list row for a status: its symbol, name, type and next symbol.
+     * Deletion is wired by the list's `onDelete`.
      */
     private statusRow(status: StatusConfiguration, isCoreStatus: boolean): SettingDefinition {
-        const symbol = status.symbol || ' ';
-        const nextSymbol = status.nextStatusSymbol || ' ';
         return {
             name: status.name || i18n.t('settings.statuses.unnamed'),
             render: (setting) => {
-                // Prepend the symbol and transition to the left of the row's
-                // name — reads as the list marker for the friendly name beside
-                // it (`- [/] → [x] In progress`).
-                setting.nameEl.createEl('code', {
-                    cls: 'tasks-status-symbol',
-                    text: `- [${symbol}] → [${nextSymbol}]`,
-                    prepend: true,
-                });
-                setting.controlEl.createSpan({ cls: 'flair', text: humanizeStatusType(status.type) });
+                SettingsTab.decorateStatusRow(setting, status);
                 setting.addExtraButton((btn) => {
                     btn.setIcon('pencil')
                         .setTooltip(i18n.t('common.edit'))
@@ -838,21 +852,16 @@ export class SettingsTab extends PluginSettingTab {
 
     private async createStatusRegistryReport(): Promise<void> {
         const { statusSettings } = getSettings();
-        const buttonName = i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.name');
+        const title = i18n.t('settings.statuses.tools.report.noteTitle');
 
         // Generate a new file unique file name, in the root of the vault
         const now = window.moment();
         const formattedDateTime = now.format('YYYY-MM-DD HH-mm-ss');
-        const filename = `Tasks Plugin - ${buttonName} ${formattedDateTime}.md`;
+        const filename = `Tasks Plugin - ${title} ${formattedDateTime}.md`;
 
         // Create the report
         const version = this.plugin.manifest.version;
-        const fileContent = createStatusRegistryReport(
-            statusSettings,
-            StatusRegistry.getInstance(),
-            buttonName,
-            version,
-        );
+        const fileContent = createStatusRegistryReport(statusSettings, StatusRegistry.getInstance(), title, version);
 
         // Save the file, and open it
         const file = await this.app.vault.create(filename, fileContent);
@@ -1178,23 +1187,8 @@ export class SettingsTab extends PluginSettingTab {
             SettingsTab.coreStatusesDescription(),
             (sectionEl) => {
                 statusSettings.coreStatuses.forEach((status) => {
-                    createRowForTaskStatus(
-                        sectionEl,
-                        status,
-                        statusSettings.coreStatuses,
-                        statusSettings,
-                        this,
-                        this.plugin,
-                        true,
-                    );
+                    this.createRowForTaskStatus(sectionEl, status, true);
                 });
-                this.addLegacyButton(
-                    sectionEl,
-                    i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.name'),
-                    i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.tooltip'),
-                    async () => await this.createStatusRegistryReport(),
-                    'cta',
-                );
             },
         );
 
@@ -1204,76 +1198,63 @@ export class SettingsTab extends PluginSettingTab {
             SettingsTab.customStatusesDescription(),
             (sectionEl) => {
                 statusSettings.customStatuses.forEach((status) => {
-                    createRowForTaskStatus(
-                        sectionEl,
-                        status,
-                        statusSettings.customStatuses,
-                        statusSettings,
-                        this,
-                        this.plugin,
-                        false,
-                    );
+                    this.createRowForTaskStatus(sectionEl, status, false);
                 });
-                this.addLegacyButton(
-                    sectionEl,
-                    i18n.t('settings.statuses.buttons.addStatus'),
-                    null,
-                    () => {
-                        StatusSettings.addStatus(
-                            statusSettings.customStatuses,
-                            new StatusConfiguration('', '', '', false, StatusType.TODO),
-                        );
-                        updateAndSaveStatusSettings(statusSettings, this);
-                    },
-                    'cta',
-                );
+
+                const addStatus = new Setting(sectionEl).addButton((button) => {
+                    button
+                        .setButtonText(i18n.t('settings.statuses.buttons.addStatus'))
+                        .setCta()
+                        .onClick(() => {
+                            StatusSettings.addStatus(
+                                statusSettings.customStatuses,
+                                new StatusConfiguration('', '', '', false, StatusType.TODO),
+                            );
+                            updateAndSaveStatusSettings(statusSettings, this);
+                        });
+                });
+                addStatus.infoEl.remove();
             },
         );
 
-        this.addLegacyButton(
-            containerEl,
-            i18n.t('settings.statuses.buttons.importFromTheme.name'),
-            i18n.t('settings.statuses.buttons.importFromTheme.description'),
-            (buttonEl) => this.showImportFromThemeMenu(buttonEl),
-        );
-        this.addLegacyButton(
-            containerEl,
-            i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.name'),
-            i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.description'),
-            () => this.addUnknownStatuses(),
-            'cta',
-        );
-        this.addLegacyButton(
-            containerEl,
-            i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.name'),
-            i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.description'),
-            () => this.resetCustomStatuses(),
-            'warning',
-        );
-    }
+        this.addCollapsibleSection(containerEl, i18n.t('settings.statuses.tools.heading'), null, (sectionEl) => {
+            new Setting(sectionEl)
+                .setName(i18n.t('settings.statuses.tools.importFromTheme.name'))
+                .setDesc(i18n.t('settings.statuses.tools.importFromTheme.description'))
+                .addButton((button) => {
+                    button
+                        .setButtonText(i18n.t('settings.statuses.tools.importFromTheme.button'))
+                        .onClick(() => this.showImportFromThemeMenu(button.buttonEl));
+                });
 
-    /**
-     * A row with just a button, whose tooltip is the description of the matching 1.13+ row.
-     */
-    private addLegacyButton(
-        containerEl: HTMLElement,
-        text: string,
-        tooltip: string | null,
-        onClick: (buttonEl: HTMLElement) => unknown,
-        style: 'cta' | 'warning' | null = null,
-    ) {
-        const setting = new Setting(containerEl).addButton((button) => {
-            button.setButtonText(text).onClick(() => onClick(button.buttonEl));
-            if (tooltip !== null) {
-                button.setTooltip(tooltip);
-            }
-            if (style === 'cta') {
-                button.setCta();
-            } else if (style === 'warning') {
-                button.setWarning();
-            }
+            new Setting(sectionEl)
+                .setName(i18n.t('settings.statuses.tools.addUnknown.name'))
+                .setDesc(i18n.t('settings.statuses.tools.addUnknown.description'))
+                .addButton((button) => {
+                    button
+                        .setButtonText(i18n.t('settings.statuses.tools.addUnknown.button'))
+                        .onClick(() => this.addUnknownStatuses());
+                });
+
+            new Setting(sectionEl)
+                .setName(i18n.t('settings.statuses.tools.report.name'))
+                .setDesc(i18n.t('settings.statuses.tools.report.description'))
+                .addButton((button) => {
+                    button
+                        .setButtonText(i18n.t('settings.statuses.tools.report.button'))
+                        .onClick(async () => await this.createStatusRegistryReport());
+                });
+
+            new Setting(sectionEl)
+                .setName(i18n.t('settings.statuses.tools.reset.name'))
+                .setDesc(i18n.t('settings.statuses.tools.reset.description'))
+                .addButton((button) => {
+                    button
+                        .setButtonText(i18n.t('settings.statuses.tools.reset.button'))
+                        .setWarning()
+                        .onClick(() => this.resetCustomStatuses());
+                });
         });
-        setting.infoEl.remove();
     }
 
     private displayQueries(containerEl: HTMLElement) {
@@ -1538,7 +1519,7 @@ export class SettingsTab extends PluginSettingTab {
     private addCollapsibleSection(
         containerEl: HTMLElement,
         heading: string,
-        descriptionHtml: string,
+        descriptionHtml: string | null,
         renderContent: (sectionEl: HTMLElement) => void,
     ) {
         const { headingOpened } = getSettings();
@@ -1555,9 +1536,40 @@ export class SettingsTab extends PluginSettingTab {
         new Setting(summary).setHeading().setName(heading);
         summary.createDiv('collapser').createDiv('handle');
 
-        new Setting(detailsContainer).setDesc(SettingsTab.createFragmentWithHTML(descriptionHtml));
+        if (descriptionHtml !== null) {
+            new Setting(detailsContainer).setDesc(SettingsTab.createFragmentWithHTML(descriptionHtml));
+        }
 
         renderContent(detailsContainer);
+    }
+
+    /**
+     * A row to view and edit one status.
+     */
+    private createRowForTaskStatus(containerEl: HTMLElement, status: StatusConfiguration, isCoreStatus: boolean) {
+        const setting = new Setting(containerEl).setName(status.name || i18n.t('settings.statuses.unnamed'));
+        SettingsTab.decorateStatusRow(setting, status);
+
+        setting.addExtraButton((extra) => {
+            extra
+                .setIcon('pencil')
+                .setTooltip(i18n.t('common.edit'))
+                .onClick(() => this.openEditStatusModal(status, isCoreStatus));
+        });
+
+        if (!isCoreStatus) {
+            setting.addExtraButton((extra) => {
+                extra
+                    .setIcon('trash-2')
+                    .setTooltip(i18n.t('common.delete'))
+                    .onClick(() => {
+                        const { statusSettings } = getSettings();
+                        if (StatusSettings.deleteStatus(statusSettings.customStatuses, status)) {
+                            updateAndSaveStatusSettings(statusSettings, this);
+                        }
+                    });
+            });
+        }
     }
 
     private static parseCommaSeparatedFolders(input: string): string[] {
@@ -1574,29 +1586,6 @@ export class SettingsTab extends PluginSettingTab {
 
     private static renderFolderArray(folders: string[]): string {
         return folders.join(', ');
-    }
-}
-
-/**
- * Human-readable label for a {@link StatusType}. The enum values are
- * SCREAMING_SNAKE_CASE for storage; we surface friendlier titles in the UI.
- */
-export function humanizeStatusType(type: StatusType): string {
-    switch (type) {
-        case StatusType.TODO:
-            return i18n.t('settings.statuses.types.todo');
-        case StatusType.IN_PROGRESS:
-            return i18n.t('settings.statuses.types.inProgress');
-        case StatusType.ON_HOLD:
-            return i18n.t('settings.statuses.types.onHold');
-        case StatusType.DONE:
-            return i18n.t('settings.statuses.types.done');
-        case StatusType.CANCELLED:
-            return i18n.t('settings.statuses.types.cancelled');
-        case StatusType.NON_TASK:
-            return i18n.t('settings.statuses.types.nonTask');
-        case StatusType.EMPTY:
-            return i18n.t('settings.statuses.types.empty');
     }
 }
 
@@ -1627,70 +1616,6 @@ function getThemeCollections(): { name: string; collection: StatusCollection }[]
         // Dark only themes - alphabetical order
         { name: i18n.t('settings.statuses.collections.lytModeTheme'), collection: Themes.lytModeSupportedStatuses() },
     ];
-}
-
-/**
- * Create the row to see and modify settings for a single task status type.
- * @param containerEl
- * @param statusType - The status type to be edited.
- * @param statuses - The list of statuses that statusType is stored in.
- * @param statusSettings - All the status types already in the user's settings, EXCEPT the standard ones.
- * @param settings
- * @param plugin
- * @param isCoreStatus - whether the status is a core status
- */
-function createRowForTaskStatus(
-    containerEl: HTMLElement,
-    statusType: StatusConfiguration,
-    statuses: StatusConfiguration[],
-    statusSettings: StatusSettings,
-    settings: SettingsTab,
-    plugin: TasksPlugin,
-    isCoreStatus: boolean,
-) {
-    //const taskStatusDiv = containerEl.createEl('div');
-
-    const taskStatusPreview = containerEl.createEl('pre');
-    taskStatusPreview.addClass('row-for-status');
-    taskStatusPreview.textContent = new Status(statusType).previewText();
-
-    const setting = new Setting(containerEl);
-
-    setting.infoEl.replaceWith(taskStatusPreview);
-
-    if (!isCoreStatus) {
-        setting.addExtraButton((extra) => {
-            extra
-                .setIcon('cross')
-                .setTooltip('Delete')
-                .onClick(() => {
-                    if (StatusSettings.deleteStatus(statuses, statusType)) {
-                        updateAndSaveStatusSettings(statusSettings, settings);
-                    }
-                });
-        });
-    }
-
-    setting.addExtraButton((extra) => {
-        extra
-            .setIcon('pencil')
-            .setTooltip('Edit')
-            .onClick(() => {
-                const modal = new CustomStatusModal(plugin, statusType, isCoreStatus);
-
-                modal.onClose = () => {
-                    if (modal.saved) {
-                        if (StatusSettings.replaceStatus(statuses, statusType, modal.statusConfiguration())) {
-                            updateAndSaveStatusSettings(statusSettings, settings);
-                        }
-                    }
-                };
-
-                modal.open();
-            });
-    });
-
-    setting.infoEl.remove();
 }
 
 function addCustomStatesToSettings(

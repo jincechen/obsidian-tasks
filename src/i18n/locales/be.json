@@ -1,6 +1,7 @@
 {
   "common": {
     "cancel": "",
+    "delete": "",
     "edit": "",
     "moreInfo": "",
     "okay": "",
@@ -26,6 +27,7 @@
         "name": "Імя статусу задачы"
       },
       "editStatusSymbol": {
+        "coreDescription": "",
         "description": "Гэта сімвал паміж квадратнымі дужкамі. (Яго можна рэдагаваць толькі для карыстальніцкіх статусаў, а не для асноўных статусаў.)",
         "name": "Сімвал статусу задачы"
       },
@@ -74,7 +76,7 @@
         "updateReport": {
           "line1": "Калі вы змяняеце налады статусу Tasks, вы можаце атрымаць абноўлены справаздачу:",
           "line2": "Перайшоўшы ў `Налады` -> `Tasks`.",
-          "line3": "Націснуўшы на `Праглядзець і праверыць вашы статусы`."
+          "line3": ""
         }
       },
       "columnHeadings": {
@@ -263,11 +265,7 @@
     "seeTheDocumentation": "Глядзіце дакументацыю",
     "statuses": {
       "buttons": {
-        "addStatus": "",
-        "importFromTheme": {
-          "description": "",
-          "name": ""
-        }
+        "addStatus": ""
       },
       "collections": {
         "anuppuccinTheme": "Тэма AnuPpuccin",
@@ -285,26 +283,10 @@
         "thingsTheme": "Тэма Things"
       },
       "coreStatuses": {
-        "buttons": {
-          "checkStatuses": {
-            "name": "Праглядзець і праверыць вашы статусы",
-            "tooltip": "Стварыць новы файл у каранёвай тэчцы сховішча, які змяшчае дыяграму Mermaid з бягучымі наладамі статусу."
-          }
-        },
         "description": "",
         "heading": "Асноўныя статусы"
       },
       "customStatuses": {
-        "buttons": {
-          "addAllUnknown": {
-            "description": "",
-            "name": "Дадаць усе невядомыя тыпы статусаў"
-          },
-          "resetCustomStatuses": {
-            "description": "",
-            "name": "Скінуць карыстальніцкія тыпы статусаў да значэнняў па змаўчанні"
-          }
-        },
         "description": "",
         "emptyState": "",
         "heading": "Карыстальніцкія статусы"
@@ -319,6 +301,33 @@
       },
       "heading": "Статусы задач",
       "reloadRequired": "",
+      "row": {
+        "next": ""
+      },
+      "tools": {
+        "addUnknown": {
+          "button": "",
+          "description": "",
+          "name": ""
+        },
+        "heading": "",
+        "importFromTheme": {
+          "button": "",
+          "description": "",
+          "name": ""
+        },
+        "report": {
+          "button": "",
+          "description": "",
+          "name": "",
+          "noteTitle": ""
+        },
+        "reset": {
+          "button": "",
+          "description": "",
+          "name": ""
+        }
+      },
       "types": {
         "cancelled": "",
         "done": "",

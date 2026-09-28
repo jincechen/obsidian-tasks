@@ -1,6 +1,7 @@
 {
   "common": {
     "cancel": "Cancel",
+    "delete": "Delete",
     "edit": "Edit",
     "moreInfo": "More info",
     "okay": "Okay",
@@ -14,23 +15,24 @@
   "modals": {
     "customStatusModal": {
       "editAvailableAsCommand": {
-        "description": "If enabled this status will be available as a command so you can assign a hotkey and toggle the status using it.",
+        "description": "Make this status available as a command, so you can give it a hotkey.",
         "name": "Available as command"
       },
       "editNextStatusSymbol": {
-        "description": "When clicked on this is the symbol that should be used next.",
-        "name": "Next status symbol"
+        "description": "The symbol this status changes to when toggled.",
+        "name": "Next symbol"
       },
       "editStatusName": {
-        "description": "This is the friendly name of the task status.",
+        "description": "The name shown in menus and searches.",
         "name": "Name"
       },
       "editStatusSymbol": {
-        "description": "This is the character between the square braces. (It can only be edited for custom statuses, and not core statuses.)",
+        "coreDescription": "The character between the square brackets. Core status symbols cannot be changed.",
+        "description": "The character between the square brackets.",
         "name": "Symbol"
       },
       "editStatusType": {
-        "description": "Control how the status behaves for searching and toggling.",
+        "description": "How the status behaves when searching and toggling.",
         "name": "Type"
       },
       "fixErrorsBeforeSaving": "Fix errors before saving.",
@@ -74,7 +76,7 @@
         "updateReport": {
           "line1": "If you change the Tasks status settings, you can get an updated report by:",
           "line2": "Going to `Settings` -> `Tasks`.",
-          "line3": "Clicking on `Review and check your statuses`."
+          "line3": "Clicking `Create status report` on the `Task statuses` page."
         }
       },
       "columnHeadings": {
@@ -263,11 +265,7 @@
     "seeTheDocumentation": "See the documentation",
     "statuses": {
       "buttons": {
-        "addStatus": "Add status",
-        "importFromTheme": {
-          "description": "Add the statuses supported by a theme or CSS snippet.",
-          "name": "Import from theme"
-        }
+        "addStatus": "Add status"
       },
       "collections": {
         "anuppuccinTheme": "AnuPpuccin",
@@ -285,26 +283,10 @@
         "thingsTheme": "Things"
       },
       "coreStatuses": {
-        "buttons": {
-          "checkStatuses": {
-            "name": "Review and check your statuses",
-            "tooltip": "Create a new file in the root of the vault, containing a Mermaid diagram of the current status settings."
-          }
-        },
         "description": "Built-in statuses that work with any theme. You can rename them and change what they toggle to.",
         "heading": "Core statuses"
       },
       "customStatuses": {
-        "buttons": {
-          "addAllUnknown": {
-            "description": "Add any status symbols found in your vault but not yet configured here.",
-            "name": "Add all unknown status types"
-          },
-          "resetCustomStatuses": {
-            "description": "Discard all custom statuses and restore the defaults.",
-            "name": "Reset custom status types to defaults"
-          }
-        },
         "description": "Each symbol can only be used once. Later duplicates are ignored.",
         "emptyState": "No custom statuses yet.",
         "heading": "Custom statuses"
@@ -319,6 +301,33 @@
       },
       "heading": "Task statuses",
       "reloadRequired": "Changes take effect after reload.",
+      "row": {
+        "next": "Next"
+      },
+      "tools": {
+        "addUnknown": {
+          "button": "Add",
+          "description": "Add any status symbols used in your notes that are not set up yet.",
+          "name": "Add statuses found in vault"
+        },
+        "heading": "Tools",
+        "importFromTheme": {
+          "button": "Choose theme…",
+          "description": "Add the statuses supported by a theme or CSS snippet.",
+          "name": "Import from theme"
+        },
+        "report": {
+          "button": "Create",
+          "description": "Create a note that lists your statuses, with a diagram of how they toggle.",
+          "name": "Create status report",
+          "noteTitle": "Status report"
+        },
+        "reset": {
+          "button": "Reset",
+          "description": "Replace all custom statuses with the defaults.",
+          "name": "Reset custom statuses"
+        }
+      },
       "types": {
         "cancelled": "Cancelled",
         "done": "Done",

@@ -41,6 +41,7 @@
     "controls": []
   },
   {
+    "name": "Todo",
     "controls": [
       {
         "icon": "pencil",
@@ -51,23 +52,13 @@
     ]
   },
   {
+    "name": "Done",
     "controls": [
       {
         "icon": "pencil",
         "onClick": "[Function]",
         "tooltip": "Edit",
         "type": "extraButton"
-      }
-    ]
-  },
-  {
-    "controls": [
-      {
-        "cta": true,
-        "onClick": "[Function]",
-        "text": "Review and check your statuses",
-        "tooltip": "Create a new file in the root of the vault, containing a Mermaid diagram of the current status settings.",
-        "type": "button"
       }
     ]
   },
@@ -81,33 +72,35 @@
     "controls": []
   },
   {
+    "name": "In Progress",
     "controls": [
-      {
-        "icon": "cross",
-        "onClick": "[Function]",
-        "tooltip": "Delete",
-        "type": "extraButton"
-      },
       {
         "icon": "pencil",
         "onClick": "[Function]",
         "tooltip": "Edit",
+        "type": "extraButton"
+      },
+      {
+        "icon": "trash-2",
+        "onClick": "[Function]",
+        "tooltip": "Delete",
         "type": "extraButton"
       }
     ]
   },
   {
+    "name": "Cancelled",
     "controls": [
-      {
-        "icon": "cross",
-        "onClick": "[Function]",
-        "tooltip": "Delete",
-        "type": "extraButton"
-      },
       {
         "icon": "pencil",
         "onClick": "[Function]",
         "tooltip": "Edit",
+        "type": "extraButton"
+      },
+      {
+        "icon": "trash-2",
+        "onClick": "[Function]",
+        "tooltip": "Delete",
         "type": "extraButton"
       }
     ]
@@ -123,32 +116,50 @@
     ]
   },
   {
+    "name": "Tools",
+    "heading": true,
+    "controls": []
+  },
+  {
+    "name": "Import from theme",
+    "desc": "Add the statuses supported by a theme or CSS snippet.",
     "controls": [
       {
         "onClick": "[Function]",
-        "text": "Import from theme",
-        "tooltip": "Add the statuses supported by a theme or CSS snippet.",
+        "text": "Choose theme…",
         "type": "button"
       }
     ]
   },
   {
+    "name": "Add statuses found in vault",
+    "desc": "Add any status symbols used in your notes that are not set up yet.",
     "controls": [
       {
-        "cta": true,
         "onClick": "[Function]",
-        "text": "Add all unknown status types",
-        "tooltip": "Add any status symbols found in your vault but not yet configured here.",
+        "text": "Add",
         "type": "button"
       }
     ]
   },
   {
+    "name": "Create status report",
+    "desc": "Create a note that lists your statuses, with a diagram of how they toggle.",
     "controls": [
       {
         "onClick": "[Function]",
-        "text": "Reset custom status types to defaults",
-        "tooltip": "Discard all custom statuses and restore the defaults.",
+        "text": "Create",
+        "type": "button"
+      }
+    ]
+  },
+  {
+    "name": "Reset custom statuses",
+    "desc": "Replace all custom statuses with the defaults.",
+    "controls": [
+      {
+        "onClick": "[Function]",
+        "text": "Reset",
         "type": "button",
         "warning": true
       }

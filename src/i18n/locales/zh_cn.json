@@ -1,6 +1,7 @@
 {
   "common": {
     "cancel": "",
+    "delete": "",
     "edit": "",
     "moreInfo": "",
     "okay": "",
@@ -26,6 +27,7 @@
         "name": "任务状态名称"
       },
       "editStatusSymbol": {
+        "coreDescription": "",
         "description": "这是方括号中的字符。（仅可编辑自定义状态,不可编辑核心状态。）",
         "name": "任务状态符号"
       },
@@ -74,7 +76,7 @@
         "updateReport": {
           "line1": "如果更改 Tasks 状态设置,则可以通过以下方式获取更新后的报告:",
           "line2": "前往 `设置` -> `Tasks`。",
-          "line3": "点击 `查看并检查您的状态`。"
+          "line3": ""
         }
       },
       "columnHeadings": {
@@ -263,11 +265,7 @@
     "seeTheDocumentation": "参阅文档",
     "statuses": {
       "buttons": {
-        "addStatus": "",
-        "importFromTheme": {
-          "description": "",
-          "name": ""
-        }
+        "addStatus": ""
       },
       "collections": {
         "anuppuccinTheme": "AnuPpuccin 主题",
@@ -285,26 +283,10 @@
         "thingsTheme": "Things 主题"
       },
       "coreStatuses": {
-        "buttons": {
-          "checkStatuses": {
-            "name": "查看并检查您的状态",
-            "tooltip": "在库的根目录下创建一个新文件,包含当前状态设置的 Mermaid 图表."
-          }
-        },
         "description": "",
         "heading": "核心状态"
       },
       "customStatuses": {
-        "buttons": {
-          "addAllUnknown": {
-            "description": "",
-            "name": "添加所有未知状态类型"
-          },
-          "resetCustomStatuses": {
-            "description": "",
-            "name": "重置自定义状态类型为默认值"
-          }
-        },
         "description": "",
         "emptyState": "",
         "heading": "自定义状态"
@@ -319,6 +301,33 @@
       },
       "heading": "任务状态",
       "reloadRequired": "",
+      "row": {
+        "next": ""
+      },
+      "tools": {
+        "addUnknown": {
+          "button": "",
+          "description": "",
+          "name": ""
+        },
+        "heading": "",
+        "importFromTheme": {
+          "button": "",
+          "description": "",
+          "name": ""
+        },
+        "report": {
+          "button": "",
+          "description": "",
+          "name": "",
+          "noteTitle": ""
+        },
+        "reset": {
+          "button": "",
+          "description": "",
+          "name": ""
+        }
+      },
       "types": {
         "cancelled": "",
         "done": "",

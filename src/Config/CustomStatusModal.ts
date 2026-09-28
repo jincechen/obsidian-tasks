@@ -4,6 +4,7 @@ import { StatusConfiguration, StatusType } from '../Statuses/StatusConfiguration
 import { StatusValidator } from '../Statuses/StatusValidator';
 import { Status } from '../Statuses/Status';
 import { i18n } from '../i18n/i18n';
+import { humanizeStatusType } from './StatusTypeLabels';
 
 const validator = new StatusValidator();
 
@@ -60,7 +61,11 @@ export class CustomStatusModal extends Modal {
         let statusSymbolText: TextComponent;
         new Setting(settingDiv)
             .setName(i18n.t('modals.customStatusModal.editStatusSymbol.name'))
-            .setDesc(i18n.t('modals.customStatusModal.editStatusSymbol.description'))
+            .setDesc(
+                this.isCoreStatus
+                    ? i18n.t('modals.customStatusModal.editStatusSymbol.coreDescription')
+                    : i18n.t('modals.customStatusModal.editStatusSymbol.description'),
+            )
             .addText((text) => {
                 statusSymbolText = text;
                 text.setValue(this.statusSymbol).onChange((v) => {
@@ -89,6 +94,26 @@ export class CustomStatusModal extends Modal {
                 CustomStatusModal.setValid(statusNameText, validator.validateName(this.statusConfiguration()));
             });
 
+        new Setting(settingDiv)
+            .setName(i18n.t('modals.customStatusModal.editStatusType.name'))
+            .setDesc(i18n.t('modals.customStatusModal.editStatusType.description'))
+            .addDropdown((dropdown) => {
+                const types = [
+                    StatusType.TODO,
+                    StatusType.IN_PROGRESS,
+                    StatusType.ON_HOLD,
+                    StatusType.DONE,
+                    StatusType.CANCELLED,
+                    StatusType.NON_TASK,
+                ];
+                types.forEach((s) => {
+                    dropdown.addOption(s, humanizeStatusType(s));
+                });
+                dropdown.setValue(this.type).onChange((v) => {
+                    this.type = Status.getTypeFromStatusTypeString(v);
+                });
+            });
+
         let statusNextSymbolText: TextComponent;
         new Setting(settingDiv)
             .setName(i18n.t('modals.customStatusModal.editNextStatusSymbol.name'))
@@ -105,26 +130,6 @@ export class CustomStatusModal extends Modal {
                     statusNextSymbolText,
                     validator.validateNextSymbol(this.statusConfiguration()),
                 );
-            });
-
-        new Setting(settingDiv)
-            .setName(i18n.t('modals.customStatusModal.editStatusType.name'))
-            .setDesc(i18n.t('modals.customStatusModal.editStatusType.description'))
-            .addDropdown((dropdown) => {
-                const types = [
-                    StatusType.TODO,
-                    StatusType.IN_PROGRESS,
-                    StatusType.ON_HOLD,
-                    StatusType.DONE,
-                    StatusType.CANCELLED,
-                    StatusType.NON_TASK,
-                ];
-                types.forEach((s) => {
-                    dropdown.addOption(s, s);
-                });
-                dropdown.setValue(this.type).onChange((v) => {
-                    this.type = Status.getTypeFromStatusTypeString(v);
-                });
             });
 
         if (Status.tasksPluginCanCreateCommandsForStatuses()) {

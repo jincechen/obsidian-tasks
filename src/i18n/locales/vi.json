@@ -1,6 +1,7 @@
 {
   "common": {
     "cancel": "",
+    "delete": "",
     "edit": "",
     "moreInfo": "",
     "okay": "",
@@ -26,6 +27,7 @@
         "name": "Tên trạng thái nhiệm vụ"
       },
       "editStatusSymbol": {
+        "coreDescription": "",
         "description": "Đây là ký tự nằm giữa dấu ngoặc vuông. (Chỉ có thể chỉnh sửa cho trạng thái Tùy chỉnh, không phải trạng thái Cốt lõi.)",
         "name": "Ký hiệu trạng thái nhiệm vụ"
       },
@@ -74,7 +76,7 @@
         "updateReport": {
           "line1": "Nếu bạn thay đổi cài đặt trạng thái Tasks, bạn có thể nhận báo cáo cập nhật bằng cách:",
           "line2": "Vào `Cài đặt` -> `Tasks`.",
-          "line3": "Nhấp vào `Xem xét và kiểm tra Trạng thái của bạn`."
+          "line3": ""
         }
       },
       "columnHeadings": {
@@ -263,11 +265,7 @@
     "seeTheDocumentation": "Xem tài liệu",
     "statuses": {
       "buttons": {
-        "addStatus": "",
-        "importFromTheme": {
-          "description": "",
-          "name": ""
-        }
+        "addStatus": ""
       },
       "collections": {
         "anuppuccinTheme": "Theme AnuPpuccin",
@@ -285,26 +283,10 @@
         "thingsTheme": "Theme Things"
       },
       "coreStatuses": {
-        "buttons": {
-          "checkStatuses": {
-            "name": "Xem xét và kiểm tra Trạng thái của bạn",
-            "tooltip": "Tạo file mới trong thư mục gốc của vault, chứa sơ đồ Mermaid của các cài đặt trạng thái hiện tại."
-          }
-        },
         "description": "",
         "heading": "Trạng thái cốt lõi"
       },
       "customStatuses": {
-        "buttons": {
-          "addAllUnknown": {
-            "description": "",
-            "name": "Thêm tất cả loại trạng thái không xác định"
-          },
-          "resetCustomStatuses": {
-            "description": "",
-            "name": "Đặt lại loại trạng thái tùy chỉnh về mặc định"
-          }
-        },
         "description": "",
         "emptyState": "",
         "heading": "Trạng thái tùy chỉnh"
@@ -319,6 +301,33 @@
       },
       "heading": "Trạng thái nhiệm vụ",
       "reloadRequired": "",
+      "row": {
+        "next": ""
+      },
+      "tools": {
+        "addUnknown": {
+          "button": "",
+          "description": "",
+          "name": ""
+        },
+        "heading": "",
+        "importFromTheme": {
+          "button": "",
+          "description": "",
+          "name": ""
+        },
+        "report": {
+          "button": "",
+          "description": "",
+          "name": "",
+          "noteTitle": ""
+        },
+        "reset": {
+          "button": "",
+          "description": "",
+          "name": ""
+        }
+      },
       "types": {
         "cancelled": "",
         "done": "",
