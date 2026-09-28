@@ -27,10 +27,12 @@ There is a [[#Date-picker on task dates]] and a [[#Context menu on task dates]],
 
 The date-picker is your device's own date input: select a new date, or clear the date to remove it.
 
+In **Live Preview**, click a date's emoji or icon to use the date-picker.
+
 | Where                         | Viewing Mode | Works? |
 | ----------------------------- | ------------ | ------ |
 | Task lines in markdown files  | Source mode  | ❌     |
-| Task lines in markdown files  | Live Preview | ❌     |
+| Task lines in markdown files  | Live Preview | ✅     |
 | Task lines in markdown files  | Reading mode | ✅     |
 | In Tasks query search results | Live Preview | ✅     |
 | In Tasks query search results | Reading mode | ✅     |
