@@ -106,7 +106,7 @@ There is a lot of flexibility here. For example:
 Note that relative dates will be always interpreted as being in the future, because that is usually what you want. You can change this behavior by unchecking "Only future dates" if you want to enter an overdue task or experiment with the way how relative dates in the past would be interpreted in queries.
 
 > [!Info]
-> If you have enabled ‘Set created date on every added task’ in Tasks settings (and restarted Obsidian), when you create a new Task via this modal, today's date will be added automatically.
+> If you have enabled ‘Add created date’ in Tasks settings (and restarted Obsidian), when you create a new Task via this modal, today's date will be added automatically.
 
 > [!released]
 >
@@ -230,10 +230,10 @@ For more information, including adding your own customised statuses, see [[Statu
 When you change the Status Symbol for a Task, the [[Dates#Date-tracking settings|Date-tracking settings]] are used to determine whether to update any date fields:
 
 - **If** the status is changed **to** a [[Status Types#DONE|DONE status type]] **from** any other status type,
-  - **and** the "Set done date on every completed task" option is enabled,
+  - **and** the "Add done date" option is enabled,
   - **then** the **Done date** is changed to today's date.
 - **If** the status is changed **to** a [[Status Types#CANCELLED|CANCELLED status type]] **from** any other status type,
-  - **and** the "Set cancelled date on every completed task" option is enabled,
+  - **and** the "Add cancelled date" option is enabled,
   - **then** the **Cancelled date** is changed to today's date.
 
 #### Overriding dates on status change

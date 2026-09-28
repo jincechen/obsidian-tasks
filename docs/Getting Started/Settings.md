@@ -8,7 +8,7 @@ publish: true
 
 Changes to most of the Tasks settings take immediate effect.
 
-Regrettably, a few require the vault to be reloaded. These settings are marked with `REQUIRES RESTART`.
+Regrettably, a few require Obsidian to be reloaded. These settings show a **Reload** button, or say "Reload Obsidian to apply this change".
 
 ## Available settings
 
@@ -18,14 +18,16 @@ For convenience, here is a list of all those documentation pages (in the order t
 
 - [[About Task Formats#Selecting the task format|Task Formats]]
 - [[Global Filter#Settings for the Global Filter|Global Filter]]
-- [[Global Query#Settings|Global Query]]
 - [[Status Settings#Overview|Status Settings]]
+- [[Global Query#Settings|Global Query]]
+- [[Presets]]
+- [[JavaScript in Tasks Queries]]
 - [[Dates#Date-tracking settings|Dates]]
 - [[Use Filename as Default Date#Settings|Use Filename as Default Date]]
 - [[Recurring Tasks#Recurrence Settings|Recurring Tasks]]
 - [[Auto-Suggest#Settings|Auto-Suggest]]
+- [[Layout#Task count position|Task count position]]
 - [[Create or edit Task#Turning off keyboard shortcuts|Create or edit Task modal]]
-- [[Layout#Task count location|Search results]]
 
 ## Support
 

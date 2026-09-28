@@ -136,7 +136,7 @@ This is the level of detail required for a developer to be able to reproduce a b
 > [!Example] Example steps to reproduce a particular bug
 > Steps to reproduce:
 >
-> 1. Turn on "Use filename as scheduled date" in Tasks settings and restart Obsidian
+> 1. Turn on "Use file name as scheduled date" in Tasks settings and restart Obsidian
 > 2. Create a file called `delete me - issue 1300 - 2022-11-02`.
 >     - **Note:** The file name matters, as it will be used in the query below
 > 3. Paste in to it the following content.

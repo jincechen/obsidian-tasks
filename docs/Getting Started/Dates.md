@@ -62,7 +62,7 @@ Scheduled dates use an hourglass emoji: ⏳.
 See also:
 
 - [[Use Filename as Default Date]] for how to optionally make Tasks use any dates in file names as the scheduled date for all undated tasks in that file.
-- [[Recurring Tasks#Remove scheduled date on recurrence|Remove scheduled date on recurrence]] for controlling whether new recurring tasks are automatically scheduled.
+- [[Recurring Tasks#Drop scheduled date on recurrence|Drop scheduled date on recurrence]] for controlling whether new recurring tasks are automatically scheduled.
 
 Related instructions for use in Tasks query blocks:
 
@@ -121,7 +121,7 @@ Image of the default settings for tracking task histories.
 > [!released]
 Created date was introduced in Tasks 2.0.0.
 
-If you enable 'Set created date on every added task' in settings (and restart Obsidian), the Tasks plugin will help you track when your tasks were created.
+If you enable 'Add created date' in settings (and restart Obsidian), the Tasks plugin will help you track when your tasks were created.
 
 See the [[#Date-tracking settings|screenshot]] above.
 
@@ -154,7 +154,7 @@ The following Tasks facilities add created dates to tasks...
 
 ### Done date
 
-Unless you disable 'Set done date on every completed task' in settings (and restart Obsidian), the Tasks plugin will help you track when your tasks were completed.
+Unless you disable 'Add done date' in settings (and restart Obsidian), the Tasks plugin will help you track when your tasks were completed.
 
 See the [[#Date-tracking settings|screenshot]] above.
 
@@ -176,7 +176,7 @@ Related instructions for use in Tasks query blocks:
 > [!released]
 > Cancelled date was introduced in Tasks 5.5.0.
 
-Unless you disable 'Set cancelled date on every cancelled task' in settings (and restart Obsidian), the Tasks plugin will help you track when your tasks were cancelled.
+Unless you disable 'Add cancelled date' in settings (and restart Obsidian), the Tasks plugin will help you track when your tasks were cancelled.
 
 See the [[#Date-tracking settings|screenshot]] above.
 
