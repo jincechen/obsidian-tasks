@@ -133,6 +133,6 @@ describe('replaceTaskWithTasks - notices', () => {
         await jest.runAllTimersAsync();
 
         const messages = noticeSpy.mock.calls.map((call) => call[0]);
-        expect(messages).toEqual([expect.stringContaining('Could not find the correct task line to update')]);
+        expect(messages).toEqual([expect.stringContaining('Could not update this task')]);
     });
 });

@@ -10,7 +10,7 @@ import { TaskEditingMenu, type TaskSaver, defaultTaskSaver } from './TaskEditing
  *     checkbox.addEventListener('contextmenu', (ev: MouseEvent) => {
  *         showMenu(ev, new StatusMenu(StatusRegistry.getInstance(), task));
  *     });
- *     checkbox.setAttribute('title', 'Right-click for options');
+ *     checkbox.setAttribute('title', 'Right-click to change status');
  */
 export class StatusMenu extends TaskEditingMenu {
     /**

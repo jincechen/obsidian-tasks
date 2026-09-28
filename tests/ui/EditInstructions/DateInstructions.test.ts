@@ -43,7 +43,7 @@ describe('SetTaskDate', () => {
         const instruction = new SetTaskDate('dueDate', new Date(today));
 
         // Assert
-        expect(instruction.instructionDisplayName()).toEqual('Set Date: Tue Oct 01 2024');
+        expect(instruction.instructionDisplayName()).toEqual('Set due date to Tue 1st Oct 2024');
         expect(instruction.isCheckedForTask(taskWithNoDates)).toEqual(false);
         expect(instruction.isCheckedForTask(taskDueToday)).toEqual(true);
     });
@@ -132,7 +132,7 @@ describe('RemoveTaskDate', () => {
         const task = new TaskBuilder().scheduledDate(today).scheduledDateIsInferred(true).build();
         const instruction = new RemoveTaskDate('scheduledDate', task);
 
-        expect(instruction.instructionDisplayName()).toEqual('Cannot remove inferred scheduled date');
+        expect(instruction.instructionDisplayName()).toEqual('Remove scheduled date (set from file name)');
         expect(instruction.isEnabledForTask(task)).toEqual(false);
 
         const newTasks = instruction.apply(task);

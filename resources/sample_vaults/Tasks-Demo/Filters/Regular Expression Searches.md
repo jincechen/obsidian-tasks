@@ -205,7 +205,7 @@ description regex matches CASE
 ```
 
 Gives:
-`Tasks query: cannot parse regex (description); check your leading and trailing slashes for your query`
+`Tasks query error: cannot parse regex (description); check your leading and trailing slashes for your query`
 
 ### Invalid flag
 
@@ -234,7 +234,7 @@ description regex matches /[123/
 ```
 
 Gives:
-`Tasks query: cannot parse regex (description); check your leading and trailing slashes for your query`
+`Tasks query error: cannot parse regex (description); check your leading and trailing slashes for your query`
 
 - [ ] Would like it to give a meaningful error message about what the regex error is.
 

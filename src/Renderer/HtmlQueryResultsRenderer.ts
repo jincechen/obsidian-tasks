@@ -106,11 +106,11 @@ export class HtmlQueryResultsRenderer extends QueryResultsRendererBase {
     protected renderErrorMessage(errorMessage: string): void {
         const container = this.content.createDiv();
         const pre = container.createEl('pre');
-        pre.textContent = `Tasks query: ${errorMessage}`;
+        pre.textContent = `Tasks query error: ${errorMessage}`;
     }
 
     protected renderLoadingMessage(): void {
-        this.content.textContent = 'Loading Tasks ...';
+        this.content.textContent = 'Loading tasks…';
     }
 
     protected renderExplanation(explanation: string | null) {

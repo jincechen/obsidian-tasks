@@ -63,7 +63,7 @@ Work through all the tasks below, until zero tasks remain in this query:
 
 #### Completion of tasks
 
-- [ ] #task Mark this task complete in **Source view** using **Tasks: Toggle task done** command
+- [ ] #task Mark this task complete in **Source view** using **Tasks: Toggle statuses** command
 - [ ] #task Mark this task complete by clicking on it in **Reading view**
 - [ ] #task Mark this task complete by clicking on it in **Live Preview** - ==ensure the checkbox is redrawn correctly==
 - [ ] #task **check**: Checked all above methods for **completing tasks** - and they worked
@@ -72,7 +72,7 @@ Work through all the tasks below, until zero tasks remain in this query:
 
 <!-- markdownlint-disable ul-style -->
 
-* [x] #task Mark this task not complete in **Source view** using **Tasks: Toggle task done** command ✅ 2022-07-05
+* [x] #task Mark this task not complete in **Source view** using **Tasks: Toggle statuses** command ✅ 2022-07-05
 * [x] #task Mark this task not complete by clicking on it in **Reading view** ✅ 2022-07-05
 * [x] #task Mark this task not complete by clicking on it in **Live Preview** - ==ensure the checkbox is redrawn correctly== ✅ 2022-07-05
 * [ ] #task **check**: Checked all above methods for **un-completing tasks** - and they worked
@@ -85,7 +85,7 @@ Confirm that when a recurring task is completed, a new task is created, all the 
 
 > [!Todo]
 >
-> - [ ] #task Complete this recurring task in **Source view** using **Tasks: Toggle task done** command 🔁 every day 🛫 2022-02-17 ⏳ 2022-02-18 📅 2022-02-19
+> - [ ] #task Complete this recurring task in **Source view** using **Tasks: Toggle statuses** command 🔁 every day 🛫 2022-02-17 ⏳ 2022-02-18 📅 2022-02-19
 >
 > > - [ ] #task Complete this recurring task in **Reading view** 🔁 every day 🛫 2022-02-17 ⏳ 2022-02-18 📅 2022-02-19
 
@@ -99,7 +99,7 @@ Confirm that when a recurring task is completed, a new task is created, all the 
 
 Confirm that the **task line is deleted**.
 
-- [ ] #task Complete this auto-deleting non-recurring task in **Source view** using **Tasks: Toggle task done** command 🏁 delete 📅 2024-10-27
+- [ ] #task Complete this auto-deleting non-recurring task in **Source view** using **Tasks: Toggle statuses** command 🏁 delete 📅 2024-10-27
 - [ ] #task Complete this auto-deleting non-recurring task in **Reading view** 🏁 delete 📅 2024-10-27
 - [ ] #task Complete this auto-deleting non-recurring task in **Live Preview** 🏁 delete 📅 2024-10-27
 - [ ] #task **check**: Checked all above steps for **auto-deleting non-recurring tasks** worked
@@ -108,7 +108,7 @@ Confirm that the **task line is deleted**.
 
 Confirm that when an auto-deleting recurring task is completed, a **new task is created replacing the old task**, and the checkbox remains not-done.
 
-- [ ] #task Complete this auto-deleting recurring task in **Source view** using **Tasks: Toggle task done** command 🔁 every day 🏁 delete 📅 2024-10-27
+- [ ] #task Complete this auto-deleting recurring task in **Source view** using **Tasks: Toggle statuses** command 🔁 every day 🏁 delete 📅 2024-10-27
 - [ ] #task Complete this auto-deleting recurring task in **Reading view** 🔁 every day 🏁 delete 📅 2024-10-27
 - [ ] #task Complete this auto-deleting recurring task in **Live Preview** - ==ensure the checkbox is redrawn correctly== 🔁 every day 🏁 delete 📅 2024-10-27
 - [ ] #task **check**: Checked all above steps for **auto-deleting recurring tasks** worked

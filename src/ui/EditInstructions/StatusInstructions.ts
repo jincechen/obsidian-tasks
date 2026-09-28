@@ -26,8 +26,7 @@ export class SetStatus implements TaskEditingInstruction {
     }
 
     public instructionDisplayName(): string {
-        const commonTitle = 'Change status to:';
-        return `${commonTitle} [${this.newStatus.symbol}] ${this.newStatus.name}`;
+        return `Set status to ${this.newStatus.name} [${this.newStatus.symbol}]`;
     }
 
     public instructionIcon(): string {

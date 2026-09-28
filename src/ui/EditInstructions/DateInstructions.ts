@@ -1,6 +1,10 @@
 import type { AllTaskDateFields } from '../../DateTime/DateFieldTypes';
 import { Task } from '../../Task/Task';
-import { postponeMenuItemTitleFromDate, removeDateMenuItemTitleForField } from '../../DateTime/Postponer';
+import {
+    postponeMenuItemTitleFromDate,
+    removeDateMenuItemTitleForField,
+    splitDateText,
+} from '../../DateTime/Postponer';
 import { TasksDate } from '../../DateTime/TasksDate';
 import { TasksIcon } from '../Icons';
 import type { TaskEditingInstruction } from './TaskEditingInstruction';
@@ -19,7 +23,8 @@ export class SetTaskDate implements TaskEditingInstruction {
     constructor(dateFieldToEdit: AllTaskDateFields, date: Date, displayName?: string) {
         this.newDate = date;
         this.dateFieldToEdit = dateFieldToEdit;
-        this.displayName = displayName ?? `Set Date: ${this.newDate.toDateString()}`;
+        this.displayName =
+            displayName ?? `Set ${splitDateText(dateFieldToEdit)} to ${window.moment(date).format('ddd Do MMM YYYY')}`;
     }
 
     public apply(task: Task): Task[] {

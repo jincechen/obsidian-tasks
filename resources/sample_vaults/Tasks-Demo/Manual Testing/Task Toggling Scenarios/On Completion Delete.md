@@ -7,20 +7,20 @@
 
 ## Source Mode
 
-### Complete in Source Mode with `Tasks: Toggle task done` command
+### Complete in Source Mode with `Tasks: Toggle statuses` command
 
 - Line before
-- [ ] #task Complete in **Source Mode** with `Tasks: Toggle task done` command 🏁 delete
+- [ ] #task Complete in **Source Mode** with `Tasks: Toggle statuses` command 🏁 delete
 - Line after
 
 ✅ Whole line is removed.
 
 ## Live Preview
 
-### Complete in Live Preview with `Tasks: Toggle task done` command
+### Complete in Live Preview with `Tasks: Toggle statuses` command
 
 - Line before
-- [ ] #task Complete in **Live Preview** with `Tasks: Toggle task done` command 🏁 delete
+- [ ] #task Complete in **Live Preview** with `Tasks: Toggle statuses` command 🏁 delete
 - Line after
 
 ✅ Whole line is removed.

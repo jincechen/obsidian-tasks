@@ -92,7 +92,7 @@ describe('DateMenu', () => {
 
         // @ts-expect-error TS2339: Property 'items' does not exist on type 'DateMenu'.
         const items: MenuItem[] = menu.items;
-        const removeItem = items.find((item) => item.title === 'Cannot remove inferred scheduled date');
+        const removeItem = items.find((item) => item.title === 'Remove scheduled date (set from file name)');
         expect(removeItem?.disabled).toEqual(true);
     });
 });

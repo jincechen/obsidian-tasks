@@ -12,7 +12,7 @@ This page describes ways to mark a task line as `TODO` or `DONE`, or any other [
 
 You can [[#Toggling Tasks with mouse|left-click]] or [[#'Change task status' context menu|right-click]] on task checkboxes.
 
-Other options are commands ([[#'Tasks Toggle task done' command|toggle]] or [[#'Tasks Change status to...' commands|set to a specific status]]) and a [[#Edit task modal|modal]].
+Other options are commands ([[#'Tasks Toggle statuses' command|toggle]] or [[#'Tasks Set status to...' commands|set to a specific status]]) and a [[#Edit task modal|modal]].
 
 > [!tip] What is "toggling"?
 > The simplest meaning of 'toggling' is converting a task between these two states:
@@ -65,9 +65,9 @@ Changing from one `DONE` status to another:
 > [!released]
 > The 'Change task status' context menu was introduced in Tasks 5.3.0.
 
-## 'Tasks: Toggle task done' command
+## 'Tasks: Toggle statuses' command
 
-There is also a command 'Tasks: Toggle task done'.
+There is also a command 'Tasks: Toggle statuses' (called 'Tasks: Toggle task done' before Tasks X.Y.Z).
 
 It toggles the task on the cursor's line, or each task on the selected lines, each to its own next status.
 
@@ -83,24 +83,24 @@ Obsidian allows you to assign a [hotkey](https://help.obsidian.md/Customization/
 
 Since Tasks 7.2.0, this command can also be triggered programmatically via the [[Tasks Api#`executeToggleTaskDoneCommand (line string, path string) => string;`|Tasks API]].
 
-## 'Tasks: Change status to...' commands
+## 'Tasks: Set status to...' commands
 
 There is a set of commands to directly set a task's status to any specific registered status.
 
 For example:
 
-- 'Tasks: Change status to: [ ] Todo'
-- 'Tasks: Change status to: [/] In Progress'
-- 'Tasks: Change status to: [x] Done'
-- 'Tasks: Change status to: [-] Cancelled'
+- 'Tasks: Set status to Todo [ ]'
+- 'Tasks: Set status to In Progress [/]'
+- 'Tasks: Set status to Done [x]'
+- 'Tasks: Set status to Cancelled [-]'
 
 One command is created for each status in your [[Status Settings]], including both [[Core Statuses]] and any [[Custom Statuses]] you have configured.
 
 Obsidian allows you to assign a [hotkey](https://help.obsidian.md/Customization/Custom+hotkeys) to commands, for ease of use. This makes it easy to, for example, assign a hotkey to quickly mark a task as 'In Progress' or 'Cancelled'.
 
 > [!note]
-> Currently the 'Change status to' commands only act on lines which are recognised by Tasks.
-> When run on other lines, the message '**Cannot set status: line is not a task or does not match global filter**' is shown.
+> Currently the 'Set status to' commands only act on lines which are recognised by Tasks.
+> When run on other lines, the message '**Tasks: Cannot set status - this line is not a task.**' is shown.
 
 | Where                         | Viewing Mode | Works? |
 | ----------------------------- | ------------ | ------ |
@@ -114,7 +114,7 @@ Obsidian allows you to assign a [hotkey](https://help.obsidian.md/Customization/
 > These commands correctly add Done dates and create new instances of recurring tasks when changing to a `DONE` status, just like the [[#'Change task status' context menu]].
 
 > [!released]
-> The 'Change status to...' commands were introduced in Tasks 7.24.0.
+> The 'Set status to...' commands were introduced in Tasks 7.24.0, and renamed from 'Change status to...' in Tasks X.Y.Z.
 
 ## Edit task modal
 

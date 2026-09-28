@@ -129,7 +129,7 @@ There are some Auto-Suggest behaviours that might be improved in future releases
 
 - The following are not yet supported:
   - It does not yet support Done and Cancelled dates.
-    - Done Date can be added either with the 'Tasks: Toggle task done' command or by clicking the task's checkbox when in Live Preview or Reading views.
+    - Done Date can be added either with the 'Tasks: Toggle statuses' command or by clicking the task's checkbox when in Live Preview or Reading views.
     - Both Done and Cancelled dates can be edited in the [[Create or edit Task]] modal.
     - We are tracking this in [issue #2863](https://github.com/obsidian-tasks-group/obsidian-tasks/issues/2863).
   - It does not yet offer `when done`.
