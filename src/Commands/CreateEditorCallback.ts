@@ -1,4 +1,11 @@
-import { Editor, type EditorPosition, type MarkdownFileInfo, MarkdownView } from 'obsidian';
+import {
+    Editor,
+    type EditorChange,
+    type EditorPosition,
+    type EditorSelection,
+    type MarkdownFileInfo,
+    MarkdownView,
+} from 'obsidian';
 
 /**
  * Represents text to be inserted into the editor
@@ -56,7 +63,51 @@ export const getNewCursorPosition = (startPos: EditorPosition, insertion: Editor
 };
 
 /**
- * Creates an editor callback function that applies a line transformation to the current line.
+ * The lines covered by the selections, in order. A selection that ends at the start of a line does not include that line.
+ */
+export const selectedLineNumbers = (selections: EditorSelection[]): number[] => {
+    const lines = new Set<number>();
+    for (const { anchor, head } of selections) {
+        const [from, to] = anchor.line <= head.line ? [anchor, head] : [head, anchor];
+        const last = to.line > from.line && to.ch === 0 ? to.line - 1 : to.line;
+        for (let line = from.line; line <= last; line++) {
+            lines.add(line);
+        }
+    }
+    return [...lines].sort((a, b) => a - b);
+};
+
+/**
+ * The changes that transform each of the given lines, skipping blank lines. A line transformed to nothing is deleted.
+ */
+export const changesForLines = (
+    lineNumbers: number[],
+    getLine: (line: number) => string,
+    lineCount: number,
+    lineTransformer: LineTransformer,
+    path: string,
+): EditorChange[] => {
+    const changes: EditorChange[] = [];
+    for (const lineNumber of lineNumbers) {
+        const line = getLine(lineNumber);
+        if (line.trim() === '') {
+            continue;
+        }
+        const insertion = lineTransformer(line, path);
+        if (insertion === undefined || insertion.text === line) {
+            continue;
+        }
+        const from = { line: lineNumber, ch: 0 };
+        const deleteWholeLine = insertion.text === '' && lineNumber < lineCount - 1;
+        const to = deleteWholeLine ? { line: lineNumber + 1, ch: 0 } : { line: lineNumber, ch: line.length };
+        changes.push({ from, to, text: insertion.text });
+    }
+    return changes;
+};
+
+/**
+ * Creates an editor callback function that applies a line transformation to the current line,
+ * or to every selected line when the selection covers several lines.
  *
  * @param lineTransformer - A function that takes the current line and file path, and returns the transformed text
  * @returns An editor callback suitable for use with Obsidian's `editorCheckCallback`
@@ -81,6 +132,21 @@ export const createEditorCallback = (lineTransformer: LineTransformer) => {
         // We are certain we are in the editor due to the check above.
         const path = view.file?.path;
         if (path === undefined) {
+            return;
+        }
+
+        const lineNumbers = selectedLineNumbers(editor.listSelections());
+        if (lineNumbers.length > 1) {
+            const changes = changesForLines(
+                lineNumbers,
+                (line) => editor.getLine(line),
+                editor.lineCount(),
+                lineTransformer,
+                path,
+            );
+            if (changes.length > 0) {
+                editor.transaction({ changes });
+            }
             return;
         }
 
