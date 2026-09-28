@@ -53,7 +53,7 @@
 />
 
 {#if isDateValid}
-    <div class="tasks-modal-parsed-date">
+    <div class="tasks-modal-parsed-date" class:tasks-show-emoji={showSymbol}>
         {#if showSymbol}{dateSymbol}{/if}<input
             class="tasks-modal-date-editor-picker"
             type="date"

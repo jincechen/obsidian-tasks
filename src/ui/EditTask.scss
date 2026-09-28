@@ -78,6 +78,7 @@
             font-weight: bold;
         }
 
+        input:not(:checked) + label .tasks-priority-icon,
         input:not(:checked) + label .tasks-priority-emoji {
             filter: grayscale(100%) opacity(60%);
         }
@@ -100,13 +101,14 @@
         min-width: 0;
     }
 
-    .tasks-modal-date-editor-picker {
-        margin-left: .5em;
-    }
-
     .tasks-modal-parsed-date {
         grid-column: 3;
         font-size: var(--font-ui-small);
+    }
+
+    // Leave space after the emoji, when emojis are shown instead of icons
+    .tasks-modal-parsed-date.tasks-show-emoji .tasks-modal-date-editor-picker {
+        margin-left: .5em;
     }
 
     // Parsed values and messages, such as 'every week' or 'no due date'

@@ -41,7 +41,7 @@ export class TaskModal extends Modal {
     }
 
     public onOpen(): void {
-        this.titleEl.setText('Create or edit Task');
+        this.titleEl.setText('Create or edit task');
         this.modalEl.addClass('tasks-edit-modal-container');
 
         const optionsButton = this.modalEl.createEl('button', {

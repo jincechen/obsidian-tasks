@@ -279,7 +279,7 @@ Availability of access keys:
                 />
             {/if}
         {:else}
-            <div><i>Blocking and blocked by fields are disabled when vault tasks is empty</i></div>
+            <div><i>No other tasks in the vault to link to.</i></div>
         {/if}
     </section>
     {#if isShownInEditModal.before_this || isShownInEditModal.after_this}
@@ -354,7 +354,7 @@ Availability of access keys:
     not affect the click itself, nor keyboard activation.
     -->
     <section class="tasks-modal-button-section">
-        <button disabled={!formIsValid} type="submit" class="mod-cta" on:mousedown|preventDefault>Apply </button>
+        <button disabled={!formIsValid} type="submit" class="mod-cta" on:mousedown|preventDefault>Apply</button>
         <button type="button" on:click={_onClose} on:mousedown|preventDefault>Cancel</button>
     </section>
 </form>

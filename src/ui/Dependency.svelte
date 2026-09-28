@@ -14,7 +14,7 @@
     export let type: 'blocking' | 'blockedBy';
     export let labelText: string;
     export let accesskey: string | null;
-    export let placeholder: string = 'Type to search...';
+    export let placeholder: string = 'Type to search…';
 
     let search: string = '';
     let searchResults: Task[] | null = null;
@@ -209,6 +209,7 @@
                     on:mousedown|preventDefault
                     type="button"
                     class="task-dependency-delete"
+                    aria-label="Remove"
                 >
                     <span use:icon={{ id: TasksIcon.remove, label: '' }} />
                 </button>
