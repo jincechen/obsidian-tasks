@@ -86,6 +86,7 @@ For example, in a vault that has already used a few custom statuses, we might se
 ## Reset Custom Status Types to Defaults
 
 This resets the entire Custom Statuses section back to its default list.
+You are asked to confirm first, as this cannot be undone.
 
 This allows you to try out each of the buttons above, and if you don't like them, you can quickly undo their changes.
 

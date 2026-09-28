@@ -42,6 +42,7 @@ To enable JavaScript in Tasks queries:
 2. Go to **Tasks**.
 3. Find **Searches**.
 4. Enable **Enable custom searches**.
+5. Turn on **I understand the risks**, and select **Enable**.
 
 Only enable this if you trust the current and future contents of this vault, including files you may later download, copy, or sync from other people.
 
