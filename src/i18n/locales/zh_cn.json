@@ -1,6 +1,7 @@
 {
   "common": {
     "cancel": "",
+    "delete": "",
     "edit": "",
     "moreInfo": "",
     "okay": "",
@@ -232,6 +233,10 @@
       "buttons": {
         "addNewPreset": ""
       },
+      "deleteConfirm": {
+        "message": "",
+        "title": ""
+      },
       "emptyState": "",
       "line1": "您可以在这里定义命名指令，可以在多个查询中重复使用。一个名为 '{{name}}' 的预设可以在任务查询中使用 '{{instruction1}}' 或 '{{instruction2}}'。",
       "line2": "任何打开的任务查询在预设被编辑时都会自动重新加载。",
@@ -331,6 +336,10 @@
             "name": "添加新任务状态"
           },
           "resetCustomStatuses": {
+            "confirm": {
+              "message": "",
+              "reset": ""
+            },
             "description": "",
             "name": "重置自定义状态类型为默认值"
           }

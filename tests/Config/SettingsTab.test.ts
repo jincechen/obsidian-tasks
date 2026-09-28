@@ -273,23 +273,36 @@ describe('SettingsTab destructive actions', () => {
         return undefined;
     }
 
-    it.failing('pre-1.13: reset custom statuses asks for confirmation first', () => {
+    function clickConfirmButton() {
+        const buttons = lastModalState.modal!.contentEl.querySelectorAll('.modal-button-container button');
+        (buttons[buttons.length - 1] as HTMLButtonElement).click();
+    }
+
+    const defaultCustomSymbols = new StatusSettings().customStatuses.map((status) => status.symbol);
+
+    it('pre-1.13: reset custom statuses asks for confirmation first', () => {
         settingsTab.display();
         (findLegacyButton(resetButtonName()).callback as () => void)();
 
         expect(customSymbols()).toEqual(['!']);
         expect(lastModalState.opened).toBe(true);
+
+        clickConfirmButton();
+        expect(customSymbols()).toEqual(defaultCustomSymbols);
     });
 
-    it.failing('post-1.13: reset custom statuses asks for confirmation first', () => {
+    it('post-1.13: reset custom statuses asks for confirmation first', () => {
         const reset = findDefinition(settingsTab.getSettingDefinitions(), resetButtonName());
         (reset!.action as () => void)();
 
         expect(customSymbols()).toEqual(['!']);
         expect(lastModalState.opened).toBe(true);
+
+        clickConfirmButton();
+        expect(customSymbols()).toEqual(defaultCustomSymbols);
     });
 
-    it.failing('pre-1.13: enabling custom searches asks for confirmation first', () => {
+    it('pre-1.13: enabling custom searches asks for confirmation first', () => {
         settingsTab.display();
         const name = i18n.t('settings.searches.enableCustomSearches.name');
         const record = recordedLegacySettings.find((r) => r.name === name);
@@ -297,9 +310,14 @@ describe('SettingsTab destructive actions', () => {
 
         expect(EnableJsInTasksQueries.getInstance().get()).toBe(false);
         expect(lastModalState.opened).toBe(true);
+
+        const acknowledge = i18n.t('settings.searches.enableCustomSearches.confirm.acknowledge');
+        (recordedLegacySettings.find((r) => r.name === acknowledge)!.onToggleChange as (value: boolean) => void)(true);
+        clickConfirmButton();
+        expect(EnableJsInTasksQueries.getInstance().get()).toBe(true);
     });
 
-    it.failing('pre-1.13: deleting a preset asks for confirmation first', () => {
+    it('pre-1.13: deleting a preset asks for confirmation first', () => {
         settingsTab.display();
         const presetControls = recordedLegacySettings
             .map((r) => r.controls as Array<Record<string, unknown> | string>)
@@ -309,5 +327,8 @@ describe('SettingsTab destructive actions', () => {
 
         expect(Object.keys(getSettings().presets)).toEqual(['my preset']);
         expect(lastModalState.opened).toBe(true);
+
+        clickConfirmButton();
+        expect(Object.keys(getSettings().presets)).toEqual([]);
     });
 });

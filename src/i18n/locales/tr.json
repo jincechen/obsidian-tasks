@@ -1,6 +1,7 @@
 {
   "common": {
     "cancel": "",
+    "delete": "",
     "edit": "",
     "moreInfo": "",
     "okay": "",
@@ -232,6 +233,10 @@
       "buttons": {
         "addNewPreset": "Yeni ön ayar ekle"
       },
+      "deleteConfirm": {
+        "message": "",
+        "title": ""
+      },
       "emptyState": "",
       "line1": "Burada birden fazla sorguda yeniden kullanabileceğiniz adlandırılmış talimatlar tanımlayabilirsiniz. '{{name}}' adlı bir ön ayar, Tasks sorgularında '{{instruction1}}' veya '{{instruction2}}' ile kullanılabilir.",
       "line2": "Ön ayarlar düzenlendiğinde açık Tasks sorguları otomatik olarak yeniden yüklenir.",
@@ -331,6 +336,10 @@
             "name": "Yeni Görev Durumu Ekle"
           },
           "resetCustomStatuses": {
+            "confirm": {
+              "message": "",
+              "reset": ""
+            },
             "description": "",
             "name": "Özel Durum Türlerini Varsayılanlara Sıfırla"
           }

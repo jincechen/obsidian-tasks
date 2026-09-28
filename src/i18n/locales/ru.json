@@ -1,6 +1,7 @@
 {
   "common": {
     "cancel": "",
+    "delete": "",
     "edit": "",
     "moreInfo": "",
     "okay": "",
@@ -232,6 +233,10 @@
       "buttons": {
         "addNewPreset": ""
       },
+      "deleteConfirm": {
+        "message": "",
+        "title": ""
+      },
       "emptyState": "",
       "line1": "",
       "line2": "",
@@ -331,6 +336,10 @@
             "name": "Добавить новый статус задачи"
           },
           "resetCustomStatuses": {
+            "confirm": {
+              "message": "",
+              "reset": ""
+            },
             "description": "",
             "name": "Сбросить пользовательские типы статусов к значениям по умолчанию"
           }

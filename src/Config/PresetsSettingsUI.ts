@@ -15,6 +15,7 @@ import { PresetsSettingsService, type RenamesInProgress } from '../Query/Presets
 import type { PresetsMap } from '../Query/Presets/Presets';
 import { i18n } from '../i18n/i18n';
 import { type Settings, getSettings, updateSettings } from './Settings';
+import { ConfirmModal } from './ConfirmModal';
 
 type RefreshViewCallback = () => void;
 
@@ -236,9 +237,20 @@ export class PresetsSettingsUI {
             btn.extraSettingsEl.addClass('tasks-presets-delete-button');
             btn.setIcon('cross')
                 .setTooltip('Delete')
-                .onClick(async () => {
-                    const updatedPresets = this.presetsSettingsService.deletePreset(settings.presets, key);
-                    this.savePresetsSettings(updatedPresets, settings, refreshView);
+                .onClick(() => {
+                    new ConfirmModal(this.plugin.app, {
+                        title: i18n.t('settings.presets.deleteConfirm.title', { name: key }),
+                        paragraphs: [i18n.t('settings.presets.deleteConfirm.message')],
+                        confirmText: i18n.t('common.delete'),
+                        destructive: true,
+                        onDecision: (confirmed) => {
+                            if (!confirmed) {
+                                return;
+                            }
+                            const updatedPresets = this.presetsSettingsService.deletePreset(settings.presets, key);
+                            this.savePresetsSettings(updatedPresets, settings, refreshView);
+                        },
+                    }).open();
                 });
         });
 

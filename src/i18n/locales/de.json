@@ -1,6 +1,7 @@
 {
   "common": {
     "cancel": "",
+    "delete": "",
     "edit": "",
     "moreInfo": "",
     "okay": "",
@@ -232,6 +233,10 @@
       "buttons": {
         "addNewPreset": ""
       },
+      "deleteConfirm": {
+        "message": "",
+        "title": ""
+      },
       "emptyState": "",
       "line1": "",
       "line2": "",
@@ -331,6 +336,10 @@
             "name": "Neuen Aufgabenstatus hinzufügen"
           },
           "resetCustomStatuses": {
+            "confirm": {
+              "message": "",
+              "reset": ""
+            },
             "description": "",
             "name": "Benutzerdefinierte Statustypen auf Standard zurücksetzen"
           }

@@ -1,7 +1,5 @@
 import {
     ButtonComponent,
-    type ConfirmationButton,
-    ConfirmationModal,
     Menu,
     Modal,
     Notice,
@@ -41,6 +39,7 @@ import { GlobalQuery } from './GlobalQuery';
 import { GlobalQueryModal } from './GlobalQueryModal';
 import { PresetsSettingsUI } from './PresetsSettingsUI';
 import { EnableJsInTasksQueries } from './EnableJsInTasksQueries';
+import { ConfirmModal } from './ConfirmModal';
 
 interface SettingConfiguration {
     name: string;
@@ -428,70 +427,21 @@ export class SettingsTab extends PluginSettingTab {
     }
 
     /**
-     * Show a {@link ConfirmationModal} explaining the risks of enabling custom
-     * searches (which let queries execute arbitrary JavaScript). The user must
-     * tick a checkbox before the Enable button is available. Calls back with
-     * `true` if the user enabled, `false` if they cancelled or closed.
+     * Ask the user to acknowledge the risks of enabling custom searches,
+     * which let queries execute arbitrary JavaScript.
      */
     private confirmEnableCustomSearches(callback: (confirmed: boolean) => void): void {
-        // The version check is always true in practice: this method is only
-        // called from the declarative settings path, which requires 1.13.0+.
-        if (requireApiVersion('1.13.0')) {
-            const modal = new ConfirmationModal(this.app);
-            modal.setTitle(i18n.t('settings.searches.enableCustomSearches.name'));
-
-            modal.contentEl.createEl('p', {
-                cls: 'setting-item-description',
-                text: i18n.t('settings.searches.enableCustomSearches.description.line2'),
-            });
-            const warningEl = modal.contentEl.createEl('p', { cls: 'setting-item-description mod-warning' });
-            warningEl.createEl('b', {
-                text: i18n.t('settings.searches.enableCustomSearches.description.line3'),
-            });
-            modal.contentEl.createEl('p', {
-                cls: 'setting-item-description',
-                text: i18n.t('settings.searches.enableCustomSearches.description.line4'),
-            });
-
-            let acknowledged = false;
-            let enableBtn: ConfirmationButton | null = null;
-            modal.addCheckbox(i18n.t('settings.searches.enableCustomSearches.confirm.acknowledge'), (value) => {
-                acknowledged = value;
-                if (enableBtn) {
-                    enableBtn.setDisabled(!acknowledged);
-                }
-            });
-
-            let decided = false;
-            // Cancel first: on desktop, DOM order decides and the primary action
-            // belongs on the right. Mobile reorders Cancel with CSS regardless.
-            modal.addCancelButton();
-            modal.addButton((btn) => {
-                enableBtn = btn;
-                btn.setButtonText(i18n.t('settings.searches.enableCustomSearches.confirm.enable'))
-                    .setCta()
-                    .setDisabled(true)
-                    .onClick(() => {
-                        if (!acknowledged) {
-                            return true; // keep the modal open
-                        }
-                        decided = true;
-                        callback(true);
-                        return undefined;
-                    });
-            });
-
-            const originalOnClose = modal.onClose.bind(modal);
-            modal.onClose = () => {
-                originalOnClose();
-                if (!decided) {
-                    callback(false);
-                }
-            };
-            modal.open();
-        } else {
-            callback(false);
-        }
+        new ConfirmModal(this.app, {
+            title: i18n.t('settings.searches.enableCustomSearches.name'),
+            paragraphs: [
+                i18n.t('settings.searches.enableCustomSearches.description.line2'),
+                i18n.t('settings.searches.enableCustomSearches.description.line4'),
+            ],
+            warning: i18n.t('settings.searches.enableCustomSearches.description.line3'),
+            acknowledgement: i18n.t('settings.searches.enableCustomSearches.confirm.acknowledge'),
+            confirmText: i18n.t('settings.searches.enableCustomSearches.confirm.enable'),
+            onDecision: callback,
+        }).open();
     }
 
     // ---- Presets (sub-page) ----------------------------------------------
@@ -650,11 +600,7 @@ export class SettingsTab extends PluginSettingTab {
                             name: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.name'),
                             desc: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.description'),
                             aliases: [i18n.t('settings.statuses.customStatuses.heading')],
-                            action: () => {
-                                const { statusSettings: current } = getSettings();
-                                StatusSettings.resetAllCustomStatuses(current);
-                                updateAndSaveStatusSettings(current, this);
-                            },
+                            action: () => this.confirmResetCustomStatuses(),
                         },
                     ],
                 },
@@ -691,6 +637,23 @@ export class SettingsTab extends PluginSettingTab {
         new Notice(
             i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.added', { count: unknownStatuses.length }),
         );
+    }
+
+    private confirmResetCustomStatuses(): void {
+        new ConfirmModal(this.app, {
+            title: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.name'),
+            paragraphs: [i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.confirm.message')],
+            confirmText: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.confirm.reset'),
+            destructive: true,
+            onDecision: (confirmed) => {
+                if (!confirmed) {
+                    return;
+                }
+                const { statusSettings } = getSettings();
+                StatusSettings.resetAllCustomStatuses(statusSettings);
+                updateAndSaveStatusSettings(statusSettings, this);
+            },
+        }).open();
     }
 
     /**
@@ -1197,7 +1160,7 @@ export class SettingsTab extends PluginSettingTab {
         new Setting(containerEl).setName(i18n.t('settings.searches.heading')).setHeading();
         // ---------------------------------------------------------------------------
 
-        new Setting(containerEl)
+        const enableCustomSearchesSetting = new Setting(containerEl)
             .setName(i18n.t('settings.searches.enableCustomSearches.name'))
             .setDesc(
                 SettingsTab.createFragmentWithHTML(
@@ -1212,14 +1175,8 @@ export class SettingsTab extends PluginSettingTab {
                         i18n.t('settings.searches.enableCustomSearches.description.line4'),
                     ]),
                 ),
-            )
-            .addToggle((toggle) => {
-                toggle.setValue(EnableJsInTasksQueries.getInstance().get()).onChange(async (value) => {
-                    EnableJsInTasksQueries.getInstance().set(value);
-
-                    this.events.triggerReloadOpenSearchResults();
-                });
-            });
+            );
+        this.renderEnableCustomSearchesToggle(enableCustomSearchesSetting);
 
         // ---------------------------------------------------------------------------
         new Setting(containerEl).setName(i18n.t('settings.searchResults.heading')).setHeading();
@@ -1863,10 +1820,7 @@ export class SettingsTab extends PluginSettingTab {
             button
                 .setButtonText(i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.name'))
                 .setWarning()
-                .onClick(async () => {
-                    StatusSettings.resetAllCustomStatuses(statusSettings);
-                    updateAndSaveStatusSettings(statusSettings, settings);
-                });
+                .onClick(() => this.confirmResetCustomStatuses());
         });
         clearCustomStatuses.infoEl.remove();
     }

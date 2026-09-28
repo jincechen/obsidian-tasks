@@ -1,6 +1,7 @@
 {
   "common": {
     "cancel": "",
+    "delete": "",
     "edit": "",
     "moreInfo": "",
     "okay": "",
@@ -232,6 +233,10 @@
       "buttons": {
         "addNewPreset": "Añadir nuevo preajuste"
       },
+      "deleteConfirm": {
+        "message": "",
+        "title": ""
+      },
       "emptyState": "",
       "line1": "Aquí puedes definir instrucciones con nombre que puedes reutilizar en varias consultas. Un preajuste llamado '{{name}}' se puede usar en consultas de Tasks con '{{instruction1}}' o '{{instruction2}}'.",
       "line2": "Las consultas de Tasks que estén abiertas se recargan automáticamente al editar los preajustes.",
@@ -331,6 +336,10 @@
             "name": "Añadir nuevo estado de tarea"
           },
           "resetCustomStatuses": {
+            "confirm": {
+              "message": "",
+              "reset": ""
+            },
             "description": "",
             "name": "Restablecer los tipos de estado personalizados a los valores predeterminados"
           }
