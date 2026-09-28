@@ -160,111 +160,27 @@
       "heading": "Daten aus Dateinamen",
       "scheduledDate": {
         "extraFormat": {
-          "description": {
-            "line1": "Ein zusätzliches Datumsformat, das das Tasks-Plugin beim Verwenden des Dateinamens als geplantes Datum für undatierte Aufgaben erkennt."
-          },
+          "description": "",
           "name": "Zusätzliches Datumsformat für Dateinamen als geplantes Datum für undatierte Aufgaben",
           "placeholder": "Beispiel: MMM DD YYYY"
         },
         "folders": {
           "description": "Lassen Sie dieses Feld leer, wenn Sie standardmäßige geplante Datumsangaben überall verwenden wollen, oder geben Sie eine durch Kommas getrennte Liste von Ordnern ein.",
-          "name": "Ordner mit standardmäßigen geplanten Datumsangaben"
+          "name": "Ordner mit standardmäßigen geplanten Datumsangaben",
+          "placeholder": ""
         },
         "toggle": {
-          "description": {
-            "line1": "Sparen Sie Zeit beim Eingeben geplanter (⏳) Daten.",
-            "line2": "Bei Aktivierung erhalten alle undatierten Aufgaben ein geplantes Datum, das aus ihrem Dateinamen extrahiert wird.",
-            "line3": "Standardmäßig erkennt das Tasks-Plugin sowohl <code>YYYY-MM-DD</code> als auch <code>YYYYMMDD</code> Datumsformate.",
-            "line4": "Undatierte Aufgaben haben weder ein Fälligkeitsdatum (📅 ), geplantes (⏳) noch Start-(🛫)datum."
-          },
+          "description": "",
           "name": "Dateinamen als geplantes Datum für undatierte Aufgaben verwenden"
         }
       }
     },
-    "dialogs": {
-      "accessKeys": {
-        "description": "Wenn die Zugriffsschlüssel (Tastenkombinationen) für verschiedene Steuerelemente in Dialogfeldern in Konflikt mit System-Tastenkombinationen oder wichtigen assistiven Funktionen stehen, deaktivieren Sie sie hier.",
-        "name": "Zugriffsschlüssel in Dialogen bereitstellen"
-      }
-    },
     "display": {
-      "heading": ""
-    },
-    "editing": {
-      "heading": ""
-    },
-    "format": {
-      "description": {
-        "line1": "Das Format, das Tasks zum Lesen und Schreiben von Aufgaben verwendet.",
-        "line2": "<b>Wichtig:</b> Tasks unterstützt gleichzeitig nur ein Format. Wenn Sie Dataview auswählen, hindert dies Tasks daran, seine eigenen Emoji-Anzeiger zu verwenden."
+      "accessKeys": {
+        "description": "",
+        "name": ""
       },
-      "displayName": {
-        "dataview": "Dataview",
-        "tasksEmojiFormat": "Tasks Emoji Format"
-      },
-      "name": "Aufgabenformat"
-    },
-    "general": {
-      "heading": ""
-    },
-    "globalFilter": {
-      "filter": {
-        "description": {
-          "line1": "Empfehlung: Lassen Sie dieses Feld leer, damit das Plugin alle Kontrollkästchen in Ihrem Tresor als Aufgaben verwalten kann.",
-          "line2": "Verwenden Sie einen globalen Filter, wenn Tasks nur auf einen Teil Ihrer \"<code>- [ ]</code>\" Kontrollkästchenitems wirken soll. Sorgen Sie dafür, dass ein Kontrollkästchenitem die angegebene Zeichenfolge in seiner Beschreibung enthält, um als Aufgabe betrachtet zu werden.",
-          "line3": "Setzen Sie den globalen Filter z. B. auf <code>#task</code>, verwaltet Tasks nur die mit <code>#task</code> gekennzeichneten Kontrollkästchenitems.",
-          "line4": "Andere Kontrollkästchenitems bleiben normale Kontrollkästchen und erscheinen nicht in Abfragen und erhalten kein Erledigungsdatum."
-        },
-        "name": "Globaler Filter",
-        "placeholder": "z.B. #task oder TODO"
-      },
-      "removeFilter": {
-        "description": "Aktiviert entfernt die Zeichenfolge, die Sie als globalen Filter gesetzt haben, aus der Aufgabenbeschreibung, wenn die Aufgabe angezeigt wird.",
-        "name": "Globalen Filter aus Beschreibung entfernen"
-      }
-    },
-    "globalQuery": {
-      "heading": "Globale Abfrage",
-      "query": {
-        "description": "Fügen Sie automatisch eine Abfrage am Anfang jedes Tasks-Blocks im Tresor hinzu. Nützlich für Standardfilter oder Layout-Optionen.",
-        "placeholder": "Zum Beispiel...\npath does not include _templates/\nlimit 300\nshow urgency",
-        "shortDescription": ""
-      }
-    },
-    "presets": {
-      "buttons": {
-        "addNewPreset": ""
-      },
-      "emptyState": "",
-      "line1": "",
-      "line2": "",
-      "name": ""
-    },
-    "queries": {
-      "globalQuery": {
-        "notSet": "",
-        "summary": "",
-        "summaryMultiline_one": "",
-        "summaryMultiline_other": ""
-      },
-      "heading": ""
-    },
-    "recurringTasks": {
-      "heading": "Wiederkehrende Aufgaben",
-      "nextLine": {
-        "description": "Aktivieren Sie dies, damit das nächste Auftreten einer Aufgabe in der Zeile unterhalb der abgeschlossenen Aufgabe erscheint. Ansonsten erscheint es vor der abgeschlossenen Aufgabe.",
-        "name": "Nächste Wiederholung erscheint in Zeile darunter"
-      },
-      "removeScheduledDate": {
-        "description": {
-          "line1": "Aktiviert, damit das nächste Auftreten einer Aufgabe keinen geplanten (⏳) Termin hat, wenn mindestens Start-(🛫) oder Fälligkeitsdaten (📅) vorhanden sind.",
-          "line2": "Dies gilt, wenn Sie möchten, dass Start- und Fälligkeitsdaten beim nächsten Auftreten beibehalten werden, aber das geplante Datum später festgelegt wird, sobald Sie planen, daran zu arbeiten."
-        },
-        "name": "Geplantes Datum bei Wiederholung entfernen"
-      }
-    },
-    "reloadToApply": "",
-    "searchResults": {
+      "heading": "",
       "taskCountLocation": {
         "description": "",
         "name": "",
@@ -274,21 +190,76 @@
         }
       }
     },
-    "searches": {
-      "enableCustomSearches": {
+    "editing": {
+      "heading": ""
+    },
+    "format": {
+      "description": "",
+      "displayName": {
+        "dataview": "Dataview",
+        "tasksEmojiFormat": "Tasks Emoji Format"
+      },
+      "name": "Aufgabenformat",
+      "oneFormatOnly": ""
+    },
+    "general": {
+      "heading": ""
+    },
+    "globalFilter": {
+      "filter": {
+        "description": "",
+        "example": "",
+        "name": "Globaler Filter",
+        "placeholder": "z.B. #task oder TODO"
+      },
+      "removeFilter": {
+        "description": "Aktiviert entfernt die Zeichenfolge, die Sie als globalen Filter gesetzt haben, aus der Aufgabenbeschreibung, wenn die Aufgabe angezeigt wird.",
+        "name": "Globalen Filter aus Beschreibung entfernen"
+      }
+    },
+    "presets": {
+      "buttons": {
+        "addNewPreset": ""
+      },
+      "description": "",
+      "emptyState": "",
+      "name": ""
+    },
+    "queries": {
+      "globalQuery": {
+        "description": "",
+        "modalDescription": "",
+        "name": "",
+        "notSet": "",
+        "placeholder": "",
+        "summary": "",
+        "summaryMultiline_one": "",
+        "summaryMultiline_other": ""
+      },
+      "heading": "",
+      "javaScript": {
         "confirm": {
           "acknowledge": "",
-          "enable": ""
+          "allow": "",
+          "risk": "",
+          "trust": ""
         },
-        "description": {
-          "line1": "",
-          "line2": "",
-          "line3": "",
-          "line4": ""
-        },
+        "description": "",
         "name": ""
       }
     },
+    "recurringTasks": {
+      "heading": "Wiederkehrende Aufgaben",
+      "nextLine": {
+        "description": "Aktivieren Sie dies, damit das nächste Auftreten einer Aufgabe in der Zeile unterhalb der abgeschlossenen Aufgabe erscheint. Ansonsten erscheint es vor der abgeschlossenen Aufgabe.",
+        "name": "Nächste Wiederholung erscheint in Zeile darunter"
+      },
+      "removeScheduledDate": {
+        "description": "",
+        "name": "Geplantes Datum bei Wiederholung entfernen"
+      }
+    },
+    "reloadToApply": "",
     "seeTheDocumentation": "Vgl. die Dokumentation",
     "statuses": {
       "buttons": {
@@ -320,10 +291,7 @@
             "tooltip": "Erstellen Sie eine neue Datei im Hauptverzeichnis des Tresors, die ein Mermaid-Diagramm der aktuellen Statuseinstellungen enthält."
           }
         },
-        "description": {
-          "line1": "Diese Kern-Status unterstützt Tasks nativ ohne benutzerdefiniertes CSS-Styling oder Themes.",
-          "line2": "Hinzufügen und Bearbeiten Ihrer eigenen benutzerdefinierten Status können Sie im unteren Abschnitt."
-        },
+        "description": "",
         "heading": "Kern-Status"
       },
       "customStatuses": {
@@ -337,14 +305,14 @@
             "name": "Benutzerdefinierte Statustypen auf Standard zurücksetzen"
           }
         },
-        "description": {
-          "line1": "Zuerst wählen und installieren Sie ein CSS-Snippet oder Theme, um benutzerdefinierte Kontrollkästchen zu formatieren.",
-          "line2": "Verwenden Sie dann die untenstehenden Schaltflächen, um Ihre benutzerdefinierten Status zu erstellen, sodass sie mit Ihren ausgewählten CSS-Kontrollkästchen übereinstimmen.",
-          "line3": "Hinweis: Status mit dem gleichen Symbol wie ein früherer Status ignorieren wir. Bestätigen Sie die tatsächlich geladenen Status, indem Sie den 'Aufgabe erstellen oder bearbeiten'-Befehl ausführen und das Status-Dropdown anschauen.",
-          "line4": "Nutzen Sie die Dokumentation, um loszulegen!"
-        },
+        "description": "",
         "emptyState": "",
         "heading": "Benutzerdefinierte Status"
+      },
+      "description": {
+        "core": "",
+        "custom": "",
+        "docsLink": ""
       },
       "filter": {
         "placeholder": ""

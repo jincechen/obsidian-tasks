@@ -147,62 +147,46 @@ export class SettingsTab extends PluginSettingTab {
     // -----------------------------------------------------------------------
 
     private static taskFormatDescription(): string {
-        return paras([i18n.t('settings.format.description.line1'), i18n.t('settings.format.description.line2')]);
+        return paras([i18n.t('settings.format.description'), i18n.t('settings.format.oneFormatOnly')]);
     }
 
     private static globalFilterDescription(): string {
         return paras([
-            bold(i18n.t('settings.globalFilter.filter.description.line1')),
-            i18n.t('settings.globalFilter.filter.description.line2'),
-            [
-                i18n.t('settings.globalFilter.filter.description.line3'),
-                i18n.t('settings.globalFilter.filter.description.line4'),
-            ].join(' '),
+            i18n.t('settings.globalFilter.filter.description'),
+            i18n.t('settings.globalFilter.filter.example', { example: code('#task') }),
         ]);
     }
 
     private static statusesDescription(): string {
         return paras([
-            bold(i18n.t('settings.statuses.coreStatuses.heading')),
-            i18n.t('settings.statuses.coreStatuses.description.line1'),
-            bold(i18n.t('settings.statuses.customStatuses.heading')),
-            i18n.t('settings.statuses.coreStatuses.description.line2'),
-            [
-                i18n.t('settings.statuses.customStatuses.description.line1'),
-                i18n.t('settings.statuses.customStatuses.description.line2'),
-            ].join(' '),
-            link(docs.statuses, i18n.t('settings.statuses.customStatuses.description.line4')),
+            i18n.t('settings.statuses.description.core'),
+            i18n.t('settings.statuses.description.custom'),
+            link(docs.statuses, i18n.t('settings.statuses.description.docsLink')),
         ]);
     }
 
     private static coreStatusesDescription(): string {
-        return paras([
-            i18n.t('settings.statuses.coreStatuses.description.line1'),
-            i18n.t('settings.statuses.coreStatuses.description.line2'),
-        ]);
+        return para(i18n.t('settings.statuses.coreStatuses.description'));
     }
 
     private static customStatusesDescription(): string {
         return paras([
-            i18n.t('settings.statuses.customStatuses.description.line1'),
-            i18n.t('settings.statuses.customStatuses.description.line2'),
-            i18n.t('settings.statuses.customStatuses.description.line3'),
+            i18n.t('settings.statuses.description.custom'),
+            i18n.t('settings.statuses.customStatuses.description'),
         ]);
     }
 
     private static presetsDescription(): string {
-        return paras([
-            i18n.t('settings.presets.line1', {
-                name: code('name'),
+        return para(
+            i18n.t('settings.presets.description', {
                 instruction1: code('preset name'),
                 instruction2: code('{{preset.name}}'),
             }),
-            i18n.t('settings.presets.line2'),
-        ]);
+        );
     }
 
     private static customSearchesDescription(): string {
-        return i18n.t('settings.searches.enableCustomSearches.description.line1', {
+        return i18n.t('settings.queries.javaScript.description', {
             filterByFunction: code('filter by function'),
             sortByFunction: code('sort by function'),
             groupByFunction: code('group by function'),
@@ -210,34 +194,20 @@ export class SettingsTab extends PluginSettingTab {
     }
 
     /**
-     * The risks of custom searches, which the legacy settings show as there is no confirmation there.
+     * The risks of JavaScript in queries, which the legacy settings show as there is no confirmation there.
      */
     private static customSearchesRisks(): string {
         return paras([
-            i18n.t('settings.searches.enableCustomSearches.description.line2'),
-            bold(i18n.t('settings.searches.enableCustomSearches.description.line3')),
-            i18n.t('settings.searches.enableCustomSearches.description.line4'),
+            i18n.t('settings.queries.javaScript.confirm.risk'),
+            bold(i18n.t('settings.queries.javaScript.confirm.trust')),
         ]);
     }
 
     private static filenameDateDescription(): string {
-        return paras([
-            [
-                i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line1'),
-                i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line2'),
-            ].join(' '),
-            [
-                i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line3'),
-                i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line4'),
-            ].join(' '),
-        ]);
-    }
-
-    private static removeScheduledDateDescription(): string {
-        return paras([
-            i18n.t('settings.recurringTasks.removeScheduledDate.description.line1'),
-            i18n.t('settings.recurringTasks.removeScheduledDate.description.line2'),
-        ]);
+        return i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description', {
+            format1: code('YYYY-MM-DD'),
+            format2: code('YYYYMMDD'),
+        });
     }
 
     /**
@@ -452,13 +422,10 @@ export class SettingsTab extends PluginSettingTab {
             heading: i18n.t('settings.queries.heading'),
             items: [
                 {
-                    name: i18n.t('settings.globalQuery.heading'),
+                    name: i18n.t('settings.queries.globalQuery.name'),
                     aliases: [i18n.t('settings.queries.heading')],
                     desc: SettingsTab.createFragmentWithHTML(
-                        paras([
-                            i18n.t('settings.globalQuery.query.shortDescription'),
-                            SettingsTab.globalQuerySummary(),
-                        ]),
+                        paras([i18n.t('settings.queries.globalQuery.description'), SettingsTab.globalQuerySummary()]),
                     ),
                     render: this.withDocs((setting) => {
                         setting.addExtraButton((btn) =>
@@ -471,7 +438,7 @@ export class SettingsTab extends PluginSettingTab {
                 },
                 this.presetsPage(),
                 {
-                    name: i18n.t('settings.searches.enableCustomSearches.name'),
+                    name: i18n.t('settings.queries.javaScript.name'),
                     desc: SettingsTab.createFragmentWithHTML(SettingsTab.customSearchesDescription()),
                     render: this.withDocs(
                         (setting) => this.renderEnableCustomSearchesToggle(setting),
@@ -518,24 +485,20 @@ export class SettingsTab extends PluginSettingTab {
         // called from the declarative settings path, which requires 1.13.0+.
         if (requireApiVersion('1.13.0')) {
             const modal = new ConfirmationModal(this.app);
-            modal.setTitle(i18n.t('settings.searches.enableCustomSearches.name'));
+            modal.setTitle(i18n.t('settings.queries.javaScript.name'));
 
             modal.contentEl.createEl('p', {
                 cls: 'setting-item-description',
-                text: i18n.t('settings.searches.enableCustomSearches.description.line2'),
+                text: i18n.t('settings.queries.javaScript.confirm.risk'),
             });
             const warningEl = modal.contentEl.createEl('p', { cls: 'setting-item-description mod-warning' });
             warningEl.createEl('b', {
-                text: i18n.t('settings.searches.enableCustomSearches.description.line3'),
-            });
-            modal.contentEl.createEl('p', {
-                cls: 'setting-item-description',
-                text: i18n.t('settings.searches.enableCustomSearches.description.line4'),
+                text: i18n.t('settings.queries.javaScript.confirm.trust'),
             });
 
             let acknowledged = false;
             let enableBtn: ConfirmationButton | null = null;
-            modal.addCheckbox(i18n.t('settings.searches.enableCustomSearches.confirm.acknowledge'), (value) => {
+            modal.addCheckbox(i18n.t('settings.queries.javaScript.confirm.acknowledge'), (value) => {
                 acknowledged = value;
                 if (enableBtn) {
                     enableBtn.setDisabled(!acknowledged);
@@ -548,7 +511,7 @@ export class SettingsTab extends PluginSettingTab {
             modal.addCancelButton();
             modal.addButton((btn) => {
                 enableBtn = btn;
-                btn.setButtonText(i18n.t('settings.searches.enableCustomSearches.confirm.enable'))
+                btn.setButtonText(i18n.t('settings.queries.javaScript.confirm.allow'))
                     .setCta()
                     .setDisabled(true)
                     .onClick(() => {
@@ -940,7 +903,7 @@ export class SettingsTab extends PluginSettingTab {
                 },
                 {
                     name: i18n.t('settings.datesFromFileNames.scheduledDate.extraFormat.name'),
-                    desc: i18n.t('settings.datesFromFileNames.scheduledDate.extraFormat.description.line1'),
+                    desc: i18n.t('settings.datesFromFileNames.scheduledDate.extraFormat.description'),
                     visible: () => getSettings().useFilenameAsScheduledDate,
                     render: this.withDocs(
                         this.withReload('filenameAsScheduledDateFormat', (setting, refreshReloadButton) => {
@@ -966,6 +929,7 @@ export class SettingsTab extends PluginSettingTab {
                     render: this.withReload('filenameAsDateFolders', (setting, refreshReloadButton) => {
                         setting.addText((input) => {
                             input
+                                .setPlaceholder(i18n.t('settings.datesFromFileNames.scheduledDate.folders.placeholder'))
                                 .setValue(SettingsTab.renderFolderArray(getSettings().filenameAsDateFolders))
                                 .onChange(async (value) => {
                                     const folders = SettingsTab.parseCommaSeparatedFolders(value);
@@ -995,7 +959,7 @@ export class SettingsTab extends PluginSettingTab {
                 },
                 {
                     name: i18n.t('settings.recurringTasks.removeScheduledDate.name'),
-                    desc: SettingsTab.createFragmentWithHTML(SettingsTab.removeScheduledDateDescription()),
+                    desc: i18n.t('settings.recurringTasks.removeScheduledDate.description'),
                     render: this.renderToggleWithDocs('removeScheduledDateOnRecurrence', docs.recurringTasks),
                 },
             ],
@@ -1073,16 +1037,13 @@ export class SettingsTab extends PluginSettingTab {
             heading: i18n.t('settings.display.heading'),
             items: [
                 {
-                    name: i18n.t('settings.searchResults.taskCountLocation.name'),
+                    name: i18n.t('settings.display.taskCountLocation.name'),
                     aliases: [i18n.t('settings.display.heading')],
-                    desc: i18n.t('settings.searchResults.taskCountLocation.description'),
+                    desc: i18n.t('settings.display.taskCountLocation.description'),
                     render: (setting) => {
                         setting.addDropdown((dropdown) => {
-                            dropdown.addOption('top', i18n.t('settings.searchResults.taskCountLocation.options.top'));
-                            dropdown.addOption(
-                                'bottom',
-                                i18n.t('settings.searchResults.taskCountLocation.options.bottom'),
-                            );
+                            dropdown.addOption('top', i18n.t('settings.display.taskCountLocation.options.top'));
+                            dropdown.addOption('bottom', i18n.t('settings.display.taskCountLocation.options.bottom'));
                             dropdown.setValue(getSettings().searchResults.taskCountLocation).onChange(async (value) => {
                                 updateSettings({
                                     searchResults: { taskCountLocation: value as 'top' | 'bottom' },
@@ -1094,8 +1055,8 @@ export class SettingsTab extends PluginSettingTab {
                     },
                 },
                 {
-                    name: i18n.t('settings.dialogs.accessKeys.name'),
-                    desc: i18n.t('settings.dialogs.accessKeys.description'),
+                    name: i18n.t('settings.display.accessKeys.name'),
+                    desc: i18n.t('settings.display.accessKeys.description'),
                     render: this.renderToggleWithDocs('provideAccessKeys', docs.accessKeys),
                 },
             ],
@@ -1320,15 +1281,15 @@ export class SettingsTab extends PluginSettingTab {
 
         makeMultilineTextSetting(
             new Setting(containerEl)
-                .setName(i18n.t('settings.globalQuery.heading'))
+                .setName(i18n.t('settings.queries.globalQuery.name'))
                 .setDesc(
-                    SettingsTab.legacyDescription(i18n.t('settings.globalQuery.query.shortDescription'), {
+                    SettingsTab.legacyDescription(i18n.t('settings.queries.globalQuery.description'), {
                         docsUrl: docs.globalQuery,
                     }),
                 )
                 .addTextArea((text) => {
                     text.inputEl.rows = 4;
-                    text.setPlaceholder('# ' + i18n.t('settings.globalQuery.query.placeholder'))
+                    text.setPlaceholder(i18n.t('settings.queries.globalQuery.placeholder'))
                         .setValue(getSettings().globalQuery)
                         .onChange(async (value) => {
                             updateSettings({ globalQuery: value });
@@ -1348,7 +1309,7 @@ export class SettingsTab extends PluginSettingTab {
         );
 
         new Setting(containerEl)
-            .setName(i18n.t('settings.searches.enableCustomSearches.name'))
+            .setName(i18n.t('settings.queries.javaScript.name'))
             .setDesc(
                 SettingsTab.legacyDescription(
                     para(SettingsTab.customSearchesDescription()) + SettingsTab.customSearchesRisks(),
@@ -1412,7 +1373,7 @@ export class SettingsTab extends PluginSettingTab {
             .setName(i18n.t('settings.datesFromFileNames.scheduledDate.extraFormat.name'))
             .setDesc(
                 SettingsTab.legacyDescription(
-                    i18n.t('settings.datesFromFileNames.scheduledDate.extraFormat.description.line1'),
+                    i18n.t('settings.datesFromFileNames.scheduledDate.extraFormat.description'),
                     { docsUrl: docs.momentFormats, requiresReload: true },
                 ),
             )
@@ -1434,6 +1395,7 @@ export class SettingsTab extends PluginSettingTab {
             )
             .addText((input) => {
                 input
+                    .setPlaceholder(i18n.t('settings.datesFromFileNames.scheduledDate.folders.placeholder'))
                     .setValue(SettingsTab.renderFolderArray(getSettings().filenameAsDateFolders))
                     .onChange(async (value) => {
                         const folders = SettingsTab.parseCommaSeparatedFolders(value);
@@ -1465,7 +1427,7 @@ export class SettingsTab extends PluginSettingTab {
         new Setting(containerEl)
             .setName(i18n.t('settings.recurringTasks.removeScheduledDate.name'))
             .setDesc(
-                SettingsTab.legacyDescription(SettingsTab.removeScheduledDateDescription(), {
+                SettingsTab.legacyDescription(i18n.t('settings.recurringTasks.removeScheduledDate.description'), {
                     docsUrl: docs.recurringTasks,
                 }),
             )
@@ -1542,11 +1504,11 @@ export class SettingsTab extends PluginSettingTab {
         new Setting(containerEl).setName(i18n.t('settings.display.heading')).setHeading();
 
         new Setting(containerEl)
-            .setName(i18n.t('settings.searchResults.taskCountLocation.name'))
-            .setDesc(i18n.t('settings.searchResults.taskCountLocation.description'))
+            .setName(i18n.t('settings.display.taskCountLocation.name'))
+            .setDesc(i18n.t('settings.display.taskCountLocation.description'))
             .addDropdown((dropdown) => {
-                dropdown.addOption('top', i18n.t('settings.searchResults.taskCountLocation.options.top'));
-                dropdown.addOption('bottom', i18n.t('settings.searchResults.taskCountLocation.options.bottom'));
+                dropdown.addOption('top', i18n.t('settings.display.taskCountLocation.options.top'));
+                dropdown.addOption('bottom', i18n.t('settings.display.taskCountLocation.options.bottom'));
                 dropdown.setValue(getSettings().searchResults.taskCountLocation).onChange(async (value) => {
                     updateSettings({ searchResults: { taskCountLocation: value as 'top' | 'bottom' } });
                     await this.plugin.saveSettings();
@@ -1556,9 +1518,9 @@ export class SettingsTab extends PluginSettingTab {
             });
 
         new Setting(containerEl)
-            .setName(i18n.t('settings.dialogs.accessKeys.name'))
+            .setName(i18n.t('settings.display.accessKeys.name'))
             .setDesc(
-                SettingsTab.legacyDescription(i18n.t('settings.dialogs.accessKeys.description'), {
+                SettingsTab.legacyDescription(i18n.t('settings.display.accessKeys.description'), {
                     docsUrl: docs.accessKeys,
                 }),
             )
@@ -1611,7 +1573,7 @@ export class SettingsTab extends PluginSettingTab {
     }
 
     private static renderFolderArray(folders: string[]): string {
-        return folders.join(',');
+        return folders.join(', ');
     }
 }
 

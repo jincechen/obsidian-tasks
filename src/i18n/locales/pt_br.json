@@ -160,61 +160,55 @@
       "heading": "Datas baseadas nos nomes dos arquivos",
       "scheduledDate": {
         "extraFormat": {
-          "description": {
-            "line1": "Um formato de data adicional que o plugin Tasks reconhecerá ao usar o nome do arquivo como a data Agendada para tarefas sem data."
-          },
+          "description": "",
           "name": "Formato adicional de data do nome do arquivo como data Agendada para tarefas sem data",
           "placeholder": "exemplo: MMM DD YYYY"
         },
         "folders": {
           "description": "Deixe em branco se quiser usar as datas Agendadas padrão em todos os lugares, ou insira uma lista de pastas separada por vírgulas.",
-          "name": "Pastas com datas Agendadas padrão"
+          "name": "Pastas com datas Agendadas padrão",
+          "placeholder": ""
         },
         "toggle": {
-          "description": {
-            "line1": "Economize tempo inserindo datas Agendadas (⏳).",
-            "line2": "Se esta opção for ativada, as tarefas sem data receberão uma data Agendada padrão extraída do nome do seu arquivo.",
-            "line3": "Por padrão, o plugin Tasks reconhecerá os formatos de data <code>YYYY-MM-DD</code> e <code>YYYYMMDD</code>.",
-            "line4": "Tarefas sem data não possuem datas de Vencimento (📅), Agendamento (⏳) e Início (🛫)."
-          },
+          "description": "",
           "name": "Usar nome do arquivo como data Agendada para tarefas sem data"
         }
       }
     },
-    "dialogs": {
-      "accessKeys": {
-        "description": "Se as teclas de acesso (atalhos de teclado) de vários controles nas caixas de diálogo entrarem em conflito com os atalhos de teclado do sistema ou com recursos de tecnologia assistiva importantes para você, é possível desativá-los aqui.",
-        "name": "Fornecer teclas de acesso nas caixas de diálogo"
-      }
-    },
     "display": {
-      "heading": ""
+      "accessKeys": {
+        "description": "",
+        "name": ""
+      },
+      "heading": "",
+      "taskCountLocation": {
+        "description": "",
+        "name": "",
+        "options": {
+          "bottom": "",
+          "top": ""
+        }
+      }
     },
     "editing": {
       "heading": ""
     },
     "format": {
-      "description": {
-        "line1": "O formato que o Tasks usa para ler e escrever tarefas.",
-        "line2": "<b>Importante:</b> Atualmente o Tasks suporta apenas um formato por vez. Selecionar o Dataview fará com que o Tasks <b>pare de ler seus próprios indicadores de emoji</b>."
-      },
+      "description": "",
       "displayName": {
         "dataview": "Dataview",
         "tasksEmojiFormat": "Formato de Emoji do Tasks"
       },
-      "name": "Formato da Tarefa"
+      "name": "Formato da Tarefa",
+      "oneFormatOnly": ""
     },
     "general": {
       "heading": ""
     },
     "globalFilter": {
       "filter": {
-        "description": {
-          "line1": "Recomendado: Deixe vazio se você quiser que todos os itens de checklist no seu cofre (vault) sejam tarefas gerenciadas por este plugin.",
-          "line2": "Use um filtro global se quiser que o Tasks atue apenas sobre um subconjunto de seus itens de checklist \"<code>- [ ]</code>\", de forma que um item de checklist precise incluir a string especificada na sua descrição para ser considerado uma tarefa.",
-          "line3": "Por exemplo, se você definir o filtro global como <code>#task</code>, o plugin Tasks só manipulará os itens de checklist com a tag <code>#task</code>.",
-          "line4": "Outros itens continuarão sendo itens normais de checklist e não aparecerão nas consultas nem receberão data de conclusão."
-        },
+        "description": "",
+        "example": "",
         "name": "Filtro global",
         "placeholder": "ex. #task ou TODO"
       },
@@ -223,31 +217,36 @@
         "name": "Remover filtro global da descrição"
       }
     },
-    "globalQuery": {
-      "heading": "Consulta Global",
-      "query": {
-        "description": "Uma consulta que é incluída automaticamente no início de cada bloco do Tasks no cofre. Útil para adicionar filtros padrão ou opções de layout.",
-        "placeholder": "Por exemplo...\npath does not include _templates/\nlimit 300\nshow urgency",
-        "shortDescription": ""
-      }
-    },
     "presets": {
       "buttons": {
         "addNewPreset": "Adicionar nova predefinição"
       },
+      "description": "",
       "emptyState": "",
-      "line1": "Você pode definir instruções nomeadas aqui, que podem ser reutilizadas em várias consultas. Uma predefinição chamada '{{name}}' pode ser usada em consultas do Tasks com '{{instruction1}}' ou '{{instruction2}}'.",
-      "line2": "Quaisquer consultas do Tasks abertas são recarregadas automaticamente quando as predefinições são editadas.",
       "name": "Predefinições (Presets)"
     },
     "queries": {
       "globalQuery": {
+        "description": "",
+        "modalDescription": "",
+        "name": "",
         "notSet": "",
+        "placeholder": "",
         "summary": "",
         "summaryMultiline_one": "",
         "summaryMultiline_other": ""
       },
-      "heading": ""
+      "heading": "",
+      "javaScript": {
+        "confirm": {
+          "acknowledge": "",
+          "allow": "",
+          "risk": "",
+          "trust": ""
+        },
+        "description": "",
+        "name": ""
+      }
     },
     "recurringTasks": {
       "heading": "Tarefas recorrentes",
@@ -256,39 +255,11 @@
         "name": "A próxima recorrência aparece na linha de baixo"
       },
       "removeScheduledDate": {
-        "description": {
-          "line1": "A ativação desta opção fará com que a próxima recorrência de uma tarefa não tenha data Agendada (⏳), quando pelo menos uma das datas de Início (🛫) ou Vencimento (📅) estiver presente.",
-          "line2": "Isto é útil para quando você deseja que as datas de Início e Vencimento sejam mantidas na próxima recorrência, mas pretende definir a data Agendada no futuro, quando for planejar trabalhar nela."
-        },
+        "description": "",
         "name": "Remover data agendada na recorrência"
       }
     },
     "reloadToApply": "",
-    "searchResults": {
-      "taskCountLocation": {
-        "description": "Escolha se a contagem de tarefas deve ser mostrada na parte superior ou inferior dos resultados da consulta.",
-        "name": "Localização da contagem de tarefas",
-        "options": {
-          "bottom": "Inferior",
-          "top": "Superior"
-        }
-      }
-    },
-    "searches": {
-      "enableCustomSearches": {
-        "confirm": {
-          "acknowledge": "",
-          "enable": ""
-        },
-        "description": {
-          "line1": "",
-          "line2": "",
-          "line3": "",
-          "line4": ""
-        },
-        "name": ""
-      }
-    },
     "seeTheDocumentation": "Veja a documentação",
     "statuses": {
       "buttons": {
@@ -320,10 +291,7 @@
             "tooltip": "Criar um novo arquivo na raiz do cofre, contendo um diagrama Mermaid das configurações atuais de status."
           }
         },
-        "description": {
-          "line1": "Estes são os status principais que o Tasks suporta nativamente, sem a necessidade de estilos CSS personalizados ou temas.",
-          "line2": "Você pode adicionar e editar seus próprios status personalizados na seção abaixo."
-        },
+        "description": "",
         "heading": "Status Principais"
       },
       "customStatuses": {
@@ -337,14 +305,14 @@
             "name": "Redefinir Tipos de Status Personalizados para os Padrões"
           }
         },
-        "description": {
-          "line1": "Primeiro, você deve <b>selecionar e instalar um Snippet CSS ou Tema</b> para estilizar as caixas de seleção personalizadas.",
-          "line2": "Em seguida, use os botões abaixo para configurar seus status personalizados, para que correspondam às caixas de seleção CSS escolhidas.",
-          "line3": "<b>Nota:</b> Qualquer status com o mesmo símbolo de um status anterior será ignorado. Você pode confirmar os status que foram realmente carregados executando o comando 'Criar ou editar tarefa' e olhando a lista suspensa de Status.",
-          "line4": "Veja a documentação para começar!"
-        },
+        "description": "",
         "emptyState": "",
         "heading": "Status Personalizados"
+      },
+      "description": {
+        "core": "",
+        "custom": "",
+        "docsLink": ""
       },
       "filter": {
         "placeholder": ""
