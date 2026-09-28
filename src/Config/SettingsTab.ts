@@ -591,19 +591,7 @@ export class SettingsTab extends PluginSettingTab {
                                     ),
                                 ),
                     ],
-                    items: [
-                        ...statusSettings.coreStatuses.map((status) => statusRow(status, true)),
-                        {
-                            name: i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.name'),
-                            desc: i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.tooltip'),
-                            // List headings are not searchable, so this
-                            // always-present row carries the heading as an alias.
-                            aliases: [i18n.t('settings.statuses.coreStatuses.heading')],
-                            action: async () => {
-                                await this.createStatusRegistryReport();
-                            },
-                        },
-                    ],
+                    items: statusSettings.coreStatuses.map((status) => statusRow(status, true)),
                 },
                 {
                     type: 'list',
@@ -662,24 +650,42 @@ export class SettingsTab extends PluginSettingTab {
                 },
                 {
                     type: 'list',
+                    heading: i18n.t('settings.statuses.tools.heading'),
                     items: [
                         {
-                            name: i18n.t('settings.statuses.buttons.importFromTheme.name'),
-                            desc: i18n.t('settings.statuses.buttons.importFromTheme.description'),
+                            name: i18n.t('settings.statuses.tools.importFromTheme.name'),
+                            desc: i18n.t('settings.statuses.tools.importFromTheme.description'),
                             searchable: false,
                             action: (el) => this.showImportFromThemeMenu(el),
                         },
                         {
-                            name: i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.name'),
-                            desc: i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.description'),
+                            name: i18n.t('settings.statuses.tools.addUnknown.name'),
+                            desc: i18n.t('settings.statuses.tools.addUnknown.description'),
                             searchable: false,
                             action: () => this.addUnknownStatuses(),
                         },
                         {
-                            name: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.name'),
-                            desc: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.description'),
-                            aliases: [i18n.t('settings.statuses.customStatuses.heading')],
-                            action: () => this.resetCustomStatuses(),
+                            name: i18n.t('settings.statuses.tools.report.name'),
+                            desc: i18n.t('settings.statuses.tools.report.description'),
+                            // List headings are not searchable, so this
+                            // always-present row carries the page name as an alias.
+                            aliases: [i18n.t('settings.statuses.heading')],
+                            action: async () => {
+                                await this.createStatusRegistryReport();
+                            },
+                        },
+                        {
+                            name: i18n.t('settings.statuses.tools.reset.name'),
+                            desc: i18n.t('settings.statuses.tools.reset.description'),
+                            searchable: false,
+                            render: (setting) => {
+                                setting.addButton((button) => {
+                                    button
+                                        .setButtonText(i18n.t('settings.statuses.tools.reset.button'))
+                                        .setWarning()
+                                        .onClick(() => this.resetCustomStatuses());
+                                });
+                            },
                         },
                     ],
                 },
@@ -846,21 +852,16 @@ export class SettingsTab extends PluginSettingTab {
 
     private async createStatusRegistryReport(): Promise<void> {
         const { statusSettings } = getSettings();
-        const buttonName = i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.name');
+        const title = i18n.t('settings.statuses.tools.report.noteTitle');
 
         // Generate a new file unique file name, in the root of the vault
         const now = window.moment();
         const formattedDateTime = now.format('YYYY-MM-DD HH-mm-ss');
-        const filename = `Tasks Plugin - ${buttonName} ${formattedDateTime}.md`;
+        const filename = `Tasks Plugin - ${title} ${formattedDateTime}.md`;
 
         // Create the report
         const version = this.plugin.manifest.version;
-        const fileContent = createStatusRegistryReport(
-            statusSettings,
-            StatusRegistry.getInstance(),
-            buttonName,
-            version,
-        );
+        const fileContent = createStatusRegistryReport(statusSettings, StatusRegistry.getInstance(), title, version);
 
         // Save the file, and open it
         const file = await this.app.vault.create(filename, fileContent);
@@ -1188,13 +1189,6 @@ export class SettingsTab extends PluginSettingTab {
                 statusSettings.coreStatuses.forEach((status) => {
                     this.createRowForTaskStatus(sectionEl, status, true);
                 });
-                this.addLegacyButton(
-                    sectionEl,
-                    i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.name'),
-                    i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.tooltip'),
-                    async () => await this.createStatusRegistryReport(),
-                    'cta',
-                );
             },
         );
 
@@ -1206,66 +1200,61 @@ export class SettingsTab extends PluginSettingTab {
                 statusSettings.customStatuses.forEach((status) => {
                     this.createRowForTaskStatus(sectionEl, status, false);
                 });
-                this.addLegacyButton(
-                    sectionEl,
-                    i18n.t('settings.statuses.buttons.addStatus'),
-                    null,
-                    () => {
-                        StatusSettings.addStatus(
-                            statusSettings.customStatuses,
-                            new StatusConfiguration('', '', '', false, StatusType.TODO),
-                        );
-                        updateAndSaveStatusSettings(statusSettings, this);
-                    },
-                    'cta',
-                );
+
+                const addStatus = new Setting(sectionEl).addButton((button) => {
+                    button
+                        .setButtonText(i18n.t('settings.statuses.buttons.addStatus'))
+                        .setCta()
+                        .onClick(() => {
+                            StatusSettings.addStatus(
+                                statusSettings.customStatuses,
+                                new StatusConfiguration('', '', '', false, StatusType.TODO),
+                            );
+                            updateAndSaveStatusSettings(statusSettings, this);
+                        });
+                });
+                addStatus.infoEl.remove();
             },
         );
 
-        this.addLegacyButton(
-            containerEl,
-            i18n.t('settings.statuses.buttons.importFromTheme.name'),
-            i18n.t('settings.statuses.buttons.importFromTheme.description'),
-            (buttonEl) => this.showImportFromThemeMenu(buttonEl),
-        );
-        this.addLegacyButton(
-            containerEl,
-            i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.name'),
-            i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.description'),
-            () => this.addUnknownStatuses(),
-            'cta',
-        );
-        this.addLegacyButton(
-            containerEl,
-            i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.name'),
-            i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.description'),
-            () => this.resetCustomStatuses(),
-            'warning',
-        );
-    }
+        this.addCollapsibleSection(containerEl, i18n.t('settings.statuses.tools.heading'), null, (sectionEl) => {
+            new Setting(sectionEl)
+                .setName(i18n.t('settings.statuses.tools.importFromTheme.name'))
+                .setDesc(i18n.t('settings.statuses.tools.importFromTheme.description'))
+                .addButton((button) => {
+                    button
+                        .setButtonText(i18n.t('settings.statuses.tools.importFromTheme.button'))
+                        .onClick(() => this.showImportFromThemeMenu(button.buttonEl));
+                });
 
-    /**
-     * A row with just a button, whose tooltip is the description of the matching 1.13+ row.
-     */
-    private addLegacyButton(
-        containerEl: HTMLElement,
-        text: string,
-        tooltip: string | null,
-        onClick: (buttonEl: HTMLElement) => unknown,
-        style: 'cta' | 'warning' | null = null,
-    ) {
-        const setting = new Setting(containerEl).addButton((button) => {
-            button.setButtonText(text).onClick(() => onClick(button.buttonEl));
-            if (tooltip !== null) {
-                button.setTooltip(tooltip);
-            }
-            if (style === 'cta') {
-                button.setCta();
-            } else if (style === 'warning') {
-                button.setWarning();
-            }
+            new Setting(sectionEl)
+                .setName(i18n.t('settings.statuses.tools.addUnknown.name'))
+                .setDesc(i18n.t('settings.statuses.tools.addUnknown.description'))
+                .addButton((button) => {
+                    button
+                        .setButtonText(i18n.t('settings.statuses.tools.addUnknown.button'))
+                        .onClick(() => this.addUnknownStatuses());
+                });
+
+            new Setting(sectionEl)
+                .setName(i18n.t('settings.statuses.tools.report.name'))
+                .setDesc(i18n.t('settings.statuses.tools.report.description'))
+                .addButton((button) => {
+                    button
+                        .setButtonText(i18n.t('settings.statuses.tools.report.button'))
+                        .onClick(async () => await this.createStatusRegistryReport());
+                });
+
+            new Setting(sectionEl)
+                .setName(i18n.t('settings.statuses.tools.reset.name'))
+                .setDesc(i18n.t('settings.statuses.tools.reset.description'))
+                .addButton((button) => {
+                    button
+                        .setButtonText(i18n.t('settings.statuses.tools.reset.button'))
+                        .setWarning()
+                        .onClick(() => this.resetCustomStatuses());
+                });
         });
-        setting.infoEl.remove();
     }
 
     private displayQueries(containerEl: HTMLElement) {
@@ -1530,7 +1519,7 @@ export class SettingsTab extends PluginSettingTab {
     private addCollapsibleSection(
         containerEl: HTMLElement,
         heading: string,
-        descriptionHtml: string,
+        descriptionHtml: string | null,
         renderContent: (sectionEl: HTMLElement) => void,
     ) {
         const { headingOpened } = getSettings();
@@ -1547,7 +1536,9 @@ export class SettingsTab extends PluginSettingTab {
         new Setting(summary).setHeading().setName(heading);
         summary.createDiv('collapser').createDiv('handle');
 
-        new Setting(detailsContainer).setDesc(SettingsTab.createFragmentWithHTML(descriptionHtml));
+        if (descriptionHtml !== null) {
+            new Setting(detailsContainer).setDesc(SettingsTab.createFragmentWithHTML(descriptionHtml));
+        }
 
         renderContent(detailsContainer);
     }

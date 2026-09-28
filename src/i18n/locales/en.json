@@ -75,7 +75,7 @@
         "updateReport": {
           "line1": "If you change the Tasks status settings, you can get an updated report by:",
           "line2": "Going to `Settings` -> `Tasks`.",
-          "line3": "Clicking on `Review and check your statuses`."
+          "line3": "Clicking `Create status report` on the `Task statuses` page."
         }
       },
       "columnHeadings": {
@@ -264,11 +264,7 @@
     "seeTheDocumentation": "See the documentation",
     "statuses": {
       "buttons": {
-        "addStatus": "Add status",
-        "importFromTheme": {
-          "description": "Add the statuses supported by a theme or CSS snippet.",
-          "name": "Import from theme"
-        }
+        "addStatus": "Add status"
       },
       "collections": {
         "anuppuccinTheme": "AnuPpuccin",
@@ -286,26 +282,10 @@
         "thingsTheme": "Things"
       },
       "coreStatuses": {
-        "buttons": {
-          "checkStatuses": {
-            "name": "Review and check your statuses",
-            "tooltip": "Create a new file in the root of the vault, containing a Mermaid diagram of the current status settings."
-          }
-        },
         "description": "Built-in statuses that work with any theme. You can rename them and change what they toggle to.",
         "heading": "Core statuses"
       },
       "customStatuses": {
-        "buttons": {
-          "addAllUnknown": {
-            "description": "Add any status symbols found in your vault but not yet configured here.",
-            "name": "Add all unknown status types"
-          },
-          "resetCustomStatuses": {
-            "description": "Discard all custom statuses and restore the defaults.",
-            "name": "Reset custom status types to defaults"
-          }
-        },
         "description": "Each symbol can only be used once. Later duplicates are ignored.",
         "emptyState": "No custom statuses yet.",
         "heading": "Custom statuses"
@@ -322,6 +302,30 @@
       "reloadRequired": "Changes take effect after reload.",
       "row": {
         "next": "Next"
+      },
+      "tools": {
+        "addUnknown": {
+          "button": "Add",
+          "description": "Add any status symbols used in your notes that are not set up yet.",
+          "name": "Add statuses found in vault"
+        },
+        "heading": "Tools",
+        "importFromTheme": {
+          "button": "Choose theme…",
+          "description": "Add the statuses supported by a theme or CSS snippet.",
+          "name": "Import from theme"
+        },
+        "report": {
+          "button": "Create",
+          "description": "Create a note that lists your statuses, with a diagram of how they toggle.",
+          "name": "Create status report",
+          "noteTitle": "Status report"
+        },
+        "reset": {
+          "button": "Reset",
+          "description": "Replace all custom statuses with the defaults.",
+          "name": "Reset custom statuses"
+        }
       },
       "types": {
         "cancelled": "Cancelled",

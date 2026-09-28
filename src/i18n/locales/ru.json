@@ -75,7 +75,7 @@
         "updateReport": {
           "line1": "Если вы измените настройки статусов Tasks, вы можете получить обновленный отчет, выполнив следующие действия:",
           "line2": "Перейдите в `Settings` -> `Tasks`.",
-          "line3": "Нажмите на `Review and check your Statuses`."
+          "line3": ""
         }
       },
       "columnHeadings": {
@@ -264,11 +264,7 @@
     "seeTheDocumentation": "Смотрите документацию",
     "statuses": {
       "buttons": {
-        "addStatus": "",
-        "importFromTheme": {
-          "description": "",
-          "name": ""
-        }
+        "addStatus": ""
       },
       "collections": {
         "anuppuccinTheme": "Тема AnuPpuccin",
@@ -286,26 +282,10 @@
         "thingsTheme": "Тема Things"
       },
       "coreStatuses": {
-        "buttons": {
-          "checkStatuses": {
-            "name": "Просмотреть и проверить свои статусы",
-            "tooltip": "Создать новый файл в корне хранилища, содержащий Mermaid диаграмму текущих настроек статусов."
-          }
-        },
         "description": "",
         "heading": "Основные статусы"
       },
       "customStatuses": {
-        "buttons": {
-          "addAllUnknown": {
-            "description": "",
-            "name": "Добавить все неизвестные типы статусов"
-          },
-          "resetCustomStatuses": {
-            "description": "",
-            "name": "Сбросить пользовательские типы статусов к значениям по умолчанию"
-          }
-        },
         "description": "",
         "emptyState": "",
         "heading": "Пользовательские статусы"
@@ -322,6 +302,30 @@
       "reloadRequired": "",
       "row": {
         "next": ""
+      },
+      "tools": {
+        "addUnknown": {
+          "button": "",
+          "description": "",
+          "name": ""
+        },
+        "heading": "",
+        "importFromTheme": {
+          "button": "",
+          "description": "",
+          "name": ""
+        },
+        "report": {
+          "button": "",
+          "description": "",
+          "name": "",
+          "noteTitle": ""
+        },
+        "reset": {
+          "button": "",
+          "description": "",
+          "name": ""
+        }
       },
       "types": {
         "cancelled": "",

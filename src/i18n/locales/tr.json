@@ -75,7 +75,7 @@
         "updateReport": {
           "line1": "Tasks durum ayarlarını değiştirirseniz, güncel raporu şu şekilde alabilirsiniz:",
           "line2": "`Ayarlar` -> `Tasks` bölümüne gidin.",
-          "line3": "`Durumlarınızı inceleyin ve kontrol edin` seçeneğine tıklayın."
+          "line3": ""
         }
       },
       "columnHeadings": {
@@ -264,11 +264,7 @@
     "seeTheDocumentation": "Belgelere bakın",
     "statuses": {
       "buttons": {
-        "addStatus": "",
-        "importFromTheme": {
-          "description": "",
-          "name": ""
-        }
+        "addStatus": ""
       },
       "collections": {
         "anuppuccinTheme": "AnuPpuccin Teması",
@@ -286,26 +282,10 @@
         "thingsTheme": "Things Teması"
       },
       "coreStatuses": {
-        "buttons": {
-          "checkStatuses": {
-            "name": "Durumlarınızı inceleyin ve kontrol edin",
-            "tooltip": "Kasanın kök dizininde, mevcut durum ayarlarının Mermaid diyagramını içeren yeni bir dosya oluşturur."
-          }
-        },
         "description": "",
         "heading": "Temel Durumlar"
       },
       "customStatuses": {
-        "buttons": {
-          "addAllUnknown": {
-            "description": "",
-            "name": "Tüm Bilinmeyen Durum Türlerini Ekle"
-          },
-          "resetCustomStatuses": {
-            "description": "",
-            "name": "Özel Durum Türlerini Varsayılanlara Sıfırla"
-          }
-        },
         "description": "",
         "emptyState": "",
         "heading": "Özel Durumlar"
@@ -322,6 +302,30 @@
       "reloadRequired": "",
       "row": {
         "next": ""
+      },
+      "tools": {
+        "addUnknown": {
+          "button": "",
+          "description": "",
+          "name": ""
+        },
+        "heading": "",
+        "importFromTheme": {
+          "button": "",
+          "description": "",
+          "name": ""
+        },
+        "report": {
+          "button": "",
+          "description": "",
+          "name": "",
+          "noteTitle": ""
+        },
+        "reset": {
+          "button": "",
+          "description": "",
+          "name": ""
+        }
       },
       "types": {
         "cancelled": "",

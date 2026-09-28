@@ -75,7 +75,7 @@
         "updateReport": {
           "line1": "Якщо ви зміните налаштування статусів Tasks, ви можете отримати оновлений звіт, виконавши наступні дії:",
           "line2": "Перейдіть до `Налаштування` -> `Tasks`.",
-          "line3": "Натисніть `Переглянути та перевірити ваші статуси`."
+          "line3": ""
         }
       },
       "columnHeadings": {
@@ -264,11 +264,7 @@
     "seeTheDocumentation": "Переглянути документацію",
     "statuses": {
       "buttons": {
-        "addStatus": "",
-        "importFromTheme": {
-          "description": "",
-          "name": ""
-        }
+        "addStatus": ""
       },
       "collections": {
         "anuppuccinTheme": "Тема AnuPpuccin",
@@ -286,26 +282,10 @@
         "thingsTheme": "Тема Things"
       },
       "coreStatuses": {
-        "buttons": {
-          "checkStatuses": {
-            "name": "Переглянути та перевірити ваші статуси",
-            "tooltip": "Створіть новий файл у корені сховища, що містить діаграму Mermaid поточних налаштувань статусу."
-          }
-        },
         "description": "",
         "heading": "Основні статуси"
       },
       "customStatuses": {
-        "buttons": {
-          "addAllUnknown": {
-            "description": "",
-            "name": "Додати всі невідомі типи статусів"
-          },
-          "resetCustomStatuses": {
-            "description": "",
-            "name": "Скинути користувацькі типи статусів до значень за замовчуванням"
-          }
-        },
         "description": "",
         "emptyState": "",
         "heading": "Користувацькі статуси"
@@ -322,6 +302,30 @@
       "reloadRequired": "",
       "row": {
         "next": ""
+      },
+      "tools": {
+        "addUnknown": {
+          "button": "",
+          "description": "",
+          "name": ""
+        },
+        "heading": "",
+        "importFromTheme": {
+          "button": "",
+          "description": "",
+          "name": ""
+        },
+        "report": {
+          "button": "",
+          "description": "",
+          "name": "",
+          "noteTitle": ""
+        },
+        "reset": {
+          "button": "",
+          "description": "",
+          "name": ""
+        }
       },
       "types": {
         "cancelled": "",

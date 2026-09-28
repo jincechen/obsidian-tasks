@@ -75,7 +75,7 @@
         "updateReport": {
           "line1": "Wenn Sie die Tasks-Status-Einstellungen ändern, erhalten Sie einen aktualisierten Bericht, indem Sie:",
           "line2": "Zu `Einstellungen` -> `Tasks` gehen.",
-          "line3": "Auf `Überprüfen und Status kontrollieren` klicken."
+          "line3": ""
         }
       },
       "columnHeadings": {
@@ -264,11 +264,7 @@
     "seeTheDocumentation": "Vgl. die Dokumentation",
     "statuses": {
       "buttons": {
-        "addStatus": "",
-        "importFromTheme": {
-          "description": "",
-          "name": ""
-        }
+        "addStatus": ""
       },
       "collections": {
         "anuppuccinTheme": "AnuPpuccin Theme",
@@ -286,26 +282,10 @@
         "thingsTheme": "Things Theme"
       },
       "coreStatuses": {
-        "buttons": {
-          "checkStatuses": {
-            "name": "Überprüfen und einsehen Sie Ihre Status-Einträge",
-            "tooltip": "Erstellen Sie eine neue Datei im Hauptverzeichnis des Tresors, die ein Mermaid-Diagramm der aktuellen Statuseinstellungen enthält."
-          }
-        },
         "description": "",
         "heading": "Kern-Status"
       },
       "customStatuses": {
-        "buttons": {
-          "addAllUnknown": {
-            "description": "",
-            "name": "Alle unbekannten Statustypen hinzufügen"
-          },
-          "resetCustomStatuses": {
-            "description": "",
-            "name": "Benutzerdefinierte Statustypen auf Standard zurücksetzen"
-          }
-        },
         "description": "",
         "emptyState": "",
         "heading": "Benutzerdefinierte Status"
@@ -322,6 +302,30 @@
       "reloadRequired": "",
       "row": {
         "next": ""
+      },
+      "tools": {
+        "addUnknown": {
+          "button": "",
+          "description": "",
+          "name": ""
+        },
+        "heading": "",
+        "importFromTheme": {
+          "button": "",
+          "description": "",
+          "name": ""
+        },
+        "report": {
+          "button": "",
+          "description": "",
+          "name": "",
+          "noteTitle": ""
+        },
+        "reset": {
+          "button": "",
+          "description": "",
+          "name": ""
+        }
       },
       "types": {
         "cancelled": "",
