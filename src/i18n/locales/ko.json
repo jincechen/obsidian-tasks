@@ -192,6 +192,10 @@
       "heading": "대화상자"
     },
     "display": {
+      "editorIcons": {
+        "description": "",
+        "name": ""
+      },
       "heading": "",
       "signifiers": {
         "description": "",

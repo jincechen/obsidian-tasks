@@ -192,6 +192,10 @@
       "heading": "对话框"
     },
     "display": {
+      "editorIcons": {
+        "description": "",
+        "name": ""
+      },
       "heading": "",
       "signifiers": {
         "description": "",

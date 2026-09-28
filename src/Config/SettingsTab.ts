@@ -23,6 +23,7 @@ import type { StatusCollection } from '../Statuses/StatusCollection';
 import { createStatusRegistryReport } from '../Statuses/StatusRegistryReport';
 import { i18n } from '../i18n/i18n';
 import type { TasksEvents } from '../Obsidian/TasksEvents';
+import { refreshEditorDecorations } from '../Obsidian/EditorDecorations';
 import * as Themes from './Themes';
 import {
     type HeadingState,
@@ -268,6 +269,10 @@ export class SettingsTab extends PluginSettingTab {
                         dropdown.setValue(getSettings().taskFormat).onChange(async (value) => {
                             updateSettings({ taskFormat: value as keyof TASK_FORMATS });
                             await this.plugin.saveSettings();
+                            // Re-evaluate the 'visible' predicate of 'Render properties in Live Preview'.
+                            if (requireApiVersion('1.13.0')) {
+                                this.refreshDomState();
+                            }
                             refreshReloadButton();
                         });
                     });
@@ -1072,15 +1077,37 @@ export class SettingsTab extends PluginSettingTab {
         updateSettings({ signifierDisplay: value });
         await this.plugin.saveSettings();
         this.events.triggerReloadOpenSearchResults();
+        refreshEditorDecorations(this.app);
     }
 
-    private addSignifierDisplayDropdown(setting: Setting) {
+    /**
+     * Whether 'Render properties in Live Preview' has any effect.
+     */
+    private static editorPropertiesSettingApplies(): boolean {
+        const { signifierDisplay, taskFormat } = getSettings();
+        return signifierDisplay === 'icons' || taskFormat === 'dataview';
+    }
+
+    private addShowIconsInEditorToggle(setting: Setting) {
+        setting.addToggle((toggle) => {
+            toggle.setValue(getSettings().showIconsInEditor).onChange(async (value) => {
+                updateSettings({ showIconsInEditor: value });
+                await this.plugin.saveSettings();
+                refreshEditorDecorations(this.app);
+            });
+        });
+    }
+
+    private addSignifierDisplayDropdown(setting: Setting, onChanged: () => void) {
         setting.addDropdown((dropdown) => {
             dropdown
                 .addOption('emoji', i18n.t('settings.display.signifiers.options.emoji'))
                 .addOption('icons', i18n.t('settings.display.signifiers.options.icons'))
                 .setValue(getSettings().signifierDisplay)
-                .onChange(async (value) => await this.setSignifierDisplay(value as 'icons' | 'emoji'));
+                .onChange(async (value) => {
+                    await this.setSignifierDisplay(value as 'icons' | 'emoji');
+                    onChanged();
+                });
         });
     }
 
@@ -1093,7 +1120,19 @@ export class SettingsTab extends PluginSettingTab {
                     name: i18n.t('settings.display.signifiers.name'),
                     aliases: [i18n.t('settings.display.heading')],
                     desc: i18n.t('settings.display.signifiers.description'),
-                    render: (setting) => this.addSignifierDisplayDropdown(setting),
+                    render: (setting) =>
+                        this.addSignifierDisplayDropdown(setting, () => {
+                            // Re-evaluate the 'visible' predicate of the dependent row.
+                            if (requireApiVersion('1.13.0')) {
+                                this.refreshDomState();
+                            }
+                        }),
+                },
+                {
+                    name: i18n.t('settings.display.editorIcons.name'),
+                    desc: i18n.t('settings.display.editorIcons.description'),
+                    visible: () => SettingsTab.editorPropertiesSettingApplies(),
+                    render: (setting) => this.addShowIconsInEditorToggle(setting),
                 },
             ],
         };
@@ -1642,10 +1681,19 @@ export class SettingsTab extends PluginSettingTab {
         new Setting(containerEl).setName(i18n.t('settings.display.heading')).setHeading();
         // ---------------------------------------------------------------------------
 
+        let editorIconsSetting: Setting | null = null;
         const signifierDisplaySetting = new Setting(containerEl)
             .setName(i18n.t('settings.display.signifiers.name'))
             .setDesc(i18n.t('settings.display.signifiers.description'));
-        this.addSignifierDisplayDropdown(signifierDisplaySetting);
+        this.addSignifierDisplayDropdown(signifierDisplaySetting, () =>
+            setSettingVisibility(editorIconsSetting, SettingsTab.editorPropertiesSettingApplies()),
+        );
+
+        editorIconsSetting = new Setting(containerEl)
+            .setName(i18n.t('settings.display.editorIcons.name'))
+            .setDesc(i18n.t('settings.display.editorIcons.description'));
+        this.addShowIconsInEditorToggle(editorIconsSetting);
+        setSettingVisibility(editorIconsSetting, SettingsTab.editorPropertiesSettingApplies());
     }
 
     private seeTheDocsPara(url: string) {

@@ -520,5 +520,12 @@
     "controls": [
       "dropdown"
     ]
+  },
+  {
+    "name": "Render properties in Live Preview",
+    "desc": "Show task properties compactly in Live Preview, in the chosen property style. Put the cursor on a property to see and edit its text.",
+    "controls": [
+      "toggle"
+    ]
   }
 ]

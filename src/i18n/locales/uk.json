@@ -192,6 +192,10 @@
       "heading": "Діалогові вікна"
     },
     "display": {
+      "editorIcons": {
+        "description": "",
+        "name": ""
+      },
       "heading": "",
       "signifiers": {
         "description": "",

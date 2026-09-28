@@ -192,6 +192,10 @@
       "heading": "Cuadros de diálogo"
     },
     "display": {
+      "editorIcons": {
+        "description": "",
+        "name": ""
+      },
       "heading": "",
       "signifiers": {
         "description": "",

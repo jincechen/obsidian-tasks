@@ -192,6 +192,10 @@
       "heading": "Dialoge"
     },
     "display": {
+      "editorIcons": {
+        "description": "",
+        "name": ""
+      },
       "heading": "",
       "signifiers": {
         "description": "",
