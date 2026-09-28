@@ -1,4 +1,4 @@
-import { type App, type Component, Notice, debounce, setIcon, setTooltip } from 'obsidian';
+import { type App, type Component, debounce, setIcon, setTooltip } from 'obsidian';
 import { GlobalQuery } from '../Config/GlobalQuery';
 import type { IQuery } from '../IQuery';
 import { PerformanceTracker } from '../lib/PerformanceTracker';
@@ -212,7 +212,6 @@ export class QueryResultsRenderer {
         const toolbar = content.createDiv();
         toolbar.classList.add('plugin-tasks-toolbar');
         this.addSearchBox(toolbar, content, obsidianComponent);
-        this.addCopyButton(toolbar);
     }
 
     private addSearchBox(toolbar: HTMLDivElement, content: HTMLDivElement, obsidianComponent: Component | null) {
@@ -278,17 +277,6 @@ export class QueryResultsRenderer {
         }
 
         this.filteredQueryResult = this.queryResult.applyFilter(filter!);
-    }
-
-    private addCopyButton(toolbar: HTMLDivElement) {
-        const copyButton = toolbar.createEl('button');
-        setIcon(copyButton, 'lucide-copy');
-        setTooltip(copyButton, 'Copy results');
-        copyButton.addEventListener('click', async () => {
-            const markdown = await this.resultsAsMarkdown();
-            await navigator.clipboard.writeText(markdown);
-            new Notice('Results copied to clipboard');
-        });
     }
 
     public async resultsAsMarkdown() {

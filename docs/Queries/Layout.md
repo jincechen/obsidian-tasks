@@ -67,7 +67,7 @@ The following query elements exist:
 
 | Element           | Default | Description                     | Details                                             |
 | ----------------- | ------- | ------------------------------- | --------------------------------------------------- |
-| `toolbar`         | Shown   | Copy and filter results         | [[#Toolbar]]                                        |
+| `toolbar`         | Shown   | Filter results                  | [[#Toolbar]]                                        |
 | `tree`            | Hidden  | Task parent/child relationships | [[#Hide and Show Tree\|Tree]]                       |
 | `edit button`     | Shown   | Edit task button                | [[Create or edit Task]]                             |
 | `postpone button` | Shown   | Postpone button on dates        | [[Postponing]]                                      |
@@ -125,21 +125,12 @@ The toolbar appears at the top of Tasks search results.
 ![Image of the Toolbar at the top of Tasks search results](../images/search-results-toolbar.png)
 <span class="caption">Image of the Toolbar at the top of Tasks search results</span>
 
-It allows you to:
+It allows you to temporarily **filter results** by task description, without modifying the query:
 
-- temporarily **filter results** by task description, without modifying the query
-  - the search is case-insensitive
-    - `hello world` will match `HELLO WORLD`
-  - word order matters
-    - `hello world` will not match `hello blue world`
-- **copy search results** in Markdown format, for export
-  - Copied elements:
-    - Errors
-    - Any [[Explaining Queries|explanation]]
-    - Group headings
-    - The found tasks, honouring `show tree`
-  - Elements not copied:
-    - The task count
+- the search is case-insensitive
+  - `hello world` will match `HELLO WORLD`
+- word order matters
+  - `hello world` will not match `hello blue world`
 
 > [!released]
 > `show toolbar` and `hide toolbar` were introduced in Tasks 7.23.0.
