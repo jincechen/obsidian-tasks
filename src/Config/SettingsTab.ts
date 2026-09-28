@@ -24,15 +24,7 @@ import { createStatusRegistryReport } from '../Statuses/StatusRegistryReport';
 import { i18n } from '../i18n/i18n';
 import type { TasksEvents } from '../Obsidian/TasksEvents';
 import * as Themes from './Themes';
-import {
-    type HeadingState,
-    type Settings,
-    TASK_FORMATS,
-    getSettings,
-    isFeatureEnabled,
-    updateGeneralSetting,
-    updateSettings,
-} from './Settings';
+import { type Settings, TASK_FORMATS, getSettings, updateSettings } from './Settings';
 import { GlobalFilter } from './GlobalFilter';
 import { StatusSettings } from './StatusSettings';
 
@@ -41,26 +33,6 @@ import { GlobalQuery } from './GlobalQuery';
 import { GlobalQueryModal } from './GlobalQueryModal';
 import { PresetsSettingsUI } from './PresetsSettingsUI';
 import { EnableJsInTasksQueries } from './EnableJsInTasksQueries';
-
-interface SettingConfiguration {
-    name: string;
-    description: string;
-    type: string;
-    initialValue: string;
-    placeholder: string;
-    settingName: string;
-    featureFlag: string;
-    notice: { class: string; text: string | null; html: string | null } | null;
-}
-
-interface HeadingConfiguration {
-    text: string;
-    level: string;
-    class: string;
-    open: boolean;
-    notice: { class: string; text: string | null; html: string | null } | null;
-    settings: SettingConfiguration[];
-}
 
 /**
  * A snapshot of the settings when the plugin loaded.
@@ -89,6 +61,27 @@ function bold(text: string): string {
     return `<b>${text}</b>`;
 }
 
+function code(text: string): string {
+    return `<code>${text}</code>`;
+}
+
+const docs = {
+    taskFormats: 'https://publish.obsidian.md/tasks/Reference/Task+Formats/About+Task+Formats',
+    globalFilter: 'https://publish.obsidian.md/tasks/Getting+Started/Global+Filter',
+    statuses: 'https://publish.obsidian.md/tasks/Getting+Started/Statuses',
+    globalQuery: 'https://publish.obsidian.md/tasks/Queries/Global+Query',
+    presets: 'https://publish.obsidian.md/tasks/Queries/Presets',
+    customSearches: 'https://publish.obsidian.md/tasks/Scripting/JavaScript+in+Tasks+Queries',
+    createdDate: 'https://publish.obsidian.md/tasks/Getting+Started/Dates#Created+date',
+    doneDate: 'https://publish.obsidian.md/tasks/Getting+Started/Dates#Done+date',
+    cancelledDate: 'https://publish.obsidian.md/tasks/Getting+Started/Dates#Cancelled+date',
+    filenameDates: 'https://publish.obsidian.md/tasks/Getting+Started/Use+Filename+as+Default+Date',
+    momentFormats: 'https://momentjs.com/docs/#/displaying/format/',
+    recurringTasks: 'https://publish.obsidian.md/tasks/Getting+Started/Recurring+Tasks',
+    autoSuggest: 'https://publish.obsidian.md/tasks/Getting+Started/Auto-Suggest',
+    accessKeys: 'https://publish.obsidian.md/tasks/Getting+Started/Create+or+edit+Task#Keyboard+shortcuts',
+} as const;
+
 /**
  * The plugin's settings tab, with two implementations of the UI:
  *
@@ -97,16 +90,9 @@ function bold(text: string): string {
  *
  * Obsidian picks the right path per host, so BOTH implementations must be
  * updated whenever a setting is added, removed or changed.
+ * Both use the same sections and text.
  */
 export class SettingsTab extends PluginSettingTab {
-    // If the UI needs a more complex setting you can create a
-    // custom function and specify it from the json file. It will
-    // then be rendered instead of a normal checkbox or text box.
-    customFunctions: { [K: string]: Function } = {
-        insertTaskCoreStatusSettings: this.insertTaskCoreStatusSettings.bind(this),
-        insertCustomTaskStatusSettings: this.insertCustomTaskStatusSettings.bind(this),
-    };
-
     private readonly plugin: TasksPlugin;
     private readonly presetsSettingsUI;
     private readonly events: TasksEvents;
@@ -144,6 +130,113 @@ export class SettingsTab extends PluginSettingTab {
         window.requestAnimationFrame(() => {
             this.containerEl.scrollTo({ top: previousDistanceFromTop });
         });
+    }
+
+    /**
+     * Re-evaluate the 'visible' predicates of rows that depend on another setting.
+     */
+    private refreshDependentRows(): void {
+        if (requireApiVersion('1.13.0')) {
+            this.refreshDomState();
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // Text shared by both implementations
+    // -----------------------------------------------------------------------
+
+    private static taskFormatDescription(): string {
+        return paras([i18n.t('settings.format.description.line1'), i18n.t('settings.format.description.line2')]);
+    }
+
+    private static globalFilterDescription(): string {
+        return paras([
+            bold(i18n.t('settings.globalFilter.filter.description.line1')),
+            i18n.t('settings.globalFilter.filter.description.line2'),
+            [
+                i18n.t('settings.globalFilter.filter.description.line3'),
+                i18n.t('settings.globalFilter.filter.description.line4'),
+            ].join(' '),
+        ]);
+    }
+
+    private static statusesDescription(): string {
+        return paras([
+            bold(i18n.t('settings.statuses.coreStatuses.heading')),
+            i18n.t('settings.statuses.coreStatuses.description.line1'),
+            bold(i18n.t('settings.statuses.customStatuses.heading')),
+            i18n.t('settings.statuses.coreStatuses.description.line2'),
+            [
+                i18n.t('settings.statuses.customStatuses.description.line1'),
+                i18n.t('settings.statuses.customStatuses.description.line2'),
+            ].join(' '),
+            link(docs.statuses, i18n.t('settings.statuses.customStatuses.description.line4')),
+        ]);
+    }
+
+    private static coreStatusesDescription(): string {
+        return paras([
+            i18n.t('settings.statuses.coreStatuses.description.line1'),
+            i18n.t('settings.statuses.coreStatuses.description.line2'),
+        ]);
+    }
+
+    private static customStatusesDescription(): string {
+        return paras([
+            i18n.t('settings.statuses.customStatuses.description.line1'),
+            i18n.t('settings.statuses.customStatuses.description.line2'),
+            i18n.t('settings.statuses.customStatuses.description.line3'),
+        ]);
+    }
+
+    private static presetsDescription(): string {
+        return paras([
+            i18n.t('settings.presets.line1', {
+                name: code('name'),
+                instruction1: code('preset name'),
+                instruction2: code('{{preset.name}}'),
+            }),
+            i18n.t('settings.presets.line2'),
+        ]);
+    }
+
+    private static customSearchesDescription(): string {
+        return i18n.t('settings.searches.enableCustomSearches.description.line1', {
+            filterByFunction: code('filter by function'),
+            sortByFunction: code('sort by function'),
+            groupByFunction: code('group by function'),
+        });
+    }
+
+    /**
+     * The risks of custom searches, which the legacy settings show as there is no confirmation there.
+     */
+    private static customSearchesRisks(): string {
+        return paras([
+            i18n.t('settings.searches.enableCustomSearches.description.line2'),
+            bold(i18n.t('settings.searches.enableCustomSearches.description.line3')),
+            i18n.t('settings.searches.enableCustomSearches.description.line4'),
+        ]);
+    }
+
+    private static filenameDateDescription(): string {
+        return paras([
+            [
+                i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line1'),
+                i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line2'),
+            ].join(' '),
+            [
+                i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line3'),
+                i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line4'),
+            ].join(' '),
+        ]);
+    }
+
+    private static removeScheduledDateDescription(): string {
+        return paras([
+            i18n.t('settings.recurringTasks.removeScheduledDate.description.line1'),
+            i18n.t('settings.recurringTasks.removeScheduledDate.description.line2'),
+        ]);
     }
 
     // -----------------------------------------------------------------------
@@ -195,7 +288,7 @@ export class SettingsTab extends PluginSettingTab {
 
     /**
      * Wrap a render callback with a "Reload" button for a setting whose effect
-     * only takes after the host window reloads (`settings.changeRequiresRestart`).
+     * only takes after the host window reloads.
      *
      * The button is shown whenever the setting's current value differs from
      * the value in use since the plugin loaded, so it survives tab rebuilds and
@@ -227,6 +320,7 @@ export class SettingsTab extends PluginSettingTab {
         setting.addButton((btn) => {
             button = btn;
             btn.setButtonText(i18n.t('common.reload'))
+                .setTooltip(i18n.t('settings.reloadToApply'))
                 .setCta()
                 .onClick(() => window.location.reload());
             // Put the button before the control, to match Obsidian's own 'Relaunch' buttons.
@@ -251,13 +345,7 @@ export class SettingsTab extends PluginSettingTab {
     private taskFormatDefinition(): SettingGroupItem {
         return {
             name: i18n.t('settings.format.name'),
-            desc: SettingsTab.createFragmentWithHTML(
-                paras([
-                    // force line break
-                    i18n.t('settings.format.description.line1'),
-                    i18n.t('settings.format.description.line2'),
-                ]),
-            ),
+            desc: SettingsTab.createFragmentWithHTML(SettingsTab.taskFormatDescription()),
             render: this.withDocs(
                 this.withReload('taskFormat', (setting, refreshReloadButton) => {
                     setting.addDropdown((dropdown) => {
@@ -271,7 +359,7 @@ export class SettingsTab extends PluginSettingTab {
                         });
                     });
                 }),
-                'https://publish.obsidian.md/tasks/Reference/Task+Formats/About+Task+Formats',
+                docs.taskFormats,
             ),
         };
     }
@@ -285,16 +373,7 @@ export class SettingsTab extends PluginSettingTab {
                 this.taskFormatDefinition(),
                 {
                     name: i18n.t('settings.globalFilter.filter.name'),
-                    desc: SettingsTab.createFragmentWithHTML(
-                        paras([
-                            bold(i18n.t('settings.globalFilter.filter.description.line1')),
-                            i18n.t('settings.globalFilter.filter.description.line2'),
-                            [
-                                i18n.t('settings.globalFilter.filter.description.line3'),
-                                i18n.t('settings.globalFilter.filter.description.line4'),
-                            ].join(' '),
-                        ]),
-                    ),
+                    desc: SettingsTab.createFragmentWithHTML(SettingsTab.globalFilterDescription()),
                     render: this.withDocs((setting) => {
                         setting.addText((text) => {
                             text.setPlaceholder(i18n.t('settings.globalFilter.filter.placeholder'))
@@ -305,10 +384,7 @@ export class SettingsTab extends PluginSettingTab {
                                             updateSettings({ globalFilter: value });
                                             GlobalFilter.getInstance().set(value);
                                             await this.plugin.saveSettings();
-                                            // Re-evaluate the 'visible' predicate of the remove-filter row.
-                                            if (requireApiVersion('1.13.0')) {
-                                                this.refreshDomState();
-                                            }
+                                            this.refreshDependentRows();
                                             this.events.triggerReloadVault();
                                         },
                                         500,
@@ -316,7 +392,7 @@ export class SettingsTab extends PluginSettingTab {
                                     ),
                                 );
                         });
-                    }, 'https://publish.obsidian.md/tasks/Getting+Started/Global+Filter'),
+                    }, docs.globalFilter),
                 },
                 {
                     name: i18n.t('settings.globalFilter.removeFilter.name'),
@@ -365,18 +441,15 @@ export class SettingsTab extends PluginSettingTab {
                                 .setTooltip(i18n.t('common.edit'))
                                 .onClick(() => this.openGlobalQueryModal()),
                         );
-                    }, 'https://publish.obsidian.md/tasks/Queries/Global+Query'),
+                    }, docs.globalQuery),
                 },
                 {
                     name: i18n.t('settings.searches.enableCustomSearches.name'),
-                    desc: SettingsTab.createFragmentWithHTML(
-                        i18n.t('settings.searches.enableCustomSearches.description.line1', {
-                            filterByFunction: '<code>filter by function</code>',
-                            sortByFunction: '<code>sort by function</code>',
-                            groupByFunction: '<code>group by function</code>',
-                        }),
+                    desc: SettingsTab.createFragmentWithHTML(SettingsTab.customSearchesDescription()),
+                    render: this.withDocs(
+                        (setting) => this.renderEnableCustomSearchesToggle(setting),
+                        docs.customSearches,
                     ),
-                    render: (setting) => this.renderEnableCustomSearchesToggle(setting),
                 },
                 {
                     name: i18n.t('settings.searchResults.taskCountLocation.name'),
@@ -501,15 +574,7 @@ export class SettingsTab extends PluginSettingTab {
             type: 'page',
             name: i18n.t('settings.presets.name'),
             desc: SettingsTab.createFragmentWithHTML(
-                paras([
-                    i18n.t('settings.presets.line1', {
-                        name: '<code>name</code>',
-                        instruction1: '<code>preset name</code>',
-                        instruction2: '<code>{{preset.name}}</code>',
-                    }),
-                    i18n.t('settings.presets.line2'),
-                    this.seeTheDocs('https://publish.obsidian.md/tasks/Queries/Presets'),
-                ]),
+                SettingsTab.presetsDescription() + para(link(docs.presets, i18n.t('settings.seeTheDocumentation'))),
             ),
             items: this.presetsSettingsUI.getPresetsDefinitions(() => this.rebuildSettingsTab()),
         };
@@ -531,24 +596,7 @@ export class SettingsTab extends PluginSettingTab {
         return {
             type: 'page',
             name: i18n.t('settings.statuses.heading'),
-            desc: SettingsTab.createFragmentWithHTML(
-                paras([
-                    // Core statuses description
-                    bold(i18n.t('settings.statuses.coreStatuses.heading')),
-                    [i18n.t('settings.statuses.coreStatuses.description.line1')].join(' '),
-                    // Custom statuses description
-                    bold(i18n.t('settings.statuses.customStatuses.heading')),
-                    i18n.t('settings.statuses.coreStatuses.description.line2'),
-                    [
-                        i18n.t('settings.statuses.customStatuses.description.line1'),
-                        i18n.t('settings.statuses.customStatuses.description.line2'),
-                    ].join(' '),
-                    link(
-                        'https://publish.obsidian.md/tasks/Getting+Started/Statuses',
-                        i18n.t('settings.statuses.customStatuses.description.line4'),
-                    ),
-                ]),
-            ),
+            desc: SettingsTab.createFragmentWithHTML(SettingsTab.statusesDescription()),
             status: () => (this.statusesChangedSinceLoad() ? 'warning' : null),
             items: [
                 {
@@ -562,11 +610,8 @@ export class SettingsTab extends PluginSettingTab {
                                 .onClick(() =>
                                     this.showInfoModal(
                                         i18n.t('settings.statuses.coreStatuses.heading'),
-                                        paras([
-                                            i18n.t('settings.statuses.coreStatuses.description.line1'),
-                                            i18n.t('settings.statuses.coreStatuses.description.line2'),
-                                        ]),
-                                        'https://publish.obsidian.md/tasks/Getting+Started/Statuses',
+                                        SettingsTab.coreStatusesDescription(),
+                                        docs.statuses,
                                     ),
                                 ),
                     ],
@@ -611,12 +656,8 @@ export class SettingsTab extends PluginSettingTab {
                                 .onClick(() =>
                                     this.showInfoModal(
                                         i18n.t('settings.statuses.customStatuses.heading'),
-                                        paras([
-                                            i18n.t('settings.statuses.customStatuses.description.line1'),
-                                            i18n.t('settings.statuses.customStatuses.description.line2'),
-                                            i18n.t('settings.statuses.customStatuses.description.line3'),
-                                        ]),
-                                        'https://publish.obsidian.md/tasks/Getting+Started/Statuses',
+                                        SettingsTab.customStatusesDescription(),
+                                        docs.statuses,
                                     ),
                                 ),
                     ],
@@ -656,30 +697,13 @@ export class SettingsTab extends PluginSettingTab {
                             name: i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.name'),
                             desc: i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.description'),
                             searchable: false,
-                            action: () => {
-                                const { statusSettings: current } = getSettings();
-                                const tasks = this.plugin.getTasks();
-                                const unknownStatuses = StatusRegistry.getInstance().findUnknownStatuses(
-                                    tasks.map((task) => task.status),
-                                );
-                                if (unknownStatuses.length === 0) {
-                                    return;
-                                }
-                                unknownStatuses.forEach((s) => {
-                                    StatusSettings.addStatus(current.customStatuses, s);
-                                });
-                                updateAndSaveStatusSettings(current, this);
-                            },
+                            action: () => this.addUnknownStatuses(),
                         },
                         {
                             name: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.name'),
                             desc: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.description'),
                             aliases: [i18n.t('settings.statuses.customStatuses.heading')],
-                            action: () => {
-                                const { statusSettings: current } = getSettings();
-                                StatusSettings.resetAllCustomStatuses(current);
-                                updateAndSaveStatusSettings(current, this);
-                            },
+                            action: () => this.resetCustomStatuses(),
                         },
                     ],
                 },
@@ -695,6 +719,25 @@ export class SettingsTab extends PluginSettingTab {
         return (
             JSON.stringify(getSettings().statusSettings) !== JSON.stringify(getSettingsAtPluginLoad().statusSettings)
         );
+    }
+
+    private addUnknownStatuses(): void {
+        const { statusSettings: current } = getSettings();
+        const tasks = this.plugin.getTasks();
+        const unknownStatuses = StatusRegistry.getInstance().findUnknownStatuses(tasks.map((task) => task.status));
+        if (unknownStatuses.length === 0) {
+            return;
+        }
+        unknownStatuses.forEach((s) => {
+            StatusSettings.addStatus(current.customStatuses, s);
+        });
+        updateAndSaveStatusSettings(current, this);
+    }
+
+    private resetCustomStatuses(): void {
+        const { statusSettings: current } = getSettings();
+        StatusSettings.resetAllCustomStatuses(current);
+        updateAndSaveStatusSettings(current, this);
     }
 
     private reloadNotice: Notice | null = null;
@@ -852,26 +895,17 @@ export class SettingsTab extends PluginSettingTab {
                     name: i18n.t('settings.dates.createdDate.name'),
                     aliases: [i18n.t('settings.dates.heading')],
                     desc: i18n.t('settings.dates.createdDate.description'),
-                    render: this.renderToggleWithDocs(
-                        'setCreatedDate',
-                        'https://publish.obsidian.md/tasks/Getting+Started/Dates#Created+date',
-                    ),
+                    render: this.renderToggleWithDocs('setCreatedDate', docs.createdDate),
                 },
                 {
                     name: i18n.t('settings.dates.doneDate.name'),
                     desc: i18n.t('settings.dates.doneDate.description'),
-                    render: this.renderToggleWithDocs(
-                        'setDoneDate',
-                        'https://publish.obsidian.md/tasks/Getting+Started/Dates#Done+date',
-                    ),
+                    render: this.renderToggleWithDocs('setDoneDate', docs.doneDate),
                 },
                 {
                     name: i18n.t('settings.dates.cancelledDate.name'),
                     desc: i18n.t('settings.dates.cancelledDate.description'),
-                    render: this.renderToggleWithDocs(
-                        'setCancelledDate',
-                        'https://publish.obsidian.md/tasks/Getting+Started/Dates#Cancelled+date',
-                    ),
+                    render: this.renderToggleWithDocs('setCancelledDate', docs.cancelledDate),
                 },
             ],
         };
@@ -887,33 +921,19 @@ export class SettingsTab extends PluginSettingTab {
                 {
                     name: i18n.t('settings.datesFromFileNames.scheduledDate.toggle.name'),
                     aliases: [i18n.t('settings.datesFromFileNames.heading')],
-                    desc: SettingsTab.createFragmentWithHTML(
-                        paras([
-                            [
-                                i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line1'),
-                                i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line2'),
-                            ].join(' '),
-                            [
-                                i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line3'),
-                                i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line4'),
-                            ].join(' '),
-                        ]),
-                    ),
+                    desc: SettingsTab.createFragmentWithHTML(SettingsTab.filenameDateDescription()),
                     render: this.withDocs(
                         this.withReload('useFilenameAsScheduledDate', (setting, refreshReloadButton) => {
                             setting.addToggle((toggle) => {
                                 toggle.setValue(getSettings().useFilenameAsScheduledDate).onChange(async (value) => {
                                     updateSettings({ useFilenameAsScheduledDate: value });
                                     await this.plugin.saveSettings();
-                                    // Re-evaluate the 'visible' predicates of the dependent rows.
-                                    if (requireApiVersion('1.13.0')) {
-                                        this.refreshDomState();
-                                    }
+                                    this.refreshDependentRows();
                                     refreshReloadButton();
                                 });
                             });
                         }),
-                        'https://publish.obsidian.md/tasks/Getting+Started/Use+Filename+as+Default+Date',
+                        docs.filenameDates,
                     ),
                 },
                 {
@@ -934,7 +954,7 @@ export class SettingsTab extends PluginSettingTab {
                                     });
                             });
                         }),
-                        'https://momentjs.com/docs/#/displaying/format/',
+                        docs.momentFormats,
                     ),
                 },
                 {
@@ -969,23 +989,12 @@ export class SettingsTab extends PluginSettingTab {
                     name: i18n.t('settings.recurringTasks.nextLine.name'),
                     aliases: [i18n.t('settings.recurringTasks.heading')],
                     desc: i18n.t('settings.recurringTasks.nextLine.description'),
-                    render: this.renderToggleWithDocs(
-                        'recurrenceOnNextLine',
-                        'https://publish.obsidian.md/tasks/Getting+Started/Recurring+Tasks',
-                    ),
+                    render: this.renderToggleWithDocs('recurrenceOnNextLine', docs.recurringTasks),
                 },
                 {
                     name: i18n.t('settings.recurringTasks.removeScheduledDate.name'),
-                    desc: SettingsTab.createFragmentWithHTML(
-                        paras([
-                            i18n.t('settings.recurringTasks.removeScheduledDate.description.line1'),
-                            i18n.t('settings.recurringTasks.removeScheduledDate.description.line2'),
-                        ]),
-                    ),
-                    render: this.renderToggleWithDocs(
-                        'removeScheduledDateOnRecurrence',
-                        'https://publish.obsidian.md/tasks/Getting+Started/Recurring+Tasks',
-                    ),
+                    desc: SettingsTab.createFragmentWithHTML(SettingsTab.removeScheduledDateDescription()),
+                    render: this.renderToggleWithDocs('removeScheduledDateOnRecurrence', docs.recurringTasks),
                 },
             ],
         };
@@ -1008,15 +1017,12 @@ export class SettingsTab extends PluginSettingTab {
                                 toggle.setValue(getSettings().autoSuggestInEditor).onChange(async (value) => {
                                     updateSettings({ autoSuggestInEditor: value });
                                     await this.plugin.saveSettings();
-                                    // Re-evaluate the 'visible' predicates of the dependent rows.
-                                    if (requireApiVersion('1.13.0')) {
-                                        this.refreshDomState();
-                                    }
+                                    this.refreshDependentRows();
                                     refreshReloadButton();
                                 });
                             });
                         }),
-                        'https://publish.obsidian.md/tasks/Getting+Started/Auto-Suggest',
+                        docs.autoSuggest,
                     ),
                 },
                 {
@@ -1056,14 +1062,15 @@ export class SettingsTab extends PluginSettingTab {
                 {
                     name: i18n.t('settings.dialogs.accessKeys.name'),
                     desc: i18n.t('settings.dialogs.accessKeys.description'),
-                    render: this.renderToggleWithDocs(
-                        'provideAccessKeys',
-                        'https://publish.obsidian.md/tasks/Getting+Started/Create+or+edit+Task#Keyboard+shortcuts',
-                    ),
+                    render: this.renderToggleWithDocs('provideAccessKeys', docs.accessKeys),
                 },
             ],
         };
     }
+
+    // -----------------------------------------------------------------------
+    // Imperative settings UI (Obsidian before 1.13.0)
+    // -----------------------------------------------------------------------
 
     public display(): void {
         const { containerEl } = this;
@@ -1071,17 +1078,40 @@ export class SettingsTab extends PluginSettingTab {
         containerEl.empty();
         this.containerEl.addClass('tasks-settings');
 
+        this.displayGeneral(containerEl);
+        this.displayStatuses(containerEl);
+        this.displaySearches(containerEl);
+        this.displayDates(containerEl);
+        this.displayDatesFromFileNames(containerEl);
+        this.displayRecurringTasks(containerEl);
+        this.displayTaskEntry(containerEl);
+    }
+
+    /**
+     * A description, with optional reload note and documentation link.
+     */
+    private static legacyDescription(
+        html: string,
+        { docsUrl, requiresReload }: { docsUrl?: string; requiresReload?: boolean } = {},
+    ): DocumentFragment {
+        let fullHtml = html.startsWith('<p>') ? html : para(html);
+        if (requiresReload) {
+            fullHtml += para(i18n.t('settings.reloadToApply'));
+        }
+        if (docsUrl) {
+            fullHtml += para(link(docsUrl, i18n.t('settings.seeTheDocumentation')));
+        }
+        return SettingsTab.createFragmentWithHTML(fullHtml);
+    }
+
+    private displayGeneral(containerEl: HTMLElement) {
         new Setting(containerEl)
             .setName(i18n.t('settings.format.name'))
             .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    paras([
-                        i18n.t('settings.format.description.line1'),
-                        i18n.t('settings.format.description.line2'),
-                        i18n.t('settings.changeRequiresRestart'),
-                        this.seeTheDocs('https://publish.obsidian.md/tasks/Reference/Task+Formats/About+Task+Formats'),
-                    ]),
-                ),
+                SettingsTab.legacyDescription(SettingsTab.taskFormatDescription(), {
+                    docsUrl: docs.taskFormats,
+                    requiresReload: true,
+                }),
             )
             .addDropdown((dropdown) => {
                 for (const key of Object.keys(TASK_FORMATS) as (keyof TASK_FORMATS)[]) {
@@ -1094,30 +1124,14 @@ export class SettingsTab extends PluginSettingTab {
                 });
             });
 
-        // ---------------------------------------------------------------------------
-        new Setting(containerEl).setName(i18n.t('settings.globalFilter.heading')).setHeading();
-        // ---------------------------------------------------------------------------
-        let globalFilterHidden: Setting | null = null;
+        let removeGlobalFilterSetting: Setting | null = null;
 
         new Setting(containerEl)
             .setName(i18n.t('settings.globalFilter.filter.name'))
             .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    paras([
-                        bold(i18n.t('settings.globalFilter.filter.description.line1')),
-                        i18n.t('settings.globalFilter.filter.description.line2'),
-                        [
-                            i18n.t('settings.globalFilter.filter.description.line3'),
-                            i18n.t('settings.globalFilter.filter.description.line4'),
-                        ].join('</br>'),
-                        this.seeTheDocs('https://publish.obsidian.md/tasks/Getting+Started/Global+Filter'),
-                    ]),
-                ),
+                SettingsTab.legacyDescription(SettingsTab.globalFilterDescription(), { docsUrl: docs.globalFilter }),
             )
             .addText((text) => {
-                // I wanted to make this say 'for example, #task or TODO'
-                // but wasn't able to figure out how to make the text box
-                // wide enough for the whole string to be visible.
                 text.setPlaceholder(i18n.t('settings.globalFilter.filter.placeholder'))
                     .setValue(GlobalFilter.getInstance().get())
                     .onChange(
@@ -1126,7 +1140,7 @@ export class SettingsTab extends PluginSettingTab {
                                 updateSettings({ globalFilter: value });
                                 GlobalFilter.getInstance().set(value);
                                 await this.plugin.saveSettings();
-                                setSettingVisibility(globalFilterHidden, value.length > 0);
+                                setSettingVisibility(removeGlobalFilterSetting, value.length > 0);
 
                                 this.events.triggerReloadVault();
                             },
@@ -1136,47 +1150,157 @@ export class SettingsTab extends PluginSettingTab {
                     );
             });
 
-        globalFilterHidden = new Setting(containerEl)
+        removeGlobalFilterSetting = new Setting(containerEl)
             .setName(i18n.t('settings.globalFilter.removeFilter.name'))
             .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    paras([
-                        i18n.t('settings.globalFilter.removeFilter.description'),
-                        i18n.t('settings.changeRequiresRestart'),
-                    ]),
-                ),
+                SettingsTab.legacyDescription(i18n.t('settings.globalFilter.removeFilter.description'), {
+                    requiresReload: true,
+                }),
             )
             .addToggle((toggle) => {
-                const settings = getSettings();
-
-                toggle.setValue(settings.removeGlobalFilter).onChange(async (value) => {
+                toggle.setValue(getSettings().removeGlobalFilter).onChange(async (value) => {
                     updateSettings({ removeGlobalFilter: value });
                     GlobalFilter.getInstance().setRemoveGlobalFilter(value);
                     await this.plugin.saveSettings();
                 });
             });
-        setSettingVisibility(globalFilterHidden, getSettings().globalFilter.length > 0);
+        setSettingVisibility(removeGlobalFilterSetting, getSettings().globalFilter.length > 0);
+    }
 
-        // ---------------------------------------------------------------------------
-        new Setting(containerEl).setName(i18n.t('settings.globalQuery.heading')).setHeading();
-        // ---------------------------------------------------------------------------
+    private displayStatuses(containerEl: HTMLElement) {
+        new Setting(containerEl)
+            .setName(i18n.t('settings.statuses.heading'))
+            .setHeading()
+            .setDesc(SettingsTab.legacyDescription(SettingsTab.statusesDescription(), { requiresReload: true }));
+
+        const { statusSettings } = getSettings();
+
+        this.addCollapsibleSection(
+            containerEl,
+            i18n.t('settings.statuses.coreStatuses.heading'),
+            SettingsTab.coreStatusesDescription(),
+            (sectionEl) => {
+                statusSettings.coreStatuses.forEach((status) => {
+                    createRowForTaskStatus(
+                        sectionEl,
+                        status,
+                        statusSettings.coreStatuses,
+                        statusSettings,
+                        this,
+                        this.plugin,
+                        true,
+                    );
+                });
+                this.addLegacyButton(
+                    sectionEl,
+                    i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.name'),
+                    i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.tooltip'),
+                    async () => await this.createStatusRegistryReport(),
+                    'cta',
+                );
+            },
+        );
+
+        this.addCollapsibleSection(
+            containerEl,
+            i18n.t('settings.statuses.customStatuses.heading'),
+            SettingsTab.customStatusesDescription(),
+            (sectionEl) => {
+                statusSettings.customStatuses.forEach((status) => {
+                    createRowForTaskStatus(
+                        sectionEl,
+                        status,
+                        statusSettings.customStatuses,
+                        statusSettings,
+                        this,
+                        this.plugin,
+                        false,
+                    );
+                });
+                this.addLegacyButton(
+                    sectionEl,
+                    i18n.t('settings.statuses.buttons.addStatus'),
+                    null,
+                    () => {
+                        StatusSettings.addStatus(
+                            statusSettings.customStatuses,
+                            new StatusConfiguration('', '', '', false, StatusType.TODO),
+                        );
+                        updateAndSaveStatusSettings(statusSettings, this);
+                    },
+                    'cta',
+                );
+            },
+        );
+
+        this.addLegacyButton(
+            containerEl,
+            i18n.t('settings.statuses.buttons.importFromTheme.name'),
+            i18n.t('settings.statuses.buttons.importFromTheme.description'),
+            (buttonEl) => this.showImportFromThemeMenu(buttonEl),
+        );
+        this.addLegacyButton(
+            containerEl,
+            i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.name'),
+            i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.description'),
+            () => this.addUnknownStatuses(),
+            'cta',
+        );
+        this.addLegacyButton(
+            containerEl,
+            i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.name'),
+            i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.description'),
+            () => this.resetCustomStatuses(),
+            'warning',
+        );
+    }
+
+    /**
+     * A row with just a button, whose tooltip is the description of the matching 1.13+ row.
+     */
+    private addLegacyButton(
+        containerEl: HTMLElement,
+        text: string,
+        tooltip: string | null,
+        onClick: (buttonEl: HTMLElement) => unknown,
+        style: 'cta' | 'warning' | null = null,
+    ) {
+        const setting = new Setting(containerEl).addButton((button) => {
+            button.setButtonText(text).onClick(() => onClick(button.buttonEl));
+            if (tooltip !== null) {
+                button.setTooltip(tooltip);
+            }
+            if (style === 'cta') {
+                button.setCta();
+            } else if (style === 'warning') {
+                button.setWarning();
+            }
+        });
+        setting.infoEl.remove();
+    }
+
+    private displaySearches(containerEl: HTMLElement) {
+        new Setting(containerEl).setName(i18n.t('settings.searches.heading')).setHeading();
+
+        this.addCollapsibleSection(
+            containerEl,
+            i18n.t('settings.presets.name'),
+            SettingsTab.presetsDescription() + para(link(docs.presets, i18n.t('settings.seeTheDocumentation'))),
+            (sectionEl) => this.presetsSettingsUI.renderPresetsSettings(sectionEl),
+        );
 
         makeMultilineTextSetting(
             new Setting(containerEl)
+                .setName(i18n.t('settings.globalQuery.heading'))
                 .setDesc(
-                    SettingsTab.createFragmentWithHTML(
-                        paras([
-                            i18n.t('settings.globalQuery.query.description'),
-                            this.seeTheDocs('https://publish.obsidian.md/tasks/Queries/Global+Query'),
-                        ]),
-                    ),
+                    SettingsTab.legacyDescription(i18n.t('settings.globalQuery.query.shortDescription'), {
+                        docsUrl: docs.globalQuery,
+                    }),
                 )
                 .addTextArea((text) => {
-                    const settings = getSettings();
-
                     text.inputEl.rows = 4;
                     text.setPlaceholder('# ' + i18n.t('settings.globalQuery.query.placeholder'))
-                        .setValue(settings.globalQuery)
+                        .setValue(getSettings().globalQuery)
                         .onChange(async (value) => {
                             updateSettings({ globalQuery: value });
                             GlobalQuery.getInstance().set(value);
@@ -1187,24 +1311,12 @@ export class SettingsTab extends PluginSettingTab {
                 }),
         );
 
-        // ---------------------------------------------------------------------------
-        new Setting(containerEl).setName(i18n.t('settings.searches.heading')).setHeading();
-        // ---------------------------------------------------------------------------
-
         new Setting(containerEl)
             .setName(i18n.t('settings.searches.enableCustomSearches.name'))
             .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    paras([
-                        i18n.t('settings.searches.enableCustomSearches.description.line1', {
-                            filterByFunction: '<code>filter by function</code>',
-                            sortByFunction: '<code>sort by function</code>',
-                            groupByFunction: '<code>group by function</code>',
-                        }),
-                        i18n.t('settings.searches.enableCustomSearches.description.line2'),
-                        bold(i18n.t('settings.searches.enableCustomSearches.description.line3')),
-                        i18n.t('settings.searches.enableCustomSearches.description.line4'),
-                    ]),
+                SettingsTab.legacyDescription(
+                    para(SettingsTab.customSearchesDescription()) + SettingsTab.customSearchesRisks(),
+                    { docsUrl: docs.customSearches },
                 ),
             )
             .addToggle((toggle) => {
@@ -1214,10 +1326,6 @@ export class SettingsTab extends PluginSettingTab {
                     this.events.triggerReloadOpenSearchResults();
                 });
             });
-
-        // ---------------------------------------------------------------------------
-        new Setting(containerEl).setName(i18n.t('settings.searchResults.heading')).setHeading();
-        // ---------------------------------------------------------------------------
 
         new Setting(containerEl)
             .setName(i18n.t('settings.searchResults.taskCountLocation.name'))
@@ -1232,184 +1340,49 @@ export class SettingsTab extends PluginSettingTab {
                     this.events.triggerReloadOpenSearchResults();
                 });
             });
+    }
 
-        // ---------------------------------------------------------------------------
-        new Setting(containerEl)
-            .setName(i18n.t('settings.presets.name'))
-            .setHeading()
-            .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    paras([
-                        i18n.t('settings.presets.line1', {
-                            name: '<code>name</code>',
-                            instruction1: '<code>preset name</code>',
-                            instruction2: '<code>{{preset.name}}</code>',
-                        }),
-                        i18n.t('settings.presets.line2'),
-                        this.seeTheDocs('https://publish.obsidian.md/tasks/Queries/Presets'),
-                    ]),
-                ),
-            );
-        // ---------------------------------------------------------------------------
-        this.presetsSettingsUI.renderPresetsSettings(containerEl);
-
-        // ---------------------------------------------------------------------------
-        new Setting(containerEl).setName(i18n.t('settings.statuses.heading')).setHeading();
-        // ---------------------------------------------------------------------------
-
-        const { headingOpened } = getSettings();
-
-        // Directly define the JSON data as a constant object
-        const settingsJson = [
-            {
-                text: i18n.t('settings.statuses.coreStatuses.heading'),
-                level: 'h3',
-                class: '',
-                open: true,
-                notice: {
-                    class: 'setting-item-description',
-                    text: null,
-                    html: paras([
-                        i18n.t('settings.statuses.coreStatuses.description.line1'),
-                        i18n.t('settings.statuses.coreStatuses.description.line2'),
-                        i18n.t('settings.changeRequiresRestart'),
-                    ]),
-                },
-                settings: [
-                    {
-                        name: '',
-                        description: '',
-                        type: 'function',
-                        initialValue: '',
-                        placeholder: '',
-                        settingName: 'insertTaskCoreStatusSettings',
-                        featureFlag: '',
-                        notice: null,
-                    },
-                ],
-            },
-            {
-                text: i18n.t('settings.statuses.customStatuses.heading'),
-                level: 'h3',
-                class: '',
-                open: true,
-                notice: {
-                    class: 'setting-item-description',
-                    text: null,
-                    html: paras([
-                        i18n.t('settings.statuses.customStatuses.description.line1'),
-                        i18n.t('settings.statuses.customStatuses.description.line2'),
-                        i18n.t('settings.statuses.customStatuses.description.line3'),
-                        i18n.t('settings.changeRequiresRestart'),
-                        '',
-                        link(
-                            'https://publish.obsidian.md/tasks/Getting+Started/Statuses',
-                            i18n.t('settings.statuses.customStatuses.description.line4'),
-                        ),
-                    ]),
-                },
-                settings: [
-                    {
-                        name: '',
-                        description: '',
-                        type: 'function',
-                        initialValue: '',
-                        placeholder: '',
-                        settingName: 'insertCustomTaskStatusSettings',
-                        featureFlag: '',
-                        notice: null,
-                    },
-                ],
-            },
-        ];
-
-        // Original usage remains unchanged
-        settingsJson.forEach((heading: HeadingConfiguration) => {
-            const initiallyOpen = headingOpened[heading.text] ?? true;
-            const detailsContainer = this.addOneSettingsBlock(containerEl, heading, headingOpened);
-            detailsContainer.open = initiallyOpen;
-        });
-
-        // ---------------------------------------------------------------------------
+    private displayDates(containerEl: HTMLElement) {
         new Setting(containerEl).setName(i18n.t('settings.dates.heading')).setHeading();
-        // ---------------------------------------------------------------------------
 
-        new Setting(containerEl)
-            .setName(i18n.t('settings.dates.createdDate.name'))
-            .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    i18n.t('settings.dates.createdDate.description') +
-                        '</br>' +
-                        this.seeTheDocsPara('https://publish.obsidian.md/tasks/Getting+Started/Dates#Created+date'),
-                ),
-            )
-            .addToggle((toggle) => {
-                const settings = getSettings();
-                toggle.setValue(settings.setCreatedDate).onChange(async (value) => {
-                    updateSettings({ setCreatedDate: value });
-                    await this.plugin.saveSettings();
+        const dateToggles: {
+            key: 'setCreatedDate' | 'setDoneDate' | 'setCancelledDate';
+            i18nKey: string;
+            docsUrl: string;
+        }[] = [
+            { key: 'setCreatedDate', i18nKey: 'createdDate', docsUrl: docs.createdDate },
+            { key: 'setDoneDate', i18nKey: 'doneDate', docsUrl: docs.doneDate },
+            { key: 'setCancelledDate', i18nKey: 'cancelledDate', docsUrl: docs.cancelledDate },
+        ];
+        for (const { key, i18nKey, docsUrl } of dateToggles) {
+            new Setting(containerEl)
+                .setName(i18n.t(`settings.dates.${i18nKey}.name`))
+                .setDesc(SettingsTab.legacyDescription(i18n.t(`settings.dates.${i18nKey}.description`), { docsUrl }))
+                .addToggle((toggle) => {
+                    toggle.setValue(getSettings()[key]).onChange(async (value) => {
+                        updateSettings({ [key]: value });
+                        await this.plugin.saveSettings();
+                    });
                 });
-            });
+        }
+    }
 
-        new Setting(containerEl)
-            .setName(i18n.t('settings.dates.doneDate.name'))
-            .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    i18n.t('settings.dates.doneDate.description') +
-                        '</br>' +
-                        this.seeTheDocsPara('https://publish.obsidian.md/tasks/Getting+Started/Dates#Done+date'),
-                ),
-            )
-            .addToggle((toggle) => {
-                const settings = getSettings();
-                toggle.setValue(settings.setDoneDate).onChange(async (value) => {
-                    updateSettings({ setDoneDate: value });
-                    await this.plugin.saveSettings();
-                });
-            });
-
-        new Setting(containerEl)
-            .setName(i18n.t('settings.dates.cancelledDate.name'))
-            .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    i18n.t('settings.dates.cancelledDate.description') +
-                        '</br>' +
-                        this.seeTheDocsPara('https://publish.obsidian.md/tasks/Getting+Started/Dates#Cancelled+date'),
-                ),
-            )
-            .addToggle((toggle) => {
-                const settings = getSettings();
-                toggle.setValue(settings.setCancelledDate).onChange(async (value) => {
-                    updateSettings({ setCancelledDate: value });
-                    await this.plugin.saveSettings();
-                });
-            });
-
-        // ---------------------------------------------------------------------------
+    private displayDatesFromFileNames(containerEl: HTMLElement) {
         new Setting(containerEl).setName(i18n.t('settings.datesFromFileNames.heading')).setHeading();
-        // ---------------------------------------------------------------------------
+
         let scheduledDateExtraFormat: Setting | null = null;
         let scheduledDateFolders: Setting | null = null;
 
         new Setting(containerEl)
             .setName(i18n.t('settings.datesFromFileNames.scheduledDate.toggle.name'))
             .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    [
-                        i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line1'),
-                        i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line2'),
-                        i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line3'),
-                        i18n.t('settings.datesFromFileNames.scheduledDate.toggle.description.line4'),
-                        para(i18n.t('settings.changeRequiresRestart')),
-                    ].join('</br>') +
-                        this.seeTheDocsPara(
-                            'https://publish.obsidian.md/tasks/Getting+Started/Use+Filename+as+Default+Date',
-                        ),
-                ),
+                SettingsTab.legacyDescription(SettingsTab.filenameDateDescription(), {
+                    docsUrl: docs.filenameDates,
+                    requiresReload: true,
+                }),
             )
             .addToggle((toggle) => {
-                const settings = getSettings();
-                toggle.setValue(settings.useFilenameAsScheduledDate).onChange(async (value) => {
+                toggle.setValue(getSettings().useFilenameAsScheduledDate).onChange(async (value) => {
                     updateSettings({ useFilenameAsScheduledDate: value });
                     setSettingVisibility(scheduledDateExtraFormat, value);
                     setSettingVisibility(scheduledDateFolders, value);
@@ -1420,23 +1393,14 @@ export class SettingsTab extends PluginSettingTab {
         scheduledDateExtraFormat = new Setting(containerEl)
             .setName(i18n.t('settings.datesFromFileNames.scheduledDate.extraFormat.name'))
             .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    i18n.t('settings.datesFromFileNames.scheduledDate.extraFormat.description.line1') +
-                        '</br>' +
-                        paras([
-                            i18n.t('settings.changeRequiresRestart'),
-                            link(
-                                'https://momentjs.com/docs/#/displaying/format/',
-                                i18n.t('settings.datesFromFileNames.scheduledDate.extraFormat.description.line2'),
-                            ),
-                        ]),
+                SettingsTab.legacyDescription(
+                    i18n.t('settings.datesFromFileNames.scheduledDate.extraFormat.description.line1'),
+                    { docsUrl: docs.momentFormats, requiresReload: true },
                 ),
             )
             .addText((text) => {
-                const settings = getSettings();
-
                 text.setPlaceholder(i18n.t('settings.datesFromFileNames.scheduledDate.extraFormat.placeholder'))
-                    .setValue(settings.filenameAsScheduledDateFormat)
+                    .setValue(getSettings().filenameAsScheduledDateFormat)
                     .onChange(async (value) => {
                         updateSettings({ filenameAsScheduledDateFormat: value });
                         await this.plugin.saveSettings();
@@ -1446,18 +1410,13 @@ export class SettingsTab extends PluginSettingTab {
         scheduledDateFolders = new Setting(containerEl)
             .setName(i18n.t('settings.datesFromFileNames.scheduledDate.folders.name'))
             .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    paras([
-                        i18n.t('settings.datesFromFileNames.scheduledDate.folders.description'),
-                        i18n.t('settings.changeRequiresRestart'),
-                    ]),
-                ),
+                SettingsTab.legacyDescription(i18n.t('settings.datesFromFileNames.scheduledDate.folders.description'), {
+                    requiresReload: true,
+                }),
             )
-            .addText(async (input) => {
-                const settings = getSettings();
-                await this.plugin.saveSettings();
+            .addText((input) => {
                 input
-                    .setValue(SettingsTab.renderFolderArray(settings.filenameAsDateFolders))
+                    .setValue(SettingsTab.renderFolderArray(getSettings().filenameAsDateFolders))
                     .onChange(async (value) => {
                         const folders = SettingsTab.parseCommaSeparatedFolders(value);
                         updateSettings({ filenameAsDateFolders: folders });
@@ -1466,23 +1425,20 @@ export class SettingsTab extends PluginSettingTab {
             });
         setSettingVisibility(scheduledDateExtraFormat, getSettings().useFilenameAsScheduledDate);
         setSettingVisibility(scheduledDateFolders, getSettings().useFilenameAsScheduledDate);
+    }
 
-        // ---------------------------------------------------------------------------
+    private displayRecurringTasks(containerEl: HTMLElement) {
         new Setting(containerEl).setName(i18n.t('settings.recurringTasks.heading')).setHeading();
-        // ---------------------------------------------------------------------------
 
         new Setting(containerEl)
             .setName(i18n.t('settings.recurringTasks.nextLine.name'))
             .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    i18n.t('settings.recurringTasks.nextLine.description') +
-                        '</br>' +
-                        this.seeTheDocsPara('https://publish.obsidian.md/tasks/Getting+Started/Recurring+Tasks'),
-                ),
+                SettingsTab.legacyDescription(i18n.t('settings.recurringTasks.nextLine.description'), {
+                    docsUrl: docs.recurringTasks,
+                }),
             )
             .addToggle((toggle) => {
-                const { recurrenceOnNextLine: recurrenceOnNextLine } = getSettings();
-                toggle.setValue(recurrenceOnNextLine).onChange(async (value) => {
+                toggle.setValue(getSettings().recurrenceOnNextLine).onChange(async (value) => {
                     updateSettings({ recurrenceOnNextLine: value });
                     await this.plugin.saveSettings();
                 });
@@ -1491,43 +1447,33 @@ export class SettingsTab extends PluginSettingTab {
         new Setting(containerEl)
             .setName(i18n.t('settings.recurringTasks.removeScheduledDate.name'))
             .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    i18n.t('settings.recurringTasks.removeScheduledDate.description.line1') +
-                        '</br>' +
-                        i18n.t('settings.recurringTasks.removeScheduledDate.description.line2') +
-                        '</br>' +
-                        this.seeTheDocsPara('https://publish.obsidian.md/tasks/Getting+Started/Recurring+Tasks'),
-                ),
+                SettingsTab.legacyDescription(SettingsTab.removeScheduledDateDescription(), {
+                    docsUrl: docs.recurringTasks,
+                }),
             )
             .addToggle((toggle) => {
-                const { removeScheduledDateOnRecurrence } = getSettings();
-                toggle.setValue(removeScheduledDateOnRecurrence).onChange(async (value) => {
+                toggle.setValue(getSettings().removeScheduledDateOnRecurrence).onChange(async (value) => {
                     updateSettings({ removeScheduledDateOnRecurrence: value });
                     await this.plugin.saveSettings();
                 });
             });
+    }
 
-        // ---------------------------------------------------------------------------
-        new Setting(containerEl).setName(i18n.t('settings.autoSuggest.heading')).setHeading();
-        // ---------------------------------------------------------------------------
+    private displayTaskEntry(containerEl: HTMLElement) {
+        new Setting(containerEl).setName(i18n.t('settings.taskEntry.heading')).setHeading();
         let autoSuggestMinimumMatchLength: Setting | null = null;
         let autoSuggestMaximumSuggestions: Setting | null = null;
 
         new Setting(containerEl)
             .setName(i18n.t('settings.autoSuggest.toggle.name'))
             .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    i18n.t('settings.autoSuggest.toggle.description') +
-                        '</br>' +
-                        paras([
-                            i18n.t('settings.changeRequiresRestart'),
-                            this.seeTheDocs('https://publish.obsidian.md/tasks/Getting+Started/Auto-Suggest'),
-                        ]),
-                ),
+                SettingsTab.legacyDescription(i18n.t('settings.autoSuggest.toggle.description'), {
+                    docsUrl: docs.autoSuggest,
+                    requiresReload: true,
+                }),
             )
             .addToggle((toggle) => {
-                const settings = getSettings();
-                toggle.setValue(settings.autoSuggestInEditor).onChange(async (value) => {
+                toggle.setValue(getSettings().autoSuggestInEditor).onChange(async (value) => {
                     updateSettings({ autoSuggestInEditor: value });
                     await this.plugin.saveSettings();
                     setSettingVisibility(autoSuggestMinimumMatchLength, value);
@@ -1538,18 +1484,14 @@ export class SettingsTab extends PluginSettingTab {
         autoSuggestMinimumMatchLength = new Setting(containerEl)
             .setName(i18n.t('settings.autoSuggest.minLength.name'))
             .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    paras([
-                        i18n.t('settings.autoSuggest.minLength.description'),
-                        i18n.t('settings.changeRequiresRestart'),
-                    ]),
-                ),
+                SettingsTab.legacyDescription(i18n.t('settings.autoSuggest.minLength.description'), {
+                    requiresReload: true,
+                }),
             )
             .addSlider((slider) => {
-                const settings = getSettings();
                 slider
                     .setLimits(0, 3, 1)
-                    .setValue(settings.autoSuggestMinMatch)
+                    .setValue(getSettings().autoSuggestMinMatch)
                     .setDynamicTooltip()
                     .onChange(async (value) => {
                         updateSettings({ autoSuggestMinMatch: value });
@@ -1560,18 +1502,14 @@ export class SettingsTab extends PluginSettingTab {
         autoSuggestMaximumSuggestions = new Setting(containerEl)
             .setName(i18n.t('settings.autoSuggest.maxSuggestions.name'))
             .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    paras([
-                        i18n.t('settings.autoSuggest.maxSuggestions.description'),
-                        i18n.t('settings.changeRequiresRestart'),
-                    ]),
-                ),
+                SettingsTab.legacyDescription(i18n.t('settings.autoSuggest.maxSuggestions.description'), {
+                    requiresReload: true,
+                }),
             )
             .addSlider((slider) => {
-                const settings = getSettings();
                 slider
                     .setLimits(3, 20, 1)
-                    .setValue(settings.autoSuggestMaxItems)
+                    .setValue(getSettings().autoSuggestMaxItems)
                     .setDynamicTooltip()
                     .onChange(async (value) => {
                         updateSettings({ autoSuggestMaxItems: value });
@@ -1581,151 +1519,47 @@ export class SettingsTab extends PluginSettingTab {
         setSettingVisibility(autoSuggestMinimumMatchLength, getSettings().autoSuggestInEditor);
         setSettingVisibility(autoSuggestMaximumSuggestions, getSettings().autoSuggestInEditor);
 
-        // ---------------------------------------------------------------------------
-        new Setting(containerEl).setName(i18n.t('settings.dialogs.heading')).setHeading();
-        // ---------------------------------------------------------------------------
-
         new Setting(containerEl)
             .setName(i18n.t('settings.dialogs.accessKeys.name'))
             .setDesc(
-                SettingsTab.createFragmentWithHTML(
-                    i18n.t('settings.dialogs.accessKeys.description') +
-                        '</br>' +
-                        this.seeTheDocsPara(
-                            'https://publish.obsidian.md/tasks/Getting+Started/Create+or+edit+Task#Keyboard+shortcuts',
-                        ),
-                ),
+                SettingsTab.legacyDescription(i18n.t('settings.dialogs.accessKeys.description'), {
+                    docsUrl: docs.accessKeys,
+                }),
             )
             .addToggle((toggle) => {
-                const settings = getSettings();
-                toggle.setValue(settings.provideAccessKeys).onChange(async (value) => {
+                toggle.setValue(getSettings().provideAccessKeys).onChange(async (value) => {
                     updateSettings({ provideAccessKeys: value });
                     await this.plugin.saveSettings();
                 });
             });
     }
 
-    private seeTheDocsPara(url: string) {
-        const linkPlusDot = this.seeTheDocs(url);
-        return para(linkPlusDot);
-    }
-
-    private seeTheDocs(url: string): string {
-        const anchor = i18n.t('settings.seeTheDocumentation');
-        return link(url, anchor) + '.';
-    }
-
-    private addOneSettingsBlock(
+    /**
+     * Add a collapsible section, whose open state is remembered in {@link Settings.headingOpened}.
+     */
+    private addCollapsibleSection(
         containerEl: HTMLElement,
-        heading: HeadingConfiguration,
-        headingOpened: HeadingState,
-    ): HTMLDetailsElement {
+        heading: string,
+        descriptionHtml: string,
+        renderContent: (sectionEl: HTMLElement) => void,
+    ) {
+        const { headingOpened } = getSettings();
         const detailsContainer = containerEl.createEl('details', {
             cls: 'tasks-nested-settings',
-            attr: {
-                ...(heading.open || headingOpened[heading.text] ? { open: true } : {}),
-            },
+            attr: (headingOpened[heading] ?? true) ? { open: true } : {},
         });
-        detailsContainer.empty();
         detailsContainer.ontoggle = () => {
-            headingOpened[heading.text] = detailsContainer.open;
+            headingOpened[heading] = detailsContainer.open;
             updateSettings({ headingOpened: headingOpened });
             void this.plugin.saveSettings();
         };
         const summary = detailsContainer.createEl('summary');
-        new Setting(summary).setHeading().setName(heading.text);
+        new Setting(summary).setHeading().setName(heading);
         summary.createDiv('collapser').createDiv('handle');
 
-        // detailsContainer.createEl(heading.level as keyof HTMLElementTagNameMap, { text: heading.text });
+        new Setting(detailsContainer).setDesc(SettingsTab.createFragmentWithHTML(descriptionHtml));
 
-        if (heading.notice !== null) {
-            if (heading.notice.html !== null) {
-                new Setting(detailsContainer).setDesc(SettingsTab.createFragmentWithHTML(heading.notice.html));
-            }
-        }
-
-        // This will process all the settings from settingsConfiguration.json and render
-        // them out reducing the duplication of the code in this file. This will become
-        // more important as features are being added over time.
-        heading.settings.forEach((setting: SettingConfiguration) => {
-            if (setting.featureFlag !== '' && !isFeatureEnabled(setting.featureFlag)) {
-                // The settings configuration has a featureFlag set and the user has not
-                // enabled it. Skip adding the settings option.
-                return;
-            }
-            if (setting.type === 'checkbox') {
-                new Setting(detailsContainer)
-                    .setName(setting.name)
-                    .setDesc(setting.description)
-                    .addToggle((toggle) => {
-                        const settings = getSettings();
-                        if (!settings.generalSettings[setting.settingName]) {
-                            updateGeneralSetting(setting.settingName, setting.initialValue);
-                        }
-                        toggle
-                            .setValue(<boolean>settings.generalSettings[setting.settingName])
-                            .onChange(async (value) => {
-                                updateGeneralSetting(setting.settingName, value);
-                                await this.plugin.saveSettings();
-                            });
-                    });
-            } else if (setting.type === 'text') {
-                new Setting(detailsContainer)
-                    .setName(setting.name)
-                    .setDesc(setting.description)
-                    .addText((text) => {
-                        const settings = getSettings();
-                        if (!settings.generalSettings[setting.settingName]) {
-                            updateGeneralSetting(setting.settingName, setting.initialValue);
-                        }
-
-                        const onChange = async (value: string) => {
-                            updateGeneralSetting(setting.settingName, value);
-                            await this.plugin.saveSettings();
-                        };
-
-                        text.setPlaceholder(setting.placeholder.toString())
-                            .setValue(settings.generalSettings[setting.settingName].toString())
-                            .onChange(debounce(onChange, 500, true));
-                    });
-            } else if (setting.type === 'textarea') {
-                new Setting(detailsContainer)
-                    .setName(setting.name)
-                    .setDesc(setting.description)
-                    .addTextArea((text) => {
-                        const settings = getSettings();
-                        if (!settings.generalSettings[setting.settingName]) {
-                            updateGeneralSetting(setting.settingName, setting.initialValue);
-                        }
-
-                        const onChange = async (value: string) => {
-                            updateGeneralSetting(setting.settingName, value);
-                            await this.plugin.saveSettings();
-                        };
-
-                        text.setPlaceholder(setting.placeholder.toString())
-                            .setValue(settings.generalSettings[setting.settingName].toString())
-                            .onChange(debounce(onChange, 500, true));
-
-                        text.inputEl.rows = 8;
-                        text.inputEl.cols = 40;
-                    });
-            } else if (setting.type === 'function') {
-                this.customFunctions[setting.settingName](detailsContainer, this);
-            }
-
-            if (setting.notice !== null) {
-                const notice = detailsContainer.createEl('p', {
-                    cls: setting.notice.class,
-                    text: setting.notice.text ?? '',
-                });
-                if (setting.notice.html !== null) {
-                    notice.append(sanitizeHTMLToDom(setting.notice.html));
-                }
-            }
-        });
-
-        return detailsContainer;
+        renderContent(detailsContainer);
     }
 
     private static parseCommaSeparatedFolders(input: string): string[] {
@@ -1739,149 +1573,9 @@ export class SettingsTab extends PluginSettingTab {
                 .filter((folder) => folder !== '')
         );
     }
+
     private static renderFolderArray(folders: string[]): string {
         return folders.join(',');
-    }
-
-    /**
-     * Settings for Core Task Status
-     * These are built-in statuses that can have minimal edits made,
-     * but are not allowed to be deleted or added to.
-     *
-     * @param {HTMLElement} containerEl
-     * @param {SettingsTab} settings
-     */
-    insertTaskCoreStatusSettings(containerEl: HTMLElement, settings: SettingsTab) {
-        const { statusSettings } = getSettings();
-
-        /* -------------------- One row per core status in the settings -------------------- */
-        statusSettings.coreStatuses.forEach((status_type) => {
-            createRowForTaskStatus(
-                containerEl,
-                status_type,
-                statusSettings.coreStatuses,
-                statusSettings,
-                settings,
-                settings.plugin,
-                true, // isCoreStatus
-            );
-        });
-
-        /* -------------------- 'Review and check your Statuses' button -------------------- */
-        const createMermaidDiagram = new Setting(containerEl).addButton((button) => {
-            const buttonName = i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.name');
-            button
-                .setButtonText(buttonName)
-                .setCta()
-                .onClick(async () => {
-                    // Generate a new file unique file name, in the root of the vault
-                    const now = window.moment();
-                    const formattedDateTime = now.format('YYYY-MM-DD HH-mm-ss');
-                    const filename = `Tasks Plugin - ${buttonName} ${formattedDateTime}.md`;
-
-                    // Create the report
-                    const version = this.plugin.manifest.version;
-                    const statusRegistry = StatusRegistry.getInstance();
-                    const fileContent = createStatusRegistryReport(statusSettings, statusRegistry, buttonName, version);
-
-                    // Save the file
-                    const file = await this.app.vault.create(filename, fileContent);
-
-                    // And open the new file
-                    const leaf = this.app.workspace.getLeaf(true);
-                    await leaf.openFile(file);
-                });
-            button.setTooltip(i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.tooltip'));
-        });
-        createMermaidDiagram.infoEl.remove();
-    }
-
-    /**
-     * Settings for Custom Task Status
-     *
-     * @param {HTMLElement} containerEl
-     * @param {SettingsTab} settings
-     */
-    insertCustomTaskStatusSettings(containerEl: HTMLElement, settings: SettingsTab) {
-        const { statusSettings } = getSettings();
-
-        /* -------------------- One row per custom status in the settings -------------------- */
-        statusSettings.customStatuses.forEach((status_type) => {
-            createRowForTaskStatus(
-                containerEl,
-                status_type,
-                statusSettings.customStatuses,
-                statusSettings,
-                settings,
-                settings.plugin,
-                false, // isCoreStatus
-            );
-        });
-
-        containerEl.createDiv();
-
-        /* -------------------- 'Add New Task Status' button -------------------- */
-        const setting = new Setting(containerEl).addButton((button) => {
-            button
-                .setButtonText(i18n.t('settings.statuses.customStatuses.buttons.addNewStatus.name'))
-                .setCta()
-                .onClick(() => {
-                    StatusSettings.addStatus(
-                        statusSettings.customStatuses,
-                        new StatusConfiguration('', '', '', false, StatusType.TODO),
-                    );
-                    updateAndSaveStatusSettings(statusSettings, settings);
-                });
-        });
-        setting.infoEl.remove();
-
-        /* -------------------- Add all Status types supported by ... buttons -------------------- */
-        for (const { name, collection } of getThemeCollections()) {
-            const addStatusesSupportedByThisTheme = new Setting(containerEl).addButton((button) => {
-                const label = i18n.t('settings.statuses.collections.buttons.addCollection.name', {
-                    themeName: name,
-                    numberOfStatuses: collection.length,
-                });
-                button.setButtonText(label).onClick(() => {
-                    addCustomStatesToSettings(collection, statusSettings, settings);
-                });
-            });
-            addStatusesSupportedByThisTheme.infoEl.remove();
-        }
-
-        /* -------------------- 'Add All Unknown Status Types' button -------------------- */
-        const addAllUnknownStatuses = new Setting(containerEl).addButton((button) => {
-            button
-                .setButtonText(i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.name'))
-                .setCta()
-                .onClick(() => {
-                    const tasks = this.plugin.getTasks();
-                    const allStatuses = tasks.map((task) => {
-                        return task.status;
-                    });
-                    const unknownStatuses = StatusRegistry.getInstance().findUnknownStatuses(allStatuses);
-                    if (unknownStatuses.length === 0) {
-                        return;
-                    }
-                    unknownStatuses.forEach((s) => {
-                        StatusSettings.addStatus(statusSettings.customStatuses, s);
-                    });
-                    updateAndSaveStatusSettings(statusSettings, settings);
-                });
-        });
-        addAllUnknownStatuses.infoEl.remove();
-
-        /* -------------------- 'Reset Custom Status Types to Defaults' button -------------------- */
-        const clearCustomStatuses = new Setting(containerEl).addButton((button) => {
-            button
-                .setButtonText(i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.name'))
-                .setWarning()
-                .onClick(async () => {
-                    StatusSettings.resetAllCustomStatuses(statusSettings);
-                    updateAndSaveStatusSettings(statusSettings, settings);
-                });
-        });
-        clearCustomStatuses.infoEl.remove();
     }
 }
 

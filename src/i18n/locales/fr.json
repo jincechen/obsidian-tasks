@@ -128,7 +128,6 @@
   },
   "settings": {
     "autoSuggest": {
-      "heading": "Suggestion automatique",
       "maxSuggestions": {
         "description": "Le nombre de suggestions affichées lorsque le menu de suggestion automatique apparaît (y compris l'option \"⏎\").",
         "name": "Nombre maximum de suggestions à afficher"
@@ -142,7 +141,6 @@
         "name": "Auto-suggestion du contenu des tâches"
       }
     },
-    "changeRequiresRestart": "NÉCESSITE UN REDÉMARRAGE.",
     "dates": {
       "cancelledDate": {
         "description": "Activer cette option ajoute un horodatage ❌ YYYY-MM-DD à la fin d'une tâche marquée comme annulée.",
@@ -163,8 +161,7 @@
       "scheduledDate": {
         "extraFormat": {
           "description": {
-            "line1": "Un format de date supplémentaire que le module Tasks reconnaîtra comme Date planifiée lors de l'utilisation du nom de fichier comme Date planifiée pour les tâches sans date.",
-            "line2": "Documentation de la syntaxe"
+            "line1": "Un format de date supplémentaire que le module Tasks reconnaîtra comme Date planifiée lors de l'utilisation du nom de fichier comme Date planifiée pour les tâches sans date."
           },
           "name": "Format supplémentaire de Date planifiée à reconnaître dans les noms de fichier pour les tâches sans date",
           "placeholder": "exemple : MMM DD YYYY"
@@ -188,8 +185,7 @@
       "accessKeys": {
         "description": "Si les raccourcis clavier pour diverses fonctionnalités dans les boîtes de dialogue interfèrent avec des raccourcis système ou des technologies d'assistance importantes pour vous, vous pouvez les désactiver ici.",
         "name": "Autoriser les raccourcis claviers dans les boîtes de dialogue"
-      },
-      "heading": "Boîtes de dialogue"
+      }
     },
     "format": {
       "description": {
@@ -213,7 +209,6 @@
         "name": "Filtre global",
         "placeholder": "ex: #task ou TODO"
       },
-      "heading": "Filtre global",
       "removeFilter": {
         "description": "Activer cette option masquera l'expression choisie comme filtre global de la description d'une tâche lors de son affichage.",
         "name": "Masquer le filtre global dans les descriptions"
@@ -250,8 +245,8 @@
         "name": "Retirer la Date planifiée sur la prochaine occurrence"
       }
     },
+    "reloadToApply": "",
     "searchResults": {
-      "heading": "Résultats de recherche",
       "taskCountLocation": {
         "description": "Afficher le nombre de tâches en haut ou en bas des résultats d'une requête.",
         "name": "Emplacement du nombre de tâches",
@@ -291,9 +286,6 @@
         "auraTheme": "Thème Aura",
         "borderTheme": "Thème Border",
         "buttons": {
-          "addCollection": {
-            "name": "{{themeName}}: Ajouter {{numberOfStatuses}} Statuts pris en charge"
-          },
           "importCollection": {
             "name": ""
           }
@@ -322,9 +314,6 @@
           "addAllUnknown": {
             "description": "",
             "name": "Ajouter tous les types de Statuts inconnus."
-          },
-          "addNewStatus": {
-            "name": "Nouveau Statut"
           },
           "resetCustomStatuses": {
             "description": "",
