@@ -37,7 +37,7 @@ describe('PresetsSettingsUI', () => {
         resetSettings();
     });
 
-    it.failing('legacy "Add new preset" should open the preset editor', () => {
+    it('legacy "Add new preset" should open the preset editor', () => {
         const ui = new PresetsSettingsUI(plugin, events);
         ui.renderPresetsSettings(document.createElement('div'));
 
@@ -53,7 +53,7 @@ describe('PresetsSettingsUI', () => {
         expect(getSettings().presets).toEqual({ existing: 'not done', new_preset: 'done' });
     });
 
-    it.failing('preset editor should reject an empty query', () => {
+    it('preset editor should reject an empty query', () => {
         const ui = new PresetsSettingsUI(plugin, events);
         const [list] = ui.getPresetsDefinitions(() => {}) as unknown as Array<{ addItem: { action: () => void } }>;
         list.addItem.action();

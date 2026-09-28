@@ -49,9 +49,9 @@
         "required": ""
       },
       "query": {
-        "description": "",
         "name": "",
-        "placeholder": ""
+        "placeholder": "",
+        "required": ""
       },
       "title": ""
     }
@@ -237,6 +237,7 @@
         "message": "",
         "title": ""
       },
+      "dragToReorder": "",
       "emptyState": "",
       "line1": "",
       "line2": "",

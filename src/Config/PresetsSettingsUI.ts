@@ -170,7 +170,7 @@ export class PresetsSettingsUI {
 
         // Add name input field
         setting.addText((text) => {
-            text.setPlaceholder('Name').setValue(key);
+            text.setPlaceholder(i18n.t('modals.editPresetModal.name.name')).setValue(key);
             text.inputEl.addClass('tasks-presets-key');
 
             // Store reference to this input with its original key
@@ -207,7 +207,7 @@ export class PresetsSettingsUI {
         // Add value textarea
         setting.addTextArea((textArea) => {
             textArea.inputEl.addClass('tasks-presets-value');
-            textArea.setPlaceholder('Query or filter text...').setValue(value);
+            textArea.setPlaceholder(i18n.t('modals.editPresetModal.query.placeholder')).setValue(value);
 
             this.setupAutoResizingTextarea(textArea);
 
@@ -220,7 +220,7 @@ export class PresetsSettingsUI {
         // Add drag handle
         setting.addExtraButton((btn) => {
             btn.extraSettingsEl.addClass('tasks-presets-drag-handle');
-            btn.setIcon('grip-vertical').setTooltip('Drag to reorder');
+            btn.setIcon('grip-vertical').setTooltip(i18n.t('settings.presets.dragToReorder'));
 
             btn.extraSettingsEl.addEventListener('mousedown', (_e) => {
                 // Enable dragging only when mousedown starts on the handle
@@ -236,7 +236,7 @@ export class PresetsSettingsUI {
         setting.addExtraButton((btn) => {
             btn.extraSettingsEl.addClass('tasks-presets-delete-button');
             btn.setIcon('cross')
-                .setTooltip('Delete')
+                .setTooltip(i18n.t('common.delete'))
                 .onClick(() => {
                     new ConfirmModal(this.plugin.app, {
                         title: i18n.t('settings.presets.deleteConfirm.title', { name: key }),
@@ -466,9 +466,12 @@ export class PresetsSettingsUI {
         new Setting(containerEl).addButton((btn) => {
             btn.setButtonText(i18n.t('settings.presets.buttons.addNewPreset'))
                 .setCta()
-                .onClick(async () => {
-                    const { presets: updatedPresets } = this.presetsSettingsService.addPreset(settings.presets);
-                    this.savePresetsSettings(updatedPresets, settings, refreshView);
+                .onClick(() => {
+                    this.openEditPresetForm(null, () => {
+                        // Keep the local settings object used by the list up to date.
+                        settings.presets = { ...getSettings().presets };
+                        refreshView();
+                    });
                 });
         });
     }
@@ -537,7 +540,6 @@ class EditPresetModal extends Modal {
 
         const queryFieldEl = this.contentEl.createEl('p', { cls: 'form-field' });
         queryFieldEl.createEl('label', { text: i18n.t('modals.editPresetModal.query.name') });
-        queryFieldEl.createDiv({ cls: 'form-field-help', text: i18n.t('modals.editPresetModal.query.description') });
         this.valueInput = new TextAreaComponent(queryFieldEl)
             .setPlaceholder(i18n.t('modals.editPresetModal.query.placeholder'))
             .setValue(initial.value);
@@ -575,6 +577,12 @@ class EditPresetModal extends Modal {
             name !== this.editingKey && Object.prototype.hasOwnProperty.call(this.existing, name);
         if (isRenamingToExisting) {
             displayTooltip(this.nameInput.inputEl, i18n.t('modals.editPresetModal.name.duplicate'), {
+                classes: ['mod-error'],
+            });
+            return;
+        }
+        if (this.valueInput.getValue().trim() === '') {
+            displayTooltip(this.valueInput.inputEl, i18n.t('modals.editPresetModal.query.required'), {
                 classes: ['mod-error'],
             });
             return;

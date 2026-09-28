@@ -49,9 +49,9 @@
         "required": ""
       },
       "query": {
-        "description": "",
         "name": "",
-        "placeholder": ""
+        "placeholder": "",
+        "required": ""
       },
       "title": ""
     }
@@ -237,6 +237,7 @@
         "message": "",
         "title": ""
       },
+      "dragToReorder": "",
       "emptyState": "",
       "line1": "Aquí puedes definir instrucciones con nombre que puedes reutilizar en varias consultas. Un preajuste llamado '{{name}}' se puede usar en consultas de Tasks con '{{instruction1}}' o '{{instruction2}}'.",
       "line2": "Las consultas de Tasks que estén abiertas se recargan automáticamente al editar los preajustes.",

@@ -49,9 +49,9 @@
         "required": ""
       },
       "query": {
-        "description": "",
         "name": "",
-        "placeholder": ""
+        "placeholder": "",
+        "required": ""
       },
       "title": ""
     }
@@ -237,6 +237,7 @@
         "message": "",
         "title": ""
       },
+      "dragToReorder": "",
       "emptyState": "",
       "line1": "Você pode definir instruções nomeadas aqui, que podem ser reutilizadas em várias consultas. Uma predefinição chamada '{{name}}' pode ser usada em consultas do Tasks com '{{instruction1}}' ou '{{instruction2}}'.",
       "line2": "Quaisquer consultas do Tasks abertas são recarregadas automaticamente quando as predefinições são editadas.",

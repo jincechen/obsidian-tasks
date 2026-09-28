@@ -49,9 +49,9 @@
         "required": ""
       },
       "query": {
-        "description": "",
         "name": "",
-        "placeholder": ""
+        "placeholder": "",
+        "required": ""
       },
       "title": ""
     }
@@ -237,6 +237,7 @@
         "message": "",
         "title": ""
       },
+      "dragToReorder": "",
       "emptyState": "",
       "line1": "Burada birden fazla sorguda yeniden kullanabileceğiniz adlandırılmış talimatlar tanımlayabilirsiniz. '{{name}}' adlı bir ön ayar, Tasks sorgularında '{{instruction1}}' veya '{{instruction2}}' ile kullanılabilir.",
       "line2": "Ön ayarlar düzenlendiğinde açık Tasks sorguları otomatik olarak yeniden yüklenir.",

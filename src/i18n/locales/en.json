@@ -49,9 +49,9 @@
         "required": "Required"
       },
       "query": {
-        "description": "Optional. You can fill this in later.",
         "name": "Query",
-        "placeholder": "not done\npath includes Work"
+        "placeholder": "not done\npath includes Work",
+        "required": "Required"
       },
       "title": "Edit preset"
     }
@@ -237,6 +237,7 @@
         "message": "Queries that use this preset will show an error.",
         "title": "Delete preset '{{name}}'?"
       },
+      "dragToReorder": "Drag to reorder",
       "emptyState": "No presets yet.",
       "line1": "You can define named instructions here, that you can re-use in multiple queries. A preset called '{{name}}' can be used in Tasks queries with either '{{instruction1}}' or '{{instruction2}}'.",
       "line2": "Any open Tasks queries are reloaded automatically when presets are edited.",
