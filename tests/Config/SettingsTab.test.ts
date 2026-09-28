@@ -195,7 +195,7 @@ describe('SettingsTab adding statuses', () => {
 
     const addAllUnknownName = () => i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.name');
 
-    it.failing('pre-1.13: add new task status opens the status editor', () => {
+    it('pre-1.13: add new task status opens the status editor', () => {
         const symbolsBefore = customSymbols();
         settingsTab.display();
 
@@ -205,7 +205,7 @@ describe('SettingsTab adding statuses', () => {
         expect(lastModalState.opened).toBe(true);
     });
 
-    it.failing('pre-1.13: add all unknown statuses says when none are found', () => {
+    it('pre-1.13: add all unknown statuses says when none are found', () => {
         settingsTab.display();
 
         clickLegacyButton(addAllUnknownName());
@@ -213,7 +213,7 @@ describe('SettingsTab adding statuses', () => {
         expect(noticeMessages).toEqual([i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.noneFound')]);
     });
 
-    it.failing('post-1.13: add all unknown statuses says how many were added', () => {
+    it('post-1.13: add all unknown statuses says how many were added', () => {
         const unknownStatus = new Status(new StatusConfiguration('?', 'Question', 'x', false, StatusType.TODO));
         plugin.getTasks.mockReturnValueOnce([{ status: unknownStatus }]);
 

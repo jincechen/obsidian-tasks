@@ -321,8 +321,11 @@
       "customStatuses": {
         "buttons": {
           "addAllUnknown": {
+            "added_one": "",
+            "added_other": "",
             "description": "",
-            "name": "Дадаць усе невядомыя тыпы статусаў"
+            "name": "Дадаць усе невядомыя тыпы статусаў",
+            "noneFound": ""
           },
           "addNewStatus": {
             "name": "Дадаць новы статус задачы"

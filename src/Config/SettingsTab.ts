@@ -627,19 +627,7 @@ export class SettingsTab extends PluginSettingTab {
                     },
                     addItem: {
                         name: i18n.t('settings.statuses.buttons.addStatus'),
-                        action: () => {
-                            const draft = new StatusConfiguration('', '', '', false, StatusType.TODO);
-                            const modal = new CustomStatusModal(this.plugin, draft, false);
-                            modal.onClose = () => {
-                                if (!modal.saved) {
-                                    return;
-                                }
-                                const { statusSettings: current } = getSettings();
-                                StatusSettings.addStatus(current.customStatuses, modal.statusConfiguration());
-                                updateAndSaveStatusSettings(current, this);
-                            };
-                            modal.open();
-                        },
+                        action: () => this.openAddStatusModal(),
                     },
                     items: statusSettings.customStatuses.map((status) => statusRow(status, false)),
                 },
@@ -656,20 +644,7 @@ export class SettingsTab extends PluginSettingTab {
                             name: i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.name'),
                             desc: i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.description'),
                             searchable: false,
-                            action: () => {
-                                const { statusSettings: current } = getSettings();
-                                const tasks = this.plugin.getTasks();
-                                const unknownStatuses = StatusRegistry.getInstance().findUnknownStatuses(
-                                    tasks.map((task) => task.status),
-                                );
-                                if (unknownStatuses.length === 0) {
-                                    return;
-                                }
-                                unknownStatuses.forEach((s) => {
-                                    StatusSettings.addStatus(current.customStatuses, s);
-                                });
-                                updateAndSaveStatusSettings(current, this);
-                            },
+                            action: () => this.addUnknownStatuses(),
                         },
                         {
                             name: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.name'),
@@ -685,6 +660,37 @@ export class SettingsTab extends PluginSettingTab {
                 },
             ],
         };
+    }
+
+    private openAddStatusModal(): void {
+        const draft = new StatusConfiguration('', '', '', false, StatusType.TODO);
+        const modal = new CustomStatusModal(this.plugin, draft, false);
+        modal.onClose = () => {
+            if (!modal.saved) {
+                return;
+            }
+            const { statusSettings } = getSettings();
+            StatusSettings.addStatus(statusSettings.customStatuses, modal.statusConfiguration());
+            updateAndSaveStatusSettings(statusSettings, this);
+        };
+        modal.open();
+    }
+
+    private addUnknownStatuses(): void {
+        const tasks = this.plugin.getTasks();
+        const unknownStatuses = StatusRegistry.getInstance().findUnknownStatuses(tasks.map((task) => task.status));
+        if (unknownStatuses.length === 0) {
+            new Notice(i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.noneFound'));
+            return;
+        }
+        const { statusSettings } = getSettings();
+        unknownStatuses.forEach((s) => {
+            StatusSettings.addStatus(statusSettings.customStatuses, s);
+        });
+        updateAndSaveStatusSettings(statusSettings, this);
+        new Notice(
+            i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.added', { count: unknownStatuses.length }),
+        );
     }
 
     /**
@@ -1825,13 +1831,7 @@ export class SettingsTab extends PluginSettingTab {
             button
                 .setButtonText(i18n.t('settings.statuses.customStatuses.buttons.addNewStatus.name'))
                 .setCta()
-                .onClick(() => {
-                    StatusSettings.addStatus(
-                        statusSettings.customStatuses,
-                        new StatusConfiguration('', '', '', false, StatusType.TODO),
-                    );
-                    updateAndSaveStatusSettings(statusSettings, settings);
-                });
+                .onClick(() => this.openAddStatusModal());
         });
         setting.infoEl.remove();
 
@@ -1854,20 +1854,7 @@ export class SettingsTab extends PluginSettingTab {
             button
                 .setButtonText(i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.name'))
                 .setCta()
-                .onClick(() => {
-                    const tasks = this.plugin.getTasks();
-                    const allStatuses = tasks.map((task) => {
-                        return task.status;
-                    });
-                    const unknownStatuses = StatusRegistry.getInstance().findUnknownStatuses(allStatuses);
-                    if (unknownStatuses.length === 0) {
-                        return;
-                    }
-                    unknownStatuses.forEach((s) => {
-                        StatusSettings.addStatus(statusSettings.customStatuses, s);
-                    });
-                    updateAndSaveStatusSettings(statusSettings, settings);
-                });
+                .onClick(() => this.addUnknownStatuses());
         });
         addAllUnknownStatuses.infoEl.remove();
 

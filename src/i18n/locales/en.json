@@ -321,8 +321,11 @@
       "customStatuses": {
         "buttons": {
           "addAllUnknown": {
+            "added_one": "Tasks: Added {{count}} status.",
+            "added_other": "Tasks: Added {{count}} statuses.",
             "description": "Add any status symbols found in your vault but not yet configured here.",
-            "name": "Add all unknown status types"
+            "name": "Add all unknown status types",
+            "noneFound": "Tasks: No unknown statuses found."
           },
           "addNewStatus": {
             "name": "Add new task status"

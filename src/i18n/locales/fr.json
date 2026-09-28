@@ -321,8 +321,11 @@
       "customStatuses": {
         "buttons": {
           "addAllUnknown": {
+            "added_one": "",
+            "added_other": "",
             "description": "",
-            "name": "Ajouter tous les types de Statuts inconnus."
+            "name": "Ajouter tous les types de Statuts inconnus.",
+            "noneFound": ""
           },
           "addNewStatus": {
             "name": "Nouveau Statut"

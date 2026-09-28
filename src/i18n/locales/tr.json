@@ -321,8 +321,11 @@
       "customStatuses": {
         "buttons": {
           "addAllUnknown": {
+            "added_one": "",
+            "added_other": "",
             "description": "",
-            "name": "Tüm Bilinmeyen Durum Türlerini Ekle"
+            "name": "Tüm Bilinmeyen Durum Türlerini Ekle",
+            "noneFound": ""
           },
           "addNewStatus": {
             "name": "Yeni Görev Durumu Ekle"

@@ -321,8 +321,11 @@
       "customStatuses": {
         "buttons": {
           "addAllUnknown": {
+            "added_one": "",
+            "added_other": "",
             "description": "",
-            "name": "알 수 없는 모든 상태 유형 추가"
+            "name": "알 수 없는 모든 상태 유형 추가",
+            "noneFound": ""
           },
           "addNewStatus": {
             "name": "새 작업 상태 추가"

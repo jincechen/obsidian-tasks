@@ -321,8 +321,11 @@
       "customStatuses": {
         "buttons": {
           "addAllUnknown": {
+            "added_one": "",
+            "added_other": "",
             "description": "",
-            "name": "Alle unbekannten Statustypen hinzufügen"
+            "name": "Alle unbekannten Statustypen hinzufügen",
+            "noneFound": ""
           },
           "addNewStatus": {
             "name": "Neuen Aufgabenstatus hinzufügen"

@@ -321,8 +321,11 @@
       "customStatuses": {
         "buttons": {
           "addAllUnknown": {
+            "added_one": "",
+            "added_other": "",
             "description": "",
-            "name": "添加所有未知状态类型"
+            "name": "添加所有未知状态类型",
+            "noneFound": ""
           },
           "addNewStatus": {
             "name": "添加新任务状态"

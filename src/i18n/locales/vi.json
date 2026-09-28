@@ -321,8 +321,11 @@
       "customStatuses": {
         "buttons": {
           "addAllUnknown": {
+            "added_one": "",
+            "added_other": "",
             "description": "",
-            "name": "Thêm tất cả loại trạng thái không xác định"
+            "name": "Thêm tất cả loại trạng thái không xác định",
+            "noneFound": ""
           },
           "addNewStatus": {
             "name": "Thêm trạng thái nhiệm vụ mới"

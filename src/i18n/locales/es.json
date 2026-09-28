@@ -321,8 +321,11 @@
       "customStatuses": {
         "buttons": {
           "addAllUnknown": {
+            "added_one": "",
+            "added_other": "",
             "description": "",
-            "name": "Añadir todos los tipos de estado desconocidos"
+            "name": "Añadir todos los tipos de estado desconocidos",
+            "noneFound": ""
           },
           "addNewStatus": {
             "name": "Añadir nuevo estado de tarea"
