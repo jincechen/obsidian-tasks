@@ -77,6 +77,8 @@ export interface Settings {
     autoSuggestMaxItems: number;
     provideAccessKeys: boolean;
     showSubtaskProgress: boolean;
+    // The symbol of the status shown as the middle layer of the subtask progress bar, or empty for none.
+    subtaskProgressIntermediateStatus: string;
     useFilenameAsScheduledDate: boolean;
     filenameAsScheduledDateFormat: string;
     filenameAsDateFolders: string[];
@@ -127,6 +129,7 @@ const defaultSettings: Readonly<Settings> = {
     autoSuggestMaxItems: 20,
     provideAccessKeys: true,
     showSubtaskProgress: false,
+    subtaskProgressIntermediateStatus: '',
     useFilenameAsScheduledDate: false,
     filenameAsScheduledDateFormat: '',
     filenameAsDateFolders: [],

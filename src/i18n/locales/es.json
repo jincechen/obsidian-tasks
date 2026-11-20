@@ -254,7 +254,12 @@
       "heading": "Resultados de la búsqueda",
       "subtaskProgress": {
         "description": "",
-        "name": ""
+        "name": "",
+        "options": {
+          "doneAndStatus": "",
+          "doneOnly": "",
+          "off": ""
+        }
       },
       "taskCountLocation": {
         "description": "Elige si el recuento de tareas se muestra en la parte superior o inferior de los resultados de la consulta.",

@@ -18,6 +18,7 @@ import {
 import { StatusConfiguration, StatusType } from '../Statuses/StatusConfiguration';
 import type TasksPlugin from '../main';
 import { StatusRegistry } from '../Statuses/StatusRegistry';
+import { intermediateStatus, intermediateStatusOptions } from '../Task/SubtaskProgress';
 import { Status } from '../Statuses/Status';
 import type { StatusCollection } from '../Statuses/StatusCollection';
 import { createStatusRegistryReport } from '../Statuses/StatusRegistryReport';
@@ -402,23 +403,51 @@ export class SettingsTab extends PluginSettingTab {
                 {
                     name: i18n.t('settings.searchResults.subtaskProgress.name'),
                     desc: i18n.t('settings.searchResults.subtaskProgress.description'),
-                    render: (setting) => {
-                        setting.addToggle((toggle) => {
-                            toggle
-                                .setValue(getSettings().showSubtaskProgress)
-                                .onChange(async (value) => await this.setShowSubtaskProgress(value));
-                        });
-                    },
+                    render: (setting) => this.addSubtaskProgressDropdown(setting),
                 },
             ],
         };
     }
 
-    private async setShowSubtaskProgress(value: boolean) {
-        updateSettings({ showSubtaskProgress: value });
-        await this.plugin.saveSettings();
-        this.events.triggerReloadOpenSearchResults();
-        refreshEditorDecorations(this.app);
+    /**
+     * Choose whether to show the subtask progress bar, and which status, if any, it shows as its middle layer.
+     */
+    private addSubtaskProgressDropdown(setting: Setting) {
+        const off = 'off';
+        const doneOnly = 'done';
+        const statusPrefix = 'status:';
+
+        setting.addDropdown((dropdown) => {
+            dropdown.addOption(off, i18n.t('settings.searchResults.subtaskProgress.options.off'));
+            dropdown.addOption(doneOnly, i18n.t('settings.searchResults.subtaskProgress.options.doneOnly'));
+            for (const status of intermediateStatusOptions(StatusRegistry.getInstance())) {
+                dropdown.addOption(
+                    statusPrefix + status.symbol,
+                    i18n.t('settings.searchResults.subtaskProgress.options.doneAndStatus', {
+                        statusName: status.name,
+                        statusSymbol: status.symbol,
+                    }),
+                );
+            }
+
+            const intermediate = intermediateStatus();
+            let value = off;
+            if (getSettings().showSubtaskProgress) {
+                value = intermediate === null ? doneOnly : statusPrefix + intermediate.symbol;
+            }
+
+            dropdown.setValue(value).onChange(async (newValue) => {
+                updateSettings({
+                    showSubtaskProgress: newValue !== off,
+                    subtaskProgressIntermediateStatus: newValue.startsWith(statusPrefix)
+                        ? newValue.substring(statusPrefix.length)
+                        : '',
+                });
+                await this.plugin.saveSettings();
+                this.events.triggerReloadOpenSearchResults();
+                refreshEditorDecorations(this.app);
+            });
+        });
     }
 
     private renderEnableCustomSearchesToggle(setting: Setting): void {
@@ -1252,14 +1281,10 @@ export class SettingsTab extends PluginSettingTab {
                 });
             });
 
-        new Setting(containerEl)
+        const subtaskProgressSetting = new Setting(containerEl)
             .setName(i18n.t('settings.searchResults.subtaskProgress.name'))
-            .setDesc(i18n.t('settings.searchResults.subtaskProgress.description'))
-            .addToggle((toggle) => {
-                toggle
-                    .setValue(getSettings().showSubtaskProgress)
-                    .onChange(async (value) => await this.setShowSubtaskProgress(value));
-            });
+            .setDesc(i18n.t('settings.searchResults.subtaskProgress.description'));
+        this.addSubtaskProgressDropdown(subtaskProgressSetting);
 
         // ---------------------------------------------------------------------------
         new Setting(containerEl)

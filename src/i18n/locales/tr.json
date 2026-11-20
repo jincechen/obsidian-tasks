@@ -254,7 +254,12 @@
       "heading": "Arama sonuçları",
       "subtaskProgress": {
         "description": "",
-        "name": ""
+        "name": "",
+        "options": {
+          "doneAndStatus": "",
+          "doneOnly": "",
+          "off": ""
+        }
       },
       "taskCountLocation": {
         "description": "Görev sayısının sorgu sonuçlarının üstünde mi yoksa altında mı gösterileceğini seçin.",
