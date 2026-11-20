@@ -149,7 +149,7 @@ a.tasks-edit, a.tasks-postpone {
     inset-block: 0;
     inset-inline-start: 0;
     border-radius: inherit;
-    background-color: color-mix(in srgb, var(--interactive-accent) 30%, var(--background-primary));
+    background-color: color-mix(in srgb, var(--interactive-accent) 25%, var(--background-primary));
     transition: width 150ms ease-out;
 }
 
@@ -159,7 +159,7 @@ a.tasks-edit, a.tasks-postpone {
     inset-block: 0;
     inset-inline-start: 0;
     border-radius: inherit;
-    background-color: color-mix(in srgb, var(--interactive-accent) 55%, var(--background-primary));
+    background-color: color-mix(in srgb, var(--interactive-accent) 50%, var(--background-primary));
     transition: width 150ms ease-out;
 }
 
