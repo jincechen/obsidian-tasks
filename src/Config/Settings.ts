@@ -51,12 +51,10 @@ export const TASK_FORMATS = {
     dataview: {
         getDisplayName: () => i18n.t('settings.format.displayName.dataview'),
         taskSerializer: new DataviewTaskSerializer(),
+        // Only square brackets open the menu: parentheses are common in task descriptions.
         buildSuggestions: onlySuggestIfBracketOpen(
             makeDefaultSuggestionBuilder(DATAVIEW_SYMBOLS, DEFAULT_MAX_GENERIC_SUGGESTIONS, true),
-            [
-                ['(', ')'],
-                ['[', ']'],
-            ],
+            [['[', ']']],
         ),
     },
 } as const;
