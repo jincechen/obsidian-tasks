@@ -52,6 +52,14 @@
         "placeholder": ""
       },
       "title": ""
+    },
+    "subtaskProgress": {
+      "completed": "",
+      "middle": "",
+      "noSequence": "",
+      "none": "",
+      "title": "",
+      "total": ""
     }
   },
   "notices": {
@@ -253,13 +261,9 @@
     "searchResults": {
       "heading": "Resultados de la búsqueda",
       "subtaskProgress": {
+        "configure": "",
         "description": "",
-        "name": "",
-        "options": {
-          "doneAndStatus": "",
-          "doneOnly": "",
-          "off": ""
-        }
+        "name": ""
       },
       "taskCountLocation": {
         "description": "Elige si el recuento de tareas se muestra en la parte superior o inferior de los resultados de la consulta.",

@@ -52,6 +52,14 @@
         "placeholder": ""
       },
       "title": ""
+    },
+    "subtaskProgress": {
+      "completed": "",
+      "middle": "",
+      "noSequence": "",
+      "none": "",
+      "title": "",
+      "total": ""
     }
   },
   "notices": {
@@ -253,13 +261,9 @@
     "searchResults": {
       "heading": "",
       "subtaskProgress": {
+        "configure": "",
         "description": "",
-        "name": "",
-        "options": {
-          "doneAndStatus": "",
-          "doneOnly": "",
-          "off": ""
-        }
+        "name": ""
       },
       "taskCountLocation": {
         "description": "",

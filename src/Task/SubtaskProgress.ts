@@ -1,6 +1,6 @@
 import { GlobalFilter } from '../Config/GlobalFilter';
 import { getSettings } from '../Config/Settings';
-import type { Status } from '../Statuses/Status';
+import { Status } from '../Statuses/Status';
 import { StatusType } from '../Statuses/StatusConfiguration';
 import { StatusRegistry } from '../Statuses/StatusRegistry';
 import type { ListItem } from './ListItem';
@@ -8,21 +8,38 @@ import type { Task } from './Task';
 import { TaskRegularExpressions } from './TaskRegularExpressions';
 
 /**
- * How many of a task's subtasks, at any depth, are done, and how many have the intermediate status, if any.
- * See {@link intermediateStatus}.
+ * The counts shown by a subtask progress bar, such as '2/5':
+ * - total: the subtasks at or after the 'total' step (y).
+ * - middle: the subtasks at or after the 'middle' step, if any. This includes the done ones.
+ * - done: the subtasks at or after the 'completed' step (x).
+ *
+ * See {@link SubtaskProgressConfig}.
  */
 export interface SubtaskProgress {
     done: number;
-    intermediate: number;
+    middle: number;
     total: number;
 }
 
-function countsTowardsTotal(type: StatusType): boolean {
-    switch (type) {
-        case StatusType.DONE:
+/**
+ * The statuses that subtask progress is counted against, and the steps chosen in settings.
+ * Each step is an index in {@link sequence}, and counts the subtasks with that status or a later one.
+ */
+export interface SubtaskProgressConfig {
+    /** The steps from Todo to the first Done status, following each status's next status. */
+    sequence: Status[];
+    total: number;
+    /** null if the bar has no middle layer. */
+    middle: number | null;
+    completed: number;
+}
+
+function isCountable(status: Status): boolean {
+    switch (status.type) {
         case StatusType.TODO:
         case StatusType.IN_PROGRESS:
         case StatusType.ON_HOLD:
+        case StatusType.DONE:
             return true;
         default:
             return false;
@@ -30,44 +47,103 @@ function countsTowardsTotal(type: StatusType): boolean {
 }
 
 /**
- * The statuses that can be shown as the middle layer of the progress bar: those that are counted, but not done.
- * The default Todo status is left out, as almost every subtask would have it.
+ * The steps that subtask progress is counted against: the statuses visited when toggling from Todo,
+ * up to and including the first Done status.
  */
-export function intermediateStatusOptions(statusRegistry: StatusRegistry): Status[] {
-    return statusRegistry.registeredStatuses.filter(
-        (status) => countsTowardsTotal(status.type) && status.type !== StatusType.DONE && status.symbol !== ' ',
-    );
+export function statusSequence(statusRegistry: StatusRegistry): Status[] {
+    const sequence: Status[] = [];
+    let status = statusRegistry.bySymbol(Status.TODO.symbol);
+    while (status.type !== StatusType.EMPTY && isCountable(status) && !sequence.includes(status)) {
+        sequence.push(status);
+        if (status.type === StatusType.DONE) {
+            break;
+        }
+        status = statusRegistry.getNextStatus(status);
+    }
+    return sequence;
 }
 
 /**
- * The status chosen in settings to be shown as the middle layer of the progress bar.
- * @returns null if none is chosen, or the chosen status no longer exists.
+ * The step of a status in the sequence, or null if subtasks with this status are not counted.
+ *
+ * A status that is not in the sequence counts as the step before the one it leads to.
+ * For example, in the sequence Todo → Scheduled → In Progress → Done, a 'Postponed' status whose next status
+ * is In Progress counts like Scheduled, and one whose next status is Todo is not counted.
  */
-export function intermediateStatus(statusRegistry = StatusRegistry.getInstance()): Status | null {
-    const symbol = getSettings().subtaskProgressIntermediateStatus;
-    if (symbol === '') {
+export function progressStep(status: Status, sequence: Status[], statusRegistry: StatusRegistry): number | null {
+    const index = sequence.findIndex((step) => step.symbol === status.symbol);
+    if (index !== -1) {
+        return index;
+    }
+    if (!isCountable(status)) {
         return null;
     }
-    return intermediateStatusOptions(statusRegistry).find((status) => status.symbol === symbol) ?? null;
+    if (status.type === StatusType.DONE) {
+        return sequence.length - 1;
+    }
+
+    const visited = new Set<string>([status.symbol]);
+    let next = statusRegistry.getNextStatus(status);
+    while (next.type !== StatusType.EMPTY && !visited.has(next.symbol)) {
+        const nextIndex = sequence.findIndex((step) => step.symbol === next.symbol);
+        if (nextIndex !== -1) {
+            return nextIndex > 0 ? nextIndex - 0.5 : null;
+        }
+        visited.add(next.symbol);
+        next = statusRegistry.getNextStatus(next);
+    }
+    return null;
 }
 
 /**
- * Count the statuses. Cancelled and non-task statuses are left out, so they do not prevent 100%.
- * @param statuses
- * @param intermediate - the status to count in {@link SubtaskProgress.intermediate}, if any.
+ * The steps chosen in settings, checked against the current statuses.
+ * Steps that no longer exist, or are out of order, fall back to the defaults.
+ */
+export function progressConfig(statusRegistry = StatusRegistry.getInstance()): SubtaskProgressConfig {
+    const sequence = statusSequence(statusRegistry);
+    const { totalFrom, middleFrom, completedFrom } = getSettings().subtaskProgress;
+    const indexOf = (symbol: string) => sequence.findIndex((status) => status.symbol === symbol);
+
+    const lastStep = Math.max(sequence.length - 1, 0);
+    let total = indexOf(totalFrom);
+    if (total === -1 || total >= lastStep) {
+        total = 0;
+    }
+    let completed = indexOf(completedFrom);
+    if (completed <= total) {
+        completed = lastStep;
+    }
+    const middleIndex = indexOf(middleFrom);
+    const middle = middleIndex > total && middleIndex < completed ? middleIndex : null;
+
+    return { sequence, total, middle, completed };
+}
+
+/**
+ * Count the statuses against the chosen steps. Statuses before the 'total' step are not counted at all.
  * @returns null if there is nothing to count.
  */
-export function tallyStatuses(statuses: Status[], intermediate: Status | null): SubtaskProgress | null {
-    const progress: SubtaskProgress = { done: 0, intermediate: 0, total: 0 };
+export function tallyStatuses(
+    statuses: Status[],
+    config: SubtaskProgressConfig,
+    statusRegistry = StatusRegistry.getInstance(),
+): SubtaskProgress | null {
+    if (config.sequence.length < 2) {
+        // The status cycle does not lead from Todo to Done, so there is no progress to show.
+        return null;
+    }
+    const progress: SubtaskProgress = { done: 0, middle: 0, total: 0 };
     for (const status of statuses) {
-        if (!countsTowardsTotal(status.type)) {
+        const step = progressStep(status, config.sequence, statusRegistry);
+        if (step === null || step < config.total) {
             continue;
         }
         progress.total++;
-        if (status.type === StatusType.DONE) {
+        if (config.middle !== null && step >= config.middle) {
+            progress.middle++;
+        }
+        if (step >= config.completed) {
             progress.done++;
-        } else if (intermediate !== null && status.symbol === intermediate.symbol) {
-            progress.intermediate++;
         }
     }
     return progress.total > 0 ? progress : null;
@@ -76,7 +152,10 @@ export function tallyStatuses(statuses: Status[], intermediate: Status | null): 
 /**
  * The progress of all the tasks nested under a list item, including those under plain list items.
  */
-export function subtaskProgressOfListItem(item: ListItem): SubtaskProgress | null {
+export function subtaskProgressOfListItem(
+    item: ListItem,
+    config: SubtaskProgressConfig = progressConfig(),
+): SubtaskProgress | null {
     const statuses: Status[] = [];
     const collect = (listItem: ListItem) => {
         for (const child of listItem.children) {
@@ -87,7 +166,7 @@ export function subtaskProgressOfListItem(item: ListItem): SubtaskProgress | nul
         }
     };
     collect(item);
-    return tallyStatuses(statuses, intermediateStatus());
+    return tallyStatuses(statuses, config);
 }
 
 const tabWidth = 4;
@@ -110,7 +189,11 @@ function indentationOf(line: string): { quoteDepth: number; width: number } {
  * The progress of the tasks indented under the task on line `parentIndex`.
  * @returns null if the line is not a task, or it has no subtasks to count.
  */
-export function subtaskProgressFromLines(lines: readonly string[], parentIndex: number): SubtaskProgress | null {
+export function subtaskProgressFromLines(
+    lines: readonly string[],
+    parentIndex: number,
+    config: SubtaskProgressConfig = progressConfig(),
+): SubtaskProgress | null {
     const parentLine = lines[parentIndex] ?? '';
     const globalFilter = GlobalFilter.getInstance();
     if (!TaskRegularExpressions.taskRegex.test(parentLine)) {
@@ -144,30 +227,26 @@ export function subtaskProgressFromLines(lines: readonly string[], parentIndex: 
         }
         statuses.push(statusRegistry.bySymbolOrCreate(taskMatch[3]));
     }
-    return tallyStatuses(statuses, intermediateStatus(statusRegistry));
+    return tallyStatuses(statuses, config, statusRegistry);
 }
 
 /**
  * Add a slim progress bar and a 'done/total' count, such as '2/5', to the element.
  *
- * The bar has up to three layers: all the subtasks (the track), then those with the intermediate status, if any,
- * then those that are done.
- * @param parent
- * @param progress
- * @param intermediate - the status counted in {@link SubtaskProgress.intermediate}, if any, to describe it.
+ * The track stands for the total. The middle layer, if any, is drawn under the done layer.
  */
 export function renderSubtaskProgress(
     parent: HTMLElement,
     progress: SubtaskProgress,
-    intermediate: Status | null = intermediateStatus(),
+    config: SubtaskProgressConfig = progressConfig(),
 ): HTMLSpanElement {
-    const { done, total } = progress;
-    const donePercentage = Math.round((done / total) * 100);
-    const intermediatePercentage = Math.round((progress.intermediate / total) * 100);
+    const { done, middle, total } = progress;
+    const percentage = (count: number) => `${Math.round((count / total) * 100)}%`;
 
-    let label = `Subtasks done: ${done} of ${total}`;
-    if (intermediate !== null) {
-        label += `, ${intermediate.name}: ${progress.intermediate}`;
+    const completedName = config.sequence[config.completed]?.name ?? '';
+    let label = `${completedName}: ${done} of ${total}`;
+    if (config.middle !== null) {
+        label += ` · ${config.sequence[config.middle].name}: ${middle}`;
     }
 
     const container = parent.createSpan({ cls: 'tasks-progress' });
@@ -182,14 +261,19 @@ export function renderSubtaskProgress(
     }
 
     const track = container.createSpan({ cls: 'tasks-progress-track' });
-    if (progress.intermediate > 0) {
-        const intermediateFill = track.createSpan({ cls: 'tasks-progress-intermediate' });
-        intermediateFill.style.insetInlineStart = `${donePercentage}%`;
-        intermediateFill.style.width = `${intermediatePercentage}%`;
+    if (config.middle !== null && middle > 0) {
+        track.createSpan({ cls: 'tasks-progress-middle' }).style.width = percentage(middle);
     }
-    const fill = track.createSpan({ cls: 'tasks-progress-fill' });
-    fill.style.width = `${donePercentage}%`;
+    track.createSpan({ cls: 'tasks-progress-fill' }).style.width = percentage(done);
 
     container.createSpan({ cls: 'tasks-progress-count', text: `${done}/${total}` });
     return container;
+}
+
+/**
+ * A key that changes whenever the config would render differently, for comparing configs.
+ */
+export function progressConfigKey(config: SubtaskProgressConfig): string {
+    const names = config.sequence.map((status) => `${status.symbol}:${status.name}`).join('|');
+    return `${names}/${config.total}/${config.middle}/${config.completed}`;
 }

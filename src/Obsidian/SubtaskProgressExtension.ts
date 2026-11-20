@@ -1,10 +1,11 @@
 import { Decoration, type DecorationSet, EditorView, ViewPlugin, type ViewUpdate, WidgetType } from '@codemirror/view';
 import { editorLivePreviewField } from 'obsidian';
 import { getSettings } from '../Config/Settings';
-import type { Status } from '../Statuses/Status';
 import {
     type SubtaskProgress,
-    intermediateStatus,
+    type SubtaskProgressConfig,
+    progressConfig,
+    progressConfigKey,
     renderSubtaskProgress,
     subtaskProgressFromLines,
 } from '../Task/SubtaskProgress';
@@ -13,7 +14,8 @@ import { editorDecorationsRefreshVersion, linesInsideCodeBlocks } from './Editor
 class SubtaskProgressWidget extends WidgetType {
     constructor(
         private readonly progress: SubtaskProgress,
-        private readonly intermediate: Status | null,
+        private readonly config: SubtaskProgressConfig,
+        private readonly configKey: string,
     ) {
         super();
     }
@@ -21,16 +23,15 @@ class SubtaskProgressWidget extends WidgetType {
     eq(other: SubtaskProgressWidget) {
         return (
             other.progress.done === this.progress.done &&
-            other.progress.intermediate === this.progress.intermediate &&
+            other.progress.middle === this.progress.middle &&
             other.progress.total === this.progress.total &&
-            other.intermediate?.symbol === this.intermediate?.symbol &&
-            other.intermediate?.name === this.intermediate?.name
+            other.configKey === this.configKey
         );
     }
 
     toDOM() {
         const wrapper = createSpan({ cls: 'tasks-editor-progress' });
-        renderSubtaskProgress(wrapper, this.progress, this.intermediate);
+        renderSubtaskProgress(wrapper, this.progress, this.config);
         return wrapper;
     }
 
@@ -58,7 +59,8 @@ function buildDecorations(view: EditorView): DecorationSet {
     const lines = doc.toString().split('\n');
     const lastVisibleLineIndex = doc.lineAt(visibleRanges[visibleRanges.length - 1].to).number - 1;
     const insideCodeBlock = linesInsideCodeBlocks(lines, lastVisibleLineIndex);
-    const intermediate = intermediateStatus();
+    const config = progressConfig();
+    const configKey = progressConfigKey(config);
 
     const decorations: ReturnType<Decoration['range']>[] = [];
     for (const { from, to } of visibleRanges) {
@@ -72,12 +74,13 @@ function buildDecorations(view: EditorView): DecorationSet {
                 continue;
             }
 
-            const progress = subtaskProgressFromLines(lines, lineIndex);
+            const progress = subtaskProgressFromLines(lines, lineIndex, config);
             if (progress !== null) {
                 decorations.push(
-                    Decoration.widget({ widget: new SubtaskProgressWidget(progress, intermediate), side: 1 }).range(
-                        line.to,
-                    ),
+                    Decoration.widget({
+                        widget: new SubtaskProgressWidget(progress, config, configKey),
+                        side: 1,
+                    }).range(line.to),
                 );
             }
         }

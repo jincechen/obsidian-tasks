@@ -143,12 +143,14 @@ a.tasks-edit, a.tasks-postpone {
     transition: width 150ms ease-out;
 }
 
-/* The middle layer: subtasks with the status chosen in settings, after the completed ones */
-.tasks-progress-intermediate {
+/* The optional middle layer, under the completed one: a pale tint, so it is never mistaken for completed */
+.tasks-progress-middle {
     position: absolute;
     inset-block: 0;
-    background-color: color-mix(in srgb, var(--interactive-accent) 35%, transparent);
-    transition: width 150ms ease-out, inset-inline-start 150ms ease-out;
+    inset-inline-start: 0;
+    border-radius: inherit;
+    background-color: color-mix(in srgb, var(--interactive-accent) 30%, var(--background-primary));
+    transition: width 150ms ease-out;
 }
 
 .tasks-progress[data-complete] .tasks-progress-fill {
@@ -163,7 +165,7 @@ a.tasks-edit, a.tasks-postpone {
 
 @media (prefers-reduced-motion: reduce) {
     .tasks-progress-fill,
-    .tasks-progress-intermediate {
+    .tasks-progress-middle {
         transition: none;
     }
 }

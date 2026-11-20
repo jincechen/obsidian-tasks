@@ -52,6 +52,14 @@
         "placeholder": ""
       },
       "title": ""
+    },
+    "subtaskProgress": {
+      "completed": "",
+      "middle": "",
+      "noSequence": "",
+      "none": "",
+      "title": "",
+      "total": ""
     }
   },
   "notices": {
@@ -253,13 +261,9 @@
     "searchResults": {
       "heading": "Résultats de recherche",
       "subtaskProgress": {
+        "configure": "",
         "description": "",
-        "name": "",
-        "options": {
-          "doneAndStatus": "",
-          "doneOnly": "",
-          "off": ""
-        }
+        "name": ""
       },
       "taskCountLocation": {
         "description": "Afficher le nombre de tâches en haut ou en bas des résultats d'une requête.",

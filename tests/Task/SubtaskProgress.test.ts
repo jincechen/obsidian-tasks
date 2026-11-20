@@ -1,12 +1,13 @@
 import { GlobalFilter } from '../../src/Config/GlobalFilter';
 import { resetSettings, updateSettings } from '../../src/Config/Settings';
-import { Status } from '../../src/Statuses/Status';
+import type { Status } from '../../src/Statuses/Status';
 import { StatusConfiguration, StatusType } from '../../src/Statuses/StatusConfiguration';
 import { StatusRegistry } from '../../src/Statuses/StatusRegistry';
 import {
-    intermediateStatus,
-    intermediateStatusOptions,
+    progressConfig,
+    progressStep,
     renderSubtaskProgress,
+    statusSequence,
     subtaskProgressFromLines,
     subtaskProgressOfListItem,
     tallyStatuses,
@@ -17,7 +18,26 @@ import { TasksFile } from '../../src/Scripting/TasksFile';
 import { Task } from '../../src/Task/Task';
 import { fromLine, fromMarkdown } from '../TestingTools/TestHelpers';
 
-const scheduled = new Status(new StatusConfiguration('>', 'Scheduled', 'x', true, StatusType.TODO));
+/**
+ * A status cycle with steps between Todo and Done, and statuses outside the cycle.
+ */
+function useCycleWithSteps() {
+    StatusRegistry.getInstance().set([
+        new StatusConfiguration(' ', 'Todo', '<', true, StatusType.TODO),
+        new StatusConfiguration('x', 'Done', ' ', true, StatusType.DONE),
+        new StatusConfiguration('<', 'Scheduled', '/', true, StatusType.IN_PROGRESS),
+        new StatusConfiguration('/', 'In Progress', 'x', true, StatusType.IN_PROGRESS),
+        new StatusConfiguration('\\', 'Postponed', '/', true, StatusType.ON_HOLD),
+        new StatusConfiguration('>', 'Forwarded', ' ', true, StatusType.ON_HOLD),
+        new StatusConfiguration('-', 'Cancelled', ' ', true, StatusType.CANCELLED),
+        new StatusConfiguration('?', 'Question', ' ', true, StatusType.NON_TASK),
+        new StatusConfiguration('X', 'Also done', ' ', true, StatusType.DONE),
+    ]);
+}
+
+const status = (symbol: string) => StatusRegistry.getInstance().bySymbol(symbol);
+const statuses = (symbols: string) => [...symbols].map(status);
+const names = (list: Status[]) => list.map((s) => s.name);
 
 afterEach(() => {
     GlobalFilter.getInstance().reset();
@@ -25,60 +45,96 @@ afterEach(() => {
     resetSettings();
 });
 
-describe('tallyStatuses', () => {
-    it('counts done and not-done tasks', () => {
-        expect(tallyStatuses([Status.DONE, Status.TODO, Status.IN_PROGRESS, Status.ON_HOLD], null)).toEqual({
-            done: 1,
-            intermediate: 0,
-            total: 4,
-        });
+describe('statusSequence', () => {
+    it('follows the default status cycle from Todo to Done', () => {
+        expect(names(statusSequence(StatusRegistry.getInstance()))).toEqual(['Todo', 'Done']);
     });
 
-    it('leaves out cancelled and non-task statuses', () => {
-        expect(tallyStatuses([Status.DONE, Status.CANCELLED, Status.NON_TASK], null)).toEqual({
-            done: 1,
-            intermediate: 0,
-            total: 1,
-        });
+    it('includes the steps between Todo and Done', () => {
+        useCycleWithSteps();
+        expect(names(statusSequence(StatusRegistry.getInstance()))).toEqual([
+            'Todo',
+            'Scheduled',
+            'In Progress',
+            'Done',
+        ]);
     });
 
-    it('counts the intermediate status separately from the done tasks', () => {
-        expect(tallyStatuses([Status.DONE, scheduled, scheduled, Status.IN_PROGRESS, Status.TODO], scheduled)).toEqual({
-            done: 1,
-            intermediate: 2,
-            total: 5,
-        });
-    });
+    it('stops at a loop or an unknown status', () => {
+        StatusRegistry.getInstance().set([
+            new StatusConfiguration(' ', 'Todo', 'a', true, StatusType.TODO),
+            new StatusConfiguration('a', 'A', ' ', true, StatusType.IN_PROGRESS),
+        ]);
+        expect(names(statusSequence(StatusRegistry.getInstance()))).toEqual(['Todo', 'A']);
 
-    it('returns null when there is nothing to count', () => {
-        expect(tallyStatuses([], null)).toBeNull();
-        expect(tallyStatuses([Status.CANCELLED], null)).toBeNull();
+        StatusRegistry.getInstance().set([new StatusConfiguration(' ', 'Todo', 'q', true, StatusType.TODO)]);
+        expect(names(statusSequence(StatusRegistry.getInstance()))).toEqual(['Todo']);
     });
 });
 
-describe('intermediate status', () => {
-    beforeEach(() => {
-        StatusRegistry.getInstance().add(scheduled);
+describe('progressStep', () => {
+    beforeEach(useCycleWithSteps);
+
+    function stepOf(symbol: string) {
+        const registry = StatusRegistry.getInstance();
+        return progressStep(status(symbol), statusSequence(registry), registry);
+    }
+
+    it('is the index of a status in the sequence', () => {
+        expect([' ', '<', '/', 'x'].map(stepOf)).toEqual([0, 1, 2, 3]);
     });
 
-    it('offers the counted statuses that are not done, except the default Todo', () => {
-        const options = intermediateStatusOptions(StatusRegistry.getInstance()).map((status) => status.name);
-        expect(options).toEqual(['In Progress', 'Scheduled']);
+    it('counts other statuses as the step before the one they lead to', () => {
+        expect(stepOf('\\')).toEqual(1.5); // leads to In Progress, so counts like Scheduled
+        expect(stepOf('>')).toBeNull(); // leads to Todo
     });
 
-    it('is the status chosen in settings', () => {
-        expect(intermediateStatus()).toBeNull();
+    it('counts any Done status as done, and never counts cancelled or non-task statuses', () => {
+        expect(stepOf('X')).toEqual(3);
+        expect(stepOf('-')).toBeNull();
+        expect(stepOf('?')).toBeNull();
+    });
+});
 
-        updateSettings({ subtaskProgressIntermediateStatus: '>' });
-        expect(intermediateStatus()?.name).toEqual('Scheduled');
+describe('progressConfig', () => {
+    beforeEach(useCycleWithSteps);
+
+    it('counts from Todo to Done, with no middle layer, by default', () => {
+        expect(progressConfig()).toMatchObject({ total: 0, middle: null, completed: 3 });
     });
 
-    it('is null if the chosen status no longer exists, or cannot be an intermediate status', () => {
-        updateSettings({ subtaskProgressIntermediateStatus: 'Q' });
-        expect(intermediateStatus()).toBeNull();
+    it('uses the steps chosen in settings', () => {
+        updateSettings({ subtaskProgress: { totalFrom: '<', middleFrom: '/', completedFrom: 'x' } });
+        expect(progressConfig()).toMatchObject({ total: 1, middle: 2, completed: 3 });
+    });
 
-        updateSettings({ subtaskProgressIntermediateStatus: 'x' });
-        expect(intermediateStatus()).toBeNull();
+    it('falls back to the defaults for steps that no longer exist or are out of order', () => {
+        updateSettings({ subtaskProgress: { totalFrom: 'q', middleFrom: 'x', completedFrom: ' ' } });
+        expect(progressConfig()).toMatchObject({ total: 0, middle: null, completed: 3 });
+    });
+});
+
+describe('tallyStatuses', () => {
+    beforeEach(useCycleWithSteps);
+
+    it('counts done out of all subtasks by default, leaving out cancelled and forwarded ones', () => {
+        expect(tallyStatuses(statuses(' <\\/xX->?'), progressConfig())).toEqual({ done: 2, middle: 0, total: 6 });
+    });
+
+    it('counts each status as its step and the steps before it', () => {
+        // x/y = In Progress or later / Scheduled or later. Todo is not counted at all.
+        updateSettings({ subtaskProgress: { totalFrom: '<', middleFrom: '', completedFrom: '/' } });
+        expect(tallyStatuses(statuses(' </x\\'), progressConfig())).toEqual({ done: 2, middle: 0, total: 4 });
+    });
+
+    it('counts the middle layer, including the done subtasks', () => {
+        updateSettings({ subtaskProgress: { totalFrom: ' ', middleFrom: '<', completedFrom: 'x' } });
+        expect(tallyStatuses(statuses(' <\\/x'), progressConfig())).toEqual({ done: 1, middle: 4, total: 5 });
+    });
+
+    it('returns null when there is nothing to count', () => {
+        expect(tallyStatuses([], progressConfig())).toBeNull();
+        expect(tallyStatuses(statuses('->'), progressConfig())).toBeNull();
     });
 });
 
@@ -109,7 +165,7 @@ describe('subtaskProgressOfListItem', () => {
         taskWithParent('        - [-] cancelled, under a plain list item', plainListItem);
         taskWithParent('        - [/] in progress, under a plain list item', plainListItem);
 
-        expect(subtaskProgressOfListItem(parent)).toEqual({ done: 2, intermediate: 0, total: 4 });
+        expect(subtaskProgressOfListItem(parent)).toEqual({ done: 2, middle: 0, total: 4 });
     });
 
     it('returns null for a task without subtasks', () => {
@@ -136,11 +192,11 @@ describe('subtaskProgressFromLines', () => {
     ];
 
     it('counts the more deeply indented tasks after the parent, skipping blank lines', () => {
-        expect(subtaskProgressFromLines(lines, 0)).toEqual({ done: 2, intermediate: 0, total: 3 });
+        expect(subtaskProgressFromLines(lines, 0)).toEqual({ done: 2, middle: 0, total: 3 });
     });
 
     it('stops at the next line that is not more deeply indented', () => {
-        expect(subtaskProgressFromLines(lines, 7)).toEqual({ done: 0, intermediate: 0, total: 1 });
+        expect(subtaskProgressFromLines(lines, 7)).toEqual({ done: 0, middle: 0, total: 1 });
     });
 
     it('returns null for tasks without subtasks, and for lines that are not tasks', () => {
@@ -151,7 +207,7 @@ describe('subtaskProgressFromLines', () => {
 
     it('works inside block quotes and callouts', () => {
         const quoted = ['> - [ ] parent', '>     - [x] child', '> - [ ] sibling'];
-        expect(subtaskProgressFromLines(quoted, 0)).toEqual({ done: 1, intermediate: 0, total: 1 });
+        expect(subtaskProgressFromLines(quoted, 0)).toEqual({ done: 1, middle: 0, total: 1 });
     });
 
     it('does not count a following block quote or callout as subtasks', () => {
@@ -162,75 +218,54 @@ describe('subtaskProgressFromLines', () => {
     it('only counts subtasks that contain the global filter', () => {
         GlobalFilter.getInstance().set('#task');
         const filtered = ['- [ ] #task parent', '    - [x] #task counted', '    - [ ] not counted'];
-        expect(subtaskProgressFromLines(filtered, 0)).toEqual({ done: 1, intermediate: 0, total: 1 });
+        expect(subtaskProgressFromLines(filtered, 0)).toEqual({ done: 1, middle: 0, total: 1 });
         expect(subtaskProgressFromLines(['- [ ] not a task', '    - [x] #task child'], 0)).toBeNull();
+    });
+
+    it('counts with the steps chosen in settings', () => {
+        useCycleWithSteps();
+        updateSettings({ subtaskProgress: { totalFrom: '<', middleFrom: '', completedFrom: '/' } });
+        const steps = [
+            '- [ ] parent',
+            '    - [ ] todo',
+            '    - [<] scheduled',
+            '    - [/] in progress',
+            '    - [x] done',
+        ];
+        expect(subtaskProgressFromLines(steps, 0)).toEqual({ done: 2, middle: 0, total: 3 });
     });
 });
 
 describe('renderSubtaskProgress', () => {
     it('renders an accessible progress bar with a count', () => {
         const parent = document.createElement('div');
-        renderSubtaskProgress(parent, { done: 1, intermediate: 0, total: 4 });
+        renderSubtaskProgress(parent, { done: 1, middle: 0, total: 4 });
 
         const progress = parent.querySelector('.tasks-progress')!;
         expect(progress.getAttribute('role')).toEqual('progressbar');
         expect(progress.getAttribute('aria-valuenow')).toEqual('1');
         expect(progress.getAttribute('aria-valuemax')).toEqual('4');
+        expect(progress.getAttribute('aria-label')).toEqual('Done: 1 of 4');
         expect(progress.hasAttribute('data-complete')).toEqual(false);
-        expect((parent.querySelector('.tasks-progress-fill') as HTMLElement).style.width).toEqual('25%');
-        expect(parent.querySelector('.tasks-progress-count')!.textContent).toEqual('1/4');
-    });
-});
-
-describe('subtask progress with an intermediate status', () => {
-    beforeEach(() => {
-        StatusRegistry.getInstance().add(scheduled);
-        updateSettings({ subtaskProgressIntermediateStatus: '>' });
-    });
-
-    it('counts the intermediate status in a task tree', () => {
-        const tasks = fromMarkdown(`
-- [ ] parent
-`);
-        const parent = tasks[0];
-        const child = (line: string) => new Task({ ...fromLine({ line })!, parent });
-        child('    - [x] done');
-        child('    - [>] scheduled');
-        child('    - [ ] todo');
-
-        expect(subtaskProgressOfListItem(parent)).toEqual({ done: 1, intermediate: 1, total: 3 });
-    });
-
-    it('counts the intermediate status in lines', () => {
-        const lines = [
-            '- [ ] parent',
-            '    - [x] done',
-            '    - [>] scheduled',
-            '    - [>] scheduled',
-            '    - [ ] todo',
-        ];
-        expect(subtaskProgressFromLines(lines, 0)).toEqual({ done: 1, intermediate: 2, total: 4 });
-    });
-
-    it('renders the intermediate layer after the done layer, and describes it', () => {
-        const parent = document.createElement('div');
-        renderSubtaskProgress(parent, { done: 1, intermediate: 2, total: 4 });
-
-        const progress = parent.querySelector('.tasks-progress')!;
-        expect(progress.getAttribute('aria-label')).toEqual('Subtasks done: 1 of 4, Scheduled: 2');
-        const intermediate = parent.querySelector('.tasks-progress-intermediate') as HTMLElement;
-        expect(intermediate.style.insetInlineStart).toEqual('25%');
-        expect(intermediate.style.width).toEqual('50%');
+        expect(parent.querySelector('.tasks-progress-middle')).toBeNull();
         expect((parent.querySelector('.tasks-progress-fill') as HTMLElement).style.width).toEqual('25%');
         expect(parent.querySelector('.tasks-progress-count')!.textContent).toEqual('1/4');
     });
 
-    it('renders only two layers when no intermediate status is chosen', () => {
-        updateSettings({ subtaskProgressIntermediateStatus: '' });
+    it('draws the middle layer under the done layer, and describes it', () => {
+        useCycleWithSteps();
+        updateSettings({ subtaskProgress: { totalFrom: ' ', middleFrom: '<', completedFrom: 'x' } });
         const parent = document.createElement('div');
-        renderSubtaskProgress(parent, { done: 1, intermediate: 0, total: 4 });
+        renderSubtaskProgress(parent, { done: 1, middle: 3, total: 4 });
 
-        expect(parent.querySelector('.tasks-progress-intermediate')).toBeNull();
-        expect(parent.querySelector('.tasks-progress')!.getAttribute('aria-label')).toEqual('Subtasks done: 1 of 4');
+        expect(parent.querySelector('.tasks-progress')!.getAttribute('aria-label')).toEqual(
+            'Done: 1 of 4 · Scheduled: 3',
+        );
+        const track = parent.querySelector('.tasks-progress-track')!;
+        const [middle, fill] = Array.from(track.children) as HTMLElement[];
+        expect(middle.className).toEqual('tasks-progress-middle');
+        expect(middle.style.width).toEqual('75%');
+        expect(fill.className).toEqual('tasks-progress-fill');
+        expect(fill.style.width).toEqual('25%');
     });
 });

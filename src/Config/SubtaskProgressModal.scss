@@ -1,0 +1,66 @@
+/* Subtask progress popup: a sample bar, and the status sequence coloured like the bar's layers */
+.tasks-progress-preview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-4-2);
+    padding: var(--size-4-3);
+    margin-bottom: var(--size-4-2);
+    border-radius: var(--radius-m);
+    background-color: var(--background-secondary);
+}
+
+.tasks-progress-preview-bar .tasks-progress {
+    margin-inline-start: 0;
+}
+
+.tasks-progress-preview-bar .tasks-progress-track {
+    width: 8em;
+    height: 6px;
+}
+
+.tasks-progress-preview-steps {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--size-2-2) var(--size-4-1);
+    font-size: var(--font-ui-small);
+    color: var(--text-muted);
+}
+
+.tasks-progress-preview-step {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--size-2-3);
+}
+
+.tasks-progress-preview-swatch {
+    width: 0.75em;
+    height: 0.75em;
+    border-radius: var(--radius-s);
+    border: 1px solid transparent;
+}
+
+.tasks-progress-preview-step[data-layer='completed'] .tasks-progress-preview-swatch {
+    background-color: var(--interactive-accent);
+}
+
+.tasks-progress-preview-step[data-layer='middle'] .tasks-progress-preview-swatch {
+    background-color: color-mix(in srgb, var(--interactive-accent) 30%, var(--background-primary));
+}
+
+.tasks-progress-preview-step[data-layer='total'] .tasks-progress-preview-swatch {
+    background-color: var(--background-modifier-border);
+}
+
+/* Steps before 'Total' are not counted */
+.tasks-progress-preview-step[data-layer='none'] {
+    color: var(--text-faint);
+}
+
+.tasks-progress-preview-step[data-layer='none'] .tasks-progress-preview-swatch {
+    border-color: var(--background-modifier-border);
+}
+
+.tasks-progress-preview-arrow {
+    color: var(--text-faint);
+}

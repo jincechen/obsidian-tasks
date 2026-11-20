@@ -52,6 +52,14 @@
         "placeholder": "not done\npath includes Work"
       },
       "title": "Edit preset"
+    },
+    "subtaskProgress": {
+      "completed": "Completed",
+      "middle": "Middle layer",
+      "noSequence": "Set a status cycle from Todo to Done.",
+      "none": "None",
+      "title": "Subtask progress",
+      "total": "Total"
     }
   },
   "notices": {
@@ -253,13 +261,9 @@
     "searchResults": {
       "heading": "Search results",
       "subtaskProgress": {
-        "description": "Show a progress bar after tasks that have subtasks, in query results and Live Preview. It shows the completed subtasks, and optionally the subtasks with one of your statuses, out of all the subtasks. Use 'hide progress' to hide it in a query.",
-        "name": "Subtask progress",
-        "options": {
-          "doneAndStatus": "Completed and {{statusName}} [{{statusSymbol}}]",
-          "doneOnly": "Completed only",
-          "off": "Off"
-        }
+        "configure": "Configure",
+        "description": "Show a progress bar after tasks with subtasks.",
+        "name": "Subtask progress"
       },
       "taskCountLocation": {
         "description": "Choose whether the task count is shown at the top or bottom of query results.",
