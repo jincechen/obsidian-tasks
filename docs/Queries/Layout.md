@@ -111,13 +111,15 @@ This is a global setting that applies to all task queries. Individual queries ca
 
 ### Subtask progress
 
-Use **Settings → Tasks → Display → Subtask progress** to show a progress bar and a count, such as `2/5`, after tasks that have subtasks, in search results and Live Preview. Cancelled subtasks are not counted. It is off by default.
+Turn on **Settings → Tasks → Display → Subtask progress** to show a progress bar and a count, such as `2/5`, after tasks that have subtasks, in search results and Live Preview.
 
-The setting has these choices:
+Its gear button chooses what is counted, as steps of your [[Custom Statuses|status cycle]] from Todo to Done. Each step also counts the statuses after it:
 
-- **Off**: no progress bar.
-- **Completed only**: the bar shows the completed subtasks, out of all the subtasks.
-- **Completed and** one of your [[Custom Statuses|statuses]], such as `In Progress [/]`: the bar also shows the subtasks with that status, in a lighter colour, after the completed ones. Any status that is not done, cancelled or a non-task can be chosen, except the default `Todo` status.
+- **Completed**: the first number. Done, by default.
+- **Total**: the second number. Todo, by default, so all subtasks.
+- **Middle layer**: optional, shown in a paler colour.
+
+Cancelled subtasks are not counted. A status outside the cycle counts as the step before the one it leads to.
 
 Individual queries can use `hide progress` to hide it.
 
