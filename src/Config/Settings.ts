@@ -77,6 +77,8 @@ export interface Settings {
     signifierDisplay: 'icons' | 'emoji';
     showIconsInEditor: boolean;
     showSubtaskProgress: boolean;
+    // The symbol of the status shown as the middle layer of the subtask progress bar, or empty for none.
+    subtaskProgressIntermediateStatus: string;
     useFilenameAsScheduledDate: boolean;
     filenameAsScheduledDateFormat: string;
     filenameAsDateFolders: string[];
@@ -129,6 +131,7 @@ const defaultSettings: Readonly<Settings> = {
     signifierDisplay: 'emoji',
     showIconsInEditor: true,
     showSubtaskProgress: false,
+    subtaskProgressIntermediateStatus: '',
     useFilenameAsScheduledDate: false,
     filenameAsScheduledDateFormat: '',
     filenameAsDateFolders: [],

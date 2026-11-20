@@ -200,7 +200,12 @@
       },
       "subtaskProgress": {
         "description": "",
-        "name": ""
+        "name": "",
+        "options": {
+          "doneAndStatus": "",
+          "doneOnly": "",
+          "off": ""
+        }
       },
       "taskCountLocation": {
         "description": "",
