@@ -60,7 +60,8 @@
     },
     "subtaskProgress": {
       "completed": "Completed",
-      "middle": "Middle layer",
+      "middle": "Middle layer 1",
+      "middle2": "Middle layer 2",
       "noSequence": "Set a status cycle from Todo to Done.",
       "none": "None",
       "title": "Subtask progress",

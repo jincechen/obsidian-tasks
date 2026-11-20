@@ -81,6 +81,7 @@ export interface Settings {
     subtaskProgress: {
         totalFrom: string;
         middleFrom: string; // Empty for no middle layer.
+        middle2From: string; // Empty for no second middle layer.
         completedFrom: string;
     };
     useFilenameAsScheduledDate: boolean;
@@ -138,6 +139,7 @@ const defaultSettings: Readonly<Settings> = {
     subtaskProgress: {
         totalFrom: ' ',
         middleFrom: '',
+        middle2From: '',
         completedFrom: 'x',
     },
     useFilenameAsScheduledDate: false,
