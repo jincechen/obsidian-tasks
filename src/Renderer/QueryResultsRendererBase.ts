@@ -192,13 +192,15 @@ export abstract class QueryResultsRendererBase {
      */
     private async addTreeTaskList(tasks: ListItem[]): Promise<void> {
         const outermostTasks: IndexedListItem[] = [];
+        const added = new Set<ListItem>();
         for (const [index, task] of tasks.entries()) {
             const outermostTask = QueryResultsRendererBase.outermostTask(task);
             if (outermostTask !== task && this.matchedTasks.has(outermostTask)) {
                 // The outermost task matched too, so it is placed in its own sorted position.
                 continue;
             }
-            if (!outermostTasks.some(([listItem]) => listItem === outermostTask)) {
+            if (!added.has(outermostTask)) {
+                added.add(outermostTask);
                 outermostTasks.push([outermostTask, index]);
             }
         }
