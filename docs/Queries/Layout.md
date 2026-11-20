@@ -117,7 +117,7 @@ Its gear button chooses what is counted, as steps of your [[Custom Statuses|stat
 
 - **Completed**: the first number. Done, by default.
 - **Total**: the second number. Todo, by default, so all subtasks.
-- **Middle layer**: optional, shown in a paler colour.
+- **Middle layers 1 and 2**: optional, shown in two paler colours.
 
 Cancelled subtasks are not counted. A status outside the cycle counts as the step before the one it leads to.
 
