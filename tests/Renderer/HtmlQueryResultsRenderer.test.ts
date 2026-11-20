@@ -15,6 +15,7 @@ import { fromMarkdown } from '../TestingTools/TestHelpers';
 import {
     makeHtmlQueryRendererParameters,
     mockHTMLRenderer,
+    readNestedTasks,
     renderTasks,
     verifyHtmlFromRenderer,
     verifyRenderedTasks,
@@ -165,10 +166,34 @@ limit 1
         await verifyRenderedHtml(allTasks, showTree + 'sort by function reverse task.lineNumber');
     });
 
-    it('should render tasks without their parents', async () => {
+    it('should render matching subtasks under their dimmed parents', async () => {
         // example chosen to match subtasks whose parents do not match the query
         const allTasks = readTasksFromSimulatedFile('inheritance_task_2listitem_3task');
         await verifyRenderedHtml(allTasks, showTree + 'description includes grandchild');
+    });
+
+    it('should dim only the parent tasks that did not match the query', async () => {
+        const allTasks = readNestedTasks(`
+- [ ] matching parent ⏳ 2023-07-05
+    - [ ] non-matching child
+        - [ ] matching grandchild ⏳ 2023-07-05
+`);
+        const { query, renderer } = makeHtmlRenderer(
+            showTree + 'has scheduled date',
+            createTestTasksFile('q.md'),
+            allTasks,
+        );
+        const container = await renderTasks(State.Warm, renderer, allTasks, query);
+
+        const shown = Array.from(container.querySelectorAll('li.task-list-item')).map((li) => ({
+            description: li.querySelector(':scope > .tasks-list-text .task-description')?.textContent?.trim(),
+            dimmed: li.classList.contains('tasks-tree-context'),
+        }));
+        expect(shown).toEqual([
+            { description: 'matching parent', dimmed: false },
+            { description: 'non-matching child', dimmed: true },
+            { description: 'matching grandchild', dimmed: false },
+        ]);
     });
 
     it('should render non task check box when global filter is enabled', async () => {

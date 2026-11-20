@@ -152,3 +152,9 @@ a.tasks-edit, a.tasks-postpone {
 .task-list-item .task-block-link{
     display: none;
 }
+
+/* With 'show tree', a parent task that did not match the query, shown only for its matching subtasks.
+   Dim the task's own line, but not its nested list of subtasks. */
+li.tasks-tree-context > :not(ul) {
+    opacity: 0.6;
+}
