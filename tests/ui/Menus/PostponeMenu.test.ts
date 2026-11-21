@@ -1,6 +1,7 @@
 import moment from 'moment/moment';
 
 import { PostponeMenu } from 'ui/Menus/PostponeMenu';
+import type { MenuItem } from '../../__mocks__/obsidian';
 import { TaskBuilder } from '../../TestingTools/TaskBuilder';
 import { TestableTaskSaver, menuToString } from './MenuTestingHelpers';
 
@@ -173,5 +174,15 @@ describe('PostponeMenu', () => {
 
         expect(TestableTaskSaver.tasksBeingSaved!.length).toEqual(1);
         expect(TestableTaskSaver.tasksBeingSaved![0].start.formatAsDate()).toEqual('2023-12-05');
+    });
+
+    it.fails('should disable the item for removing an inferred scheduled date', () => {
+        const task = new TaskBuilder().scheduledDate(tomorrow).scheduledDateIsInferred(true).build();
+        const menu = new PostponeMenu(document.createElement('a'), task);
+
+        // @ts-expect-error TS2339: Property 'items' does not exist on type 'PostponeMenu'.
+        const items: MenuItem[] = menu.items;
+        const removeItem = items.find((item) => item.title === 'Cannot remove inferred scheduled date');
+        expect(removeItem?.disabled).toEqual(true);
     });
 });
