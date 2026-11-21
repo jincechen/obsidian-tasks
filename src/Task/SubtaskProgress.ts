@@ -1,4 +1,5 @@
 import { GlobalFilter } from 'Config/GlobalFilter';
+import { getSettings } from 'Config/Settings';
 import { Status } from 'Statuses/Status';
 import { StatusType } from 'Statuses/StatusConfiguration';
 import { StatusRegistry } from 'Statuses/StatusRegistry';
@@ -19,7 +20,7 @@ export interface SubtaskProgress {
 }
 
 /**
- * The statuses that subtask progress is counted against.
+ * The statuses that subtask progress is counted against, and the steps chosen in settings.
  * Each step is an index in {@link sequence}, and counts the subtasks with that status or a later one.
  */
 export interface SubtaskProgressConfig {
@@ -91,11 +92,25 @@ export function progressStep(status: Status, sequence: Status[], statusRegistry:
 }
 
 /**
- * The steps to count against: all subtasks from Todo, and those at Done as completed.
+ * The steps chosen in settings, checked against the current statuses.
+ * Steps that no longer exist, or are out of order, fall back to the defaults.
  */
 export function progressConfig(statusRegistry = StatusRegistry.getInstance()): SubtaskProgressConfig {
     const sequence = statusSequence(statusRegistry);
-    return { sequence, total: 0, completed: Math.max(sequence.length - 1, 0) };
+    const { totalFrom, completedFrom } = getSettings().subtaskProgress;
+    const indexOf = (symbol: string) => sequence.findIndex((status) => status.symbol === symbol);
+
+    const lastStep = Math.max(sequence.length - 1, 0);
+    let total = indexOf(totalFrom);
+    if (total === -1 || total >= lastStep) {
+        total = 0;
+    }
+    let completed = indexOf(completedFrom);
+    if (completed <= total) {
+        completed = lastStep;
+    }
+
+    return { sequence, total, completed };
 }
 
 /**
@@ -238,4 +253,12 @@ export function renderSubtaskProgress(
 
     container.createSpan({ cls: 'tasks-progress-count', text: `${done}/${total}` });
     return container;
+}
+
+/**
+ * A key that changes whenever the config would render differently, for comparing configs.
+ */
+export function progressConfigKey(config: SubtaskProgressConfig): string {
+    const names = config.sequence.map((status) => `${status.symbol}:${status.name}`).join('|');
+    return `${names}/${config.total}/${config.completed}`;
 }

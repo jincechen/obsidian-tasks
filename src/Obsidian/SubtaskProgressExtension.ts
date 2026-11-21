@@ -5,6 +5,7 @@ import {
     type SubtaskProgress,
     type SubtaskProgressConfig,
     progressConfig,
+    progressConfigKey,
     renderSubtaskProgress,
     subtaskProgressFromLines,
 } from 'Task/SubtaskProgress';
@@ -14,12 +15,17 @@ class SubtaskProgressWidget extends WidgetType {
     constructor(
         private readonly progress: SubtaskProgress,
         private readonly config: SubtaskProgressConfig,
+        private readonly configKey: string,
     ) {
         super();
     }
 
     eq(other: SubtaskProgressWidget) {
-        return other.progress.done === this.progress.done && other.progress.total === this.progress.total;
+        return (
+            other.progress.done === this.progress.done &&
+            other.progress.total === this.progress.total &&
+            other.configKey === this.configKey
+        );
     }
 
     toDOM() {
@@ -53,6 +59,7 @@ function buildDecorations(view: EditorView): DecorationSet {
     const lastVisibleLineIndex = doc.lineAt(visibleRanges[visibleRanges.length - 1].to).number - 1;
     const insideCodeBlock = linesInsideCodeBlocks(lines, lastVisibleLineIndex);
     const config = progressConfig();
+    const configKey = progressConfigKey(config);
 
     const decorations: ReturnType<Decoration['range']>[] = [];
     for (const { from, to } of visibleRanges) {
@@ -70,7 +77,7 @@ function buildDecorations(view: EditorView): DecorationSet {
             if (progress !== null) {
                 decorations.push(
                     Decoration.widget({
-                        widget: new SubtaskProgressWidget(progress, config),
+                        widget: new SubtaskProgressWidget(progress, config, configKey),
                         side: 1,
                     }).range(line.to),
                 );

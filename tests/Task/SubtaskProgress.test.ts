@@ -1,4 +1,5 @@
 import { GlobalFilter } from 'Config/GlobalFilter';
+import { resetSettings, updateSettings } from 'Config/Settings';
 import type { Status } from 'Statuses/Status';
 import { StatusConfiguration, StatusType } from 'Statuses/StatusConfiguration';
 import { StatusRegistry } from 'Statuses/StatusRegistry';
@@ -41,6 +42,7 @@ const names = (list: Status[]) => list.map((s) => s.name);
 afterEach(() => {
     GlobalFilter.getInstance().reset();
     StatusRegistry.getInstance().resetToDefaultStatuses();
+    resetSettings();
 });
 
 describe('statusSequence', () => {
@@ -97,7 +99,17 @@ describe('progressStep', () => {
 describe('progressConfig', () => {
     beforeEach(useCycleWithSteps);
 
-    it('counts from Todo to Done', () => {
+    it('counts from Todo to Done by default', () => {
+        expect(progressConfig()).toMatchObject({ total: 0, completed: 3 });
+    });
+
+    it('uses the steps chosen in settings', () => {
+        updateSettings({ subtaskProgress: { totalFrom: '<', completedFrom: 'x' } });
+        expect(progressConfig()).toMatchObject({ total: 1, completed: 3 });
+    });
+
+    it('falls back to the defaults for steps that no longer exist or are out of order', () => {
+        updateSettings({ subtaskProgress: { totalFrom: 'q', completedFrom: ' ' } });
         expect(progressConfig()).toMatchObject({ total: 0, completed: 3 });
     });
 });
@@ -109,6 +121,15 @@ describe('tallyStatuses', () => {
         expect(tallyStatuses(statuses(' <\\/xX->?'), progressConfig())).toEqual({
             done: 2,
             total: 6,
+        });
+    });
+
+    it('counts each status as its step and the steps before it', () => {
+        // x/y = In Progress or later / Scheduled or later. Todo is not counted at all.
+        updateSettings({ subtaskProgress: { totalFrom: '<', completedFrom: '/' } });
+        expect(tallyStatuses(statuses(' </x\\'), progressConfig())).toEqual({
+            done: 2,
+            total: 4,
         });
     });
 
@@ -200,6 +221,19 @@ describe('subtaskProgressFromLines', () => {
         const filtered = ['- [ ] #task parent', '    - [x] #task counted', '    - [ ] not counted'];
         expect(subtaskProgressFromLines(filtered, 0)).toEqual({ done: 1, total: 1 });
         expect(subtaskProgressFromLines(['- [ ] not a task', '    - [x] #task child'], 0)).toBeNull();
+    });
+
+    it('counts with the steps chosen in settings', () => {
+        useCycleWithSteps();
+        updateSettings({ subtaskProgress: { totalFrom: '<', completedFrom: '/' } });
+        const steps = [
+            '- [ ] parent',
+            '    - [ ] todo',
+            '    - [<] scheduled',
+            '    - [/] in progress',
+            '    - [x] done',
+        ];
+        expect(subtaskProgressFromLines(steps, 0)).toEqual({ done: 2, total: 3 });
     });
 });
 

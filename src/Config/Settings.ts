@@ -100,6 +100,11 @@ export interface Settings {
     autoSuggestMaxItems: number;
     provideAccessKeys: boolean;
     showSubtaskProgress: boolean;
+    // The steps of the subtask progress bar, as status symbols. See SubtaskProgressConfig.
+    subtaskProgress: {
+        totalFrom: string;
+        completedFrom: string;
+    };
     useFilenameAsScheduledDate: boolean;
     filenameAsScheduledDateFormat: string;
     filenameAsDateFolders: string[];
@@ -143,6 +148,10 @@ const defaultSettings: Readonly<Settings> = {
     autoSuggestMaxItems: 20,
     provideAccessKeys: true,
     showSubtaskProgress: false,
+    subtaskProgress: {
+        totalFrom: ' ',
+        completedFrom: 'x',
+    },
     useFilenameAsScheduledDate: false,
     filenameAsScheduledDateFormat: '',
     filenameAsDateFolders: [],
