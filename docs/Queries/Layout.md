@@ -74,6 +74,7 @@ The following query elements exist:
 | `backlink`        | Shown   | Task backlink for tasks         | [[Backlinks]]                                       |
 | `nested backlink` | Shown   | Backlink on nested tasks        | [[#Hide and Show Nested Backlink\|Nested Backlink]] |
 | `urgency`         | Hidden  | Task urgency score              | [[Urgency]]                                         |
+| `progress`        | Shown   | Progress of a task's subtasks   | [[#Subtask progress]]                               |
 | `task count`      | Shown   | Total number of tasks           | [[#Task count location]]                            |
 | `group count`     | Hidden  | Number of tasks in leaf groups  | [[Grouping#Showing the number of tasks in a group\|Number of tasks in a group]] |
 
@@ -84,6 +85,7 @@ The following query elements exist:
 > - `toolbar` was introduced in Tasks 7.23.0.
 > - `nested backlink` was introduced in Tasks 8.3.0.
 > - `group count` was introduced in Tasks 8.4.0.
+> - `progress` was introduced in Tasks X.Y.Z.
 
 All of these query elements except `group count`, `urgency` and `tree` are shown by default, so you will use the command `hide`
 if you do not want to show any of them, or the command `show` to show the group count, urgency score or tree view.
@@ -106,6 +108,23 @@ This is a global setting that applies to all task queries. Individual queries ca
 
 > [!released]
 > The 'Task count location' setting was introduced in Tasks 7.24.0.
+
+### Subtask progress
+
+Turn on **Settings → Tasks → Searches → Subtask progress** to show a progress bar and a count, such as `2/5`, after tasks that have subtasks, in search results and Live Preview.
+
+Its gear button chooses what is counted, as steps of your [[Custom Statuses|status cycle]] from Todo to Done. Each step also counts the statuses after it:
+
+- **Completed**: the first number. Done, by default.
+- **Total**: the second number. Todo, by default, so all subtasks.
+- **Middle layers 1 and 2**: optional, shown in two paler colours.
+
+Cancelled subtasks are not counted. A status outside the cycle counts as the step before the one it leads to.
+
+Individual queries can use `hide progress` to hide it.
+
+> [!released]
+> The 'Subtask progress' setting was introduced in Tasks X.Y.Z.
 
 ### Toolbar
 
