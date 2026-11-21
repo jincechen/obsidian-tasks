@@ -1,4 +1,4 @@
-import { addIcon } from 'obsidian';
+import { addIcon, setIcon } from 'obsidian';
 import { TaskLayoutComponent } from 'Layout/TaskLayoutOptions';
 import { Priority } from 'Task/Priority';
 import { StatusType } from 'Statuses/StatusConfiguration';
@@ -159,4 +159,72 @@ export function labelForPriority(priority: Priority): string {
         default:
             return 'Normal priority';
     }
+}
+
+const priorityNamesByIconId: Record<string, string> = {
+    [TasksIcon.priorityHighest]: 'highest',
+    [TasksIcon.priorityHigh]: 'high',
+    [TasksIcon.priorityMedium]: 'medium',
+    [TasksIcon.priorityLow]: 'low',
+    [TasksIcon.priorityLowest]: 'lowest',
+};
+
+const coloredFieldsByIconId: Record<string, string> = {
+    [TasksIcon.dueDate]: 'due',
+    [TasksIcon.doneDate]: 'done',
+    [TasksIcon.cancelledDate]: 'cancelled',
+};
+
+/**
+ * Show the icon in the element. Priority and some date icons are marked, so that CSS colours them the same everywhere.
+ */
+export function setTasksIcon(element: HTMLElement, iconId: string) {
+    setIcon(element, iconId);
+    const priority = priorityNamesByIconId[iconId];
+    element.classList.toggle('tasks-priority-icon', priority !== undefined);
+    setOrRemoveAttribute(element, 'data-priority', priority);
+    setOrRemoveAttribute(element, 'data-field', coloredFieldsByIconId[iconId]);
+}
+
+function setOrRemoveAttribute(element: HTMLElement, name: string, value: string | undefined) {
+    if (value) {
+        element.setAttribute(name, value);
+    } else {
+        element.removeAttribute(name);
+    }
+}
+
+/**
+ * Append an icon to the element, as a span that screen readers announce with the given label.
+ */
+export function appendIcon(parent: HTMLElement, iconId: string, label: string): HTMLSpanElement {
+    const iconSpan = parent.createSpan({ cls: 'tasks-icon' });
+    setTasksIcon(iconSpan, iconId);
+    iconSpan.setAttribute('aria-label', label);
+    iconSpan.setAttribute('role', 'img');
+    return iconSpan;
+}
+
+/**
+ * Svelte action: `<span use:icon={{ id: 'calendar', label: 'Due' }} />`. An empty label marks the icon as decorative.
+ */
+export function icon(node: HTMLElement, params: { id: string | null; label: string }) {
+    const apply = ({ id, label }: { id: string | null; label: string }) => {
+        node.replaceChildren();
+        node.classList.add('tasks-icon');
+        if (id) {
+            setTasksIcon(node, id);
+        }
+        if (label) {
+            node.setAttribute('aria-label', label);
+            node.setAttribute('role', 'img');
+            node.removeAttribute('aria-hidden');
+        } else {
+            node.setAttribute('aria-hidden', 'true');
+            node.removeAttribute('aria-label');
+            node.removeAttribute('role');
+        }
+    };
+    apply(params);
+    return { update: apply };
 }
