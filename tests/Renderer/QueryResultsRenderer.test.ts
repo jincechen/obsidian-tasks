@@ -92,6 +92,30 @@ describe('QueryResultsRenderer - accessing results', () => {
     });
 });
 
+describe('QueryResultsRenderer - overlapping search box re-renders', () => {
+    it.fails('should show only the results of the latest search', async () => {
+        const tasks = [
+            new TaskBuilder().description('task one').build(),
+            new TaskBuilder().description('another task').build(),
+        ];
+        const renderer = makeQueryResultsRenderer('', createTestTasksFile('file.md'), tasks);
+        const content = document.createElement('div');
+        await renderer.render(State.Warm, tasks, content);
+
+        // Start a second search before the first has finished rendering.
+        const firstSearch = renderer.applySearchBoxFilterAndRerender('task', content);
+        const secondSearch = renderer.applySearchBoxFilterAndRerender('another', content);
+        await Promise.all([firstSearch, secondSearch]);
+
+        const descriptions = Array.from(content.querySelectorAll('li .task-description')).map(
+            (span) => span.textContent,
+        );
+        expect(descriptions).toEqual(['another task']);
+        expect(content.querySelectorAll('.plugin-tasks-toolbar')).toHaveLength(1);
+        expect(content.querySelectorAll('.task-count')).toHaveLength(1);
+    });
+});
+
 describe('QueryResultsRenderer - rendering queries', () => {
     beforeEach(() => {
         vi.useFakeTimers();
