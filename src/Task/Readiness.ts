@@ -1,5 +1,6 @@
 import type { Moment } from 'moment';
 import { compareByDate } from '../DateTime/DateTools';
+import { StatusType } from '../Statuses/StatusConfiguration';
 import type { Task } from './Task';
 
 /**
@@ -10,10 +11,12 @@ export enum ReadinessGroup {
     DueToday = 2,
     PlannedNow = 3,
     DeadlineSoon = 4,
-    Anytime = 5,
-    PlannedLater = 6,
-    NotStarted = 7,
-    Finished = 8,
+    PlannedSoon = 5,
+    Anytime = 6,
+    PlannedLater = 7,
+    NotStarted = 8,
+    OnHold = 9,
+    Finished = 10,
 }
 
 /**
@@ -22,13 +25,13 @@ export enum ReadinessGroup {
  * - scheduled date: the day the user plans to work on it,
  * - start date: the earliest day the user can work on it.
  *
- * The created date is not used.
+ * The created date is not used. Tasks with an on hold status are put near the end, whatever their dates.
  *
  * See {@link ReadinessField}, which implements 'sort by readiness'.
  */
 export class Readiness {
-    /** Deadlines up to this many days ahead are 'soon'. Later deadlines do not matter yet. */
-    public static readonly deadlineSoonDays = 14;
+    /** Deadlines and plans up to this many days ahead are 'soon'. */
+    public static readonly soonDays = 14;
 
     /**
      * @param group - see {@link ReadinessGroup}
@@ -43,12 +46,14 @@ export class Readiness {
     /**
      * The readiness of a task. The rules are checked in this order, and the first that applies is used:
      * 1. A finished task (done, cancelled or non-task) is Finished.
-     * 2. A deadline of today or earlier: Overdue or Due today.
-     * 3. A start date after today: Not started.
-     * 4. A scheduled date of today or earlier: Planned now.
-     * 5. A deadline within {@link deadlineSoonDays} days: Deadline soon.
-     * 6. A scheduled date after today: Planned later.
-     * 7. Otherwise: Anytime.
+     * 2. A task with an on hold status is On hold.
+     * 3. A deadline of today or earlier: Overdue or Due today.
+     * 4. A start date after today: Not started.
+     * 5. A scheduled date of today or earlier: Planned now.
+     * 6. A deadline within {@link soonDays} days: Deadline soon.
+     * 7. A scheduled date within {@link soonDays} days: Planned soon.
+     * 8. A later scheduled date: Planned later.
+     * 9. Otherwise: Anytime.
      *
      * Invalid dates are treated as no date.
      * @param task
@@ -57,6 +62,9 @@ export class Readiness {
     public static of(task: Task, today: Moment = window.moment().startOf('day')): Readiness {
         if (task.isDone) {
             return new Readiness(ReadinessGroup.Finished, null);
+        }
+        if (task.status.type === StatusType.ON_HOLD) {
+            return new Readiness(ReadinessGroup.OnHold, null);
         }
 
         const due = Readiness.validDate(task.dueDate);
@@ -75,8 +83,12 @@ export class Readiness {
         if (scheduled?.isSameOrBefore(today, 'day')) {
             return new Readiness(ReadinessGroup.PlannedNow, scheduled);
         }
-        if (due?.isSameOrBefore(today.clone().add(Readiness.deadlineSoonDays, 'days'), 'day')) {
+        const soon = today.clone().add(Readiness.soonDays, 'days');
+        if (due?.isSameOrBefore(soon, 'day')) {
             return new Readiness(ReadinessGroup.DeadlineSoon, due);
+        }
+        if (scheduled?.isSameOrBefore(soon, 'day')) {
+            return new Readiness(ReadinessGroup.PlannedSoon, scheduled);
         }
         if (scheduled !== null) {
             return new Readiness(ReadinessGroup.PlannedLater, scheduled);

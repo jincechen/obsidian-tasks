@@ -48,8 +48,13 @@ describe('Readiness groups', () => {
         expect(groupOf(task().dueDate('2023-07-20'))).toEqual(ReadinessGroup.Anytime); // 15 days
     });
 
-    it('should put tasks scheduled after today in Planned later', () => {
-        expect(groupOf(task().scheduledDate('2023-07-06'))).toEqual(ReadinessGroup.PlannedLater);
+    it('should put tasks scheduled within the next 14 days in Planned soon', () => {
+        expect(groupOf(task().scheduledDate('2023-07-06'))).toEqual(ReadinessGroup.PlannedSoon);
+        expect(groupOf(task().scheduledDate('2023-07-19'))).toEqual(ReadinessGroup.PlannedSoon); // 14 days
+    });
+
+    it('should put tasks scheduled later than that in Planned later', () => {
+        expect(groupOf(task().scheduledDate('2023-07-20'))).toEqual(ReadinessGroup.PlannedLater); // 15 days
     });
 
     it('should put tasks that start after today in Not started', () => {
@@ -61,6 +66,12 @@ describe('Readiness groups', () => {
         expect(groupOf(task().startDate('2023-07-05'))).toEqual(ReadinessGroup.Anytime); // started today
         expect(groupOf(task().startDate('2023-01-01'))).toEqual(ReadinessGroup.Anytime); // started earlier
         expect(groupOf(task().createdDate('2023-07-05'))).toEqual(ReadinessGroup.Anytime); // created date is ignored
+    });
+
+    it('should put tasks with an on hold status in On hold, whatever their dates', () => {
+        expect(groupOf(task().status(Status.ON_HOLD))).toEqual(ReadinessGroup.OnHold);
+        expect(groupOf(task().status(Status.ON_HOLD).dueDate('2023-07-01'))).toEqual(ReadinessGroup.OnHold);
+        expect(groupOf(task().status(Status.ON_HOLD).scheduledDate('2023-07-05'))).toEqual(ReadinessGroup.OnHold);
     });
 
     it('should put finished tasks in Finished, whatever their dates', () => {
@@ -92,9 +103,10 @@ describe('Readiness - tasks with several dates', () => {
         expect(groupOf(task().scheduledDate('2023-07-01').dueDate('2023-07-08'))).toEqual(ReadinessGroup.PlannedNow);
     });
 
-    it('should count a deadline soon before a plan for later', () => {
+    it('should count a deadline soon before a plan', () => {
         expect(groupOf(task().dueDate('2023-07-10').scheduledDate('2023-07-08'))).toEqual(ReadinessGroup.DeadlineSoon);
-        expect(groupOf(task().dueDate('2023-07-30').scheduledDate('2023-07-08'))).toEqual(ReadinessGroup.PlannedLater);
+        expect(groupOf(task().dueDate('2023-07-30').scheduledDate('2023-07-08'))).toEqual(ReadinessGroup.PlannedSoon);
+        expect(groupOf(task().dueDate('2023-07-30').scheduledDate('2023-07-25'))).toEqual(ReadinessGroup.PlannedLater);
     });
 });
 
