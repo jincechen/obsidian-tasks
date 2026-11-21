@@ -77,8 +77,7 @@ export class HtmlColumnQueryResultsRenderer extends HtmlQueryResultsRenderer {
             // If there were no 'group by' instructions, no headings will be added.
             await this.addGroupHeadings(group);
 
-            this.addedListItems.clear();
-            await this.addTaskList(group.tasks);
+            await this.addGroupTaskList(group.tasks);
         }
 
         this.content = originalParent;

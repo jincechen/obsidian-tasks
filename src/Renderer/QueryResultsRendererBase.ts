@@ -16,7 +16,7 @@ export abstract class QueryResultsRendererBase {
     protected readonly tasksFile: TasksFile;
     protected readonly query: IQuery;
 
-    protected readonly addedListItems: Set<ListItem> = new Set<ListItem>();
+    private readonly addedListItems: Set<ListItem> = new Set<ListItem>();
 
     /**
      * The current depth in the rendered task tree: 0 for top-level (outermost) tasks,
@@ -110,20 +110,24 @@ export abstract class QueryResultsRendererBase {
             // If there were no 'group by' instructions, no headings will be added.
             await this.addGroupHeadings(group);
 
-            this.addedListItems.clear();
-            this.nestingLevel = 0;
-            await this.addTaskList(group.tasks);
+            await this.addGroupTaskList(group.tasks);
         }
     }
 
-    protected async addTaskList(listItems: ListItem[]): Promise<void> {
-        this.beginTaskList();
+    /**
+     * Render the tasks of one group.
+     * @param tasks - the tasks in the group, which are the tasks that matched the query, in sorted order.
+     */
+    protected async addGroupTaskList(tasks: ListItem[]): Promise<void> {
+        this.nestingLevel = 0;
+        this.addedListItems.clear();
 
+        this.beginTaskList();
         try {
             if (this.query.queryLayoutOptions.hideTree) {
-                await this.addFlatTaskList(listItems);
+                await this.addFlatTaskList(tasks);
             } else {
-                await this.addTreeTaskList(listItems);
+                await this.addTreeTaskList(tasks);
             }
         } finally {
             this.endTaskList();
@@ -222,13 +226,17 @@ export abstract class QueryResultsRendererBase {
     protected abstract addTask(task: Task, taskIndex: number): Promise<void>;
 
     private async addChildren(children: ListItem[]) {
-        if (children.length > 0) {
-            this.nestingLevel += 1;
-            try {
-                await this.addTaskList(children);
-            } finally {
-                this.nestingLevel -= 1;
-            }
+        if (children.length === 0) {
+            return;
+        }
+
+        this.nestingLevel += 1;
+        this.beginTaskList();
+        try {
+            await this.addTreeTaskList(children);
+        } finally {
+            this.endTaskList();
+            this.nestingLevel -= 1;
         }
     }
 
