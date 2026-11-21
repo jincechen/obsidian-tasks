@@ -122,7 +122,7 @@ describe('replaceTaskWithTasks - notices', () => {
         vi.restoreAllMocks();
     });
 
-    it.fails('should not show a notice for each retry, only when giving up', async () => {
+    it('should not show a notice for each retry, only when giving up', async () => {
         // The file is never found, so every attempt is retried, until Tasks gives up.
         const vault = { getFileByPath: () => null } as unknown as Vault;
         initializeFile({ metadataCache: {} as MetadataCache, vault, workspace: {} as Workspace });
