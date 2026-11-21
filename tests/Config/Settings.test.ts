@@ -143,6 +143,13 @@ describe('resetSettings behaviour', () => {
         expect(getSettings().postpone.dateField).toBe('scheduled');
     });
 
+    it('should default to emojis, and keep a saved choice of icons', () => {
+        expect(getSettings().signifierDisplay).toEqual('emoji');
+
+        updateSettings({ signifierDisplay: 'icons' });
+        expect(getSettings().signifierDisplay).toEqual('icons');
+    });
+
     it('should completely remove properties not in defaultSettings', () => {
         // Arrange: Add an extra property that isn't in defaultSettings
         updateSettings({

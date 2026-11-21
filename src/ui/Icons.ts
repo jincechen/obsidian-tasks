@@ -1,4 +1,5 @@
 import { addIcon, setIcon } from 'obsidian';
+import { getSettings } from 'Config/Settings';
 import { TaskLayoutComponent } from 'Layout/TaskLayoutOptions';
 import { Priority } from 'Task/Priority';
 import { StatusType } from 'Statuses/StatusConfiguration';
@@ -42,6 +43,13 @@ export function registerTasksIcons() {
     for (const [name, icon] of Object.entries(fontAwesomeIcons)) {
         addIcon(`tasks-fa-${name}`, fontAwesomeSvgContent(icon));
     }
+}
+
+/**
+ * Whether the user has chosen to show task properties with icons, rather than emojis.
+ */
+export function useIconsForDisplay(): boolean {
+    return getSettings().signifierDisplay !== 'emoji';
 }
 
 export function iconForPriority(priority: Priority): string | null {
