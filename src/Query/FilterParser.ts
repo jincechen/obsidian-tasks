@@ -32,6 +32,7 @@ import { BlockingField } from './Filter/BlockingField';
 import { IdField } from './Filter/IdField';
 import { DependsOnField } from './Filter/DependsOnField';
 import { RandomField } from './Filter/RandomField';
+import { ReadinessField } from './Filter/ReadinessField';
 
 // When parsing a query the fields are tested one by one according to this order.
 // Since BooleanField is a meta-field, which needs to aggregate a few fields together, it is intended to
@@ -68,6 +69,7 @@ export const fieldCreators: EndsWith<BooleanField> = [
     () => new DependsOnField(),
     () => new BlockingField(),
     () => new RandomField(),
+    () => new ReadinessField(),
     () => new BooleanField(), // --- Please make sure to keep BooleanField last (see comment above) ---
 ];
 
