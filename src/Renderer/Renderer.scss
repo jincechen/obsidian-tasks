@@ -153,6 +153,16 @@ a.tasks-edit, a.tasks-postpone {
     transition: width 150ms ease-out;
 }
 
+/* The optional second middle layer: stronger than the first, but still clearly paler than completed */
+.tasks-progress-middle-2 {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    border-radius: inherit;
+    background-color: color-mix(in srgb, var(--interactive-accent) 50%, var(--background-primary));
+    transition: width 150ms ease-out;
+}
+
 .tasks-progress[data-complete] .tasks-progress-fill {
     background-color: var(--color-green);
 }
@@ -165,7 +175,8 @@ a.tasks-edit, a.tasks-postpone {
 
 @media (prefers-reduced-motion: reduce) {
     .tasks-progress-fill,
-    .tasks-progress-middle {
+    .tasks-progress-middle,
+    .tasks-progress-middle-2 {
         transition: none;
     }
 }

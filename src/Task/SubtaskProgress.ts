@@ -10,7 +10,8 @@ import { TaskRegularExpressions } from 'Task/TaskRegularExpressions';
 /**
  * The counts shown by a subtask progress bar, such as '2/5':
  * - total: the subtasks at or after the 'total' step (y).
- * - middle: the subtasks at or after the 'middle' step, if any. This includes the done ones.
+ * - middle: the subtasks at or after the first 'middle' step, if any. This includes the later layers.
+ * - middle2: the subtasks at or after the second 'middle' step, if any. This includes the done ones.
  * - done: the subtasks at or after the 'completed' step (x).
  *
  * See {@link SubtaskProgressConfig}.
@@ -18,6 +19,7 @@ import { TaskRegularExpressions } from 'Task/TaskRegularExpressions';
 export interface SubtaskProgress {
     done: number;
     middle: number;
+    middle2: number;
     total: number;
 }
 
@@ -29,8 +31,10 @@ export interface SubtaskProgressConfig {
     /** The steps from Todo to the first Done status, following each status's next status. */
     sequence: Status[];
     total: number;
-    /** A paler middle layer, or null if there is none. */
+    /** The first, paler middle layer, or null if there is none. */
     middle: number | null;
+    /** The second middle layer, between the first one and completed, or null if there is none. */
+    middle2: number | null;
     completed: number;
 }
 
@@ -101,7 +105,7 @@ export function progressStep(status: Status, sequence: Status[], statusRegistry:
  */
 export function progressConfig(statusRegistry = StatusRegistry.getInstance()): SubtaskProgressConfig {
     const sequence = statusSequence(statusRegistry);
-    const { totalFrom, middleFrom, completedFrom } = getSettings().subtaskProgress;
+    const { totalFrom, middleFrom, middle2From, completedFrom } = getSettings().subtaskProgress;
     const indexOf = (symbol: string) => sequence.findIndex((status) => status.symbol === symbol);
 
     const lastStep = Math.max(sequence.length - 1, 0);
@@ -115,8 +119,11 @@ export function progressConfig(statusRegistry = StatusRegistry.getInstance()): S
     }
     const middleIndex = indexOf(middleFrom);
     const middle = middleIndex > total && middleIndex < completed ? middleIndex : null;
+    // The second middle layer is only used together with the first one.
+    const middle2Index = indexOf(middle2From);
+    const middle2 = middle !== null && middle2Index > middle && middle2Index < completed ? middle2Index : null;
 
-    return { sequence, total, middle, completed };
+    return { sequence, total, middle, middle2, completed };
 }
 
 /**
@@ -132,7 +139,7 @@ export function tallyStatuses(
         // The status cycle does not lead from Todo to Done, so there is no progress to show.
         return null;
     }
-    const progress: SubtaskProgress = { done: 0, middle: 0, total: 0 };
+    const progress: SubtaskProgress = { done: 0, middle: 0, middle2: 0, total: 0 };
     for (const status of statuses) {
         const step = progressStep(status, config.sequence, statusRegistry);
         if (step === null || step < config.total) {
@@ -141,6 +148,9 @@ export function tallyStatuses(
         progress.total++;
         if (config.middle !== null && step >= config.middle) {
             progress.middle++;
+        }
+        if (config.middle2 !== null && step >= config.middle2) {
+            progress.middle2++;
         }
         if (step >= config.completed) {
             progress.done++;
@@ -233,20 +243,23 @@ export function subtaskProgressFromLines(
 /**
  * Add a slim progress bar and a 'done/total' count, such as '2/5', to the element.
  *
- * The track stands for the total. The middle layer, if any, is drawn under the done layer.
+ * The track stands for the total. The middle layers, if any, are drawn under the done layer.
  */
 export function renderSubtaskProgress(
     parent: HTMLElement,
     progress: SubtaskProgress,
     config: SubtaskProgressConfig = progressConfig(),
 ): HTMLSpanElement {
-    const { done, middle, total } = progress;
+    const { done, middle, middle2, total } = progress;
     const percentage = (count: number) => `${Math.round((count / total) * 100)}%`;
 
     const completedName = config.sequence[config.completed]?.name ?? '';
     let label = `${completedName}: ${done} of ${total}`;
     if (config.middle !== null) {
         label += ` · ${config.sequence[config.middle].name}: ${middle}`;
+    }
+    if (config.middle2 !== null) {
+        label += ` · ${config.sequence[config.middle2].name}: ${middle2}`;
     }
 
     const container = parent.createSpan({ cls: 'tasks-progress' });
@@ -264,6 +277,9 @@ export function renderSubtaskProgress(
     if (config.middle !== null && middle > 0) {
         track.createSpan({ cls: 'tasks-progress-middle' }).style.width = percentage(middle);
     }
+    if (config.middle2 !== null && middle2 > 0) {
+        track.createSpan({ cls: 'tasks-progress-middle-2' }).style.width = percentage(middle2);
+    }
     track.createSpan({ cls: 'tasks-progress-fill' }).style.width = percentage(done);
 
     container.createSpan({ cls: 'tasks-progress-count', text: `${done}/${total}` });
@@ -275,5 +291,5 @@ export function renderSubtaskProgress(
  */
 export function progressConfigKey(config: SubtaskProgressConfig): string {
     const names = config.sequence.map((status) => `${status.symbol}:${status.name}`).join('|');
-    return `${names}/${config.total}/${config.middle}/${config.completed}`;
+    return `${names}/${config.total}/${config.middle}/${config.middle2}/${config.completed}`;
 }

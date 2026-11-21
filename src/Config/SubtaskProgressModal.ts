@@ -3,26 +3,28 @@ import { i18n } from 'i18n/i18n';
 import { type SubtaskProgressConfig, progressConfig, renderSubtaskProgress, tallyStatuses } from 'Task/SubtaskProgress';
 import { type Settings, updateSettings } from 'Config/Settings';
 
-type Layer = 'completed' | 'middle' | 'total' | 'none';
-type Step = 'total' | 'middle' | 'completed';
+type Layer = 'completed' | 'middle2' | 'middle' | 'total' | 'none';
+type Step = 'total' | 'middle' | 'middle2' | 'completed';
 
 const range = (from: number, to: number) => Array.from({ length: Math.max(to - from, 0) }, (_, i) => from + i);
 
 /**
- * The steps that each dropdown can offer, keeping them in order: Total, the middle layer, then Completed.
+ * The steps that each dropdown can offer, keeping them in order: Total, the middle layers, then Completed.
+ * The second middle layer is only offered once the first one is chosen.
  */
 export function subtaskProgressStepOptions(config: SubtaskProgressConfig): Record<Step, number[]> {
     const steps = config.sequence.length;
     return {
         total: range(0, steps - 1),
-        middle: range(config.total + 1, config.completed),
+        middle: range(config.total + 1, config.middle2 ?? config.completed),
+        middle2: config.middle === null ? [] : range(config.middle + 1, config.completed),
         completed: range(config.total + 1, steps),
     };
 }
 
 /**
  * The settings for the config, with one step changed.
- * Steps are saved as status symbols. The middle layer is saved as '' when there is none.
+ * Steps are saved as status symbols. A middle layer is saved as '' when there is none.
  */
 export function subtaskProgressSettingsWith(
     config: SubtaskProgressConfig,
@@ -31,6 +33,7 @@ export function subtaskProgressSettingsWith(
     const steps = {
         total: config.total,
         middle: config.middle,
+        middle2: config.middle2,
         completed: config.completed,
         ...change,
     };
@@ -39,6 +42,7 @@ export function subtaskProgressSettingsWith(
     return {
         totalFrom: symbolAt(steps.total),
         middleFrom: symbolAt(steps.middle),
+        middle2From: symbolAt(steps.middle2),
         completedFrom: symbolAt(steps.completed),
     };
 }
@@ -46,6 +50,9 @@ export function subtaskProgressSettingsWith(
 function layerOf(step: number, config: SubtaskProgressConfig): Layer {
     if (step >= config.completed) {
         return 'completed';
+    }
+    if (config.middle2 !== null && step >= config.middle2) {
+        return 'middle2';
     }
     if (config.middle !== null && step >= config.middle) {
         return 'middle';
@@ -92,6 +99,14 @@ export class SubtaskProgressModal extends Modal {
             options.middle,
             config.middle,
             (step) => ({ middle: step }),
+            i18n.t('modals.subtaskProgress.none'),
+        );
+        this.addStepDropdown(
+            i18n.t('modals.subtaskProgress.middle2'),
+            config,
+            options.middle2,
+            config.middle2,
+            (step) => ({ middle2: step }),
             i18n.t('modals.subtaskProgress.none'),
         );
         this.addStepDropdown(

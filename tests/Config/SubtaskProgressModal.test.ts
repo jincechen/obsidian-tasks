@@ -24,6 +24,7 @@ describe('SubtaskProgressModal', () => {
         expect(subtaskProgressStepOptions(progressConfig())).toEqual({
             total: [0, 1, 2],
             middle: [1, 2],
+            middle2: [],
             completed: [1, 2, 3],
         });
 
@@ -31,7 +32,19 @@ describe('SubtaskProgressModal', () => {
         expect(subtaskProgressStepOptions(config)).toEqual({
             total: [0, 1, 2],
             middle: [],
+            middle2: [],
             completed: [2, 3],
+        });
+    });
+
+    it('offers the second middle layer only after the first one, and keeps the first one before it', () => {
+        expect(subtaskProgressStepOptions({ ...progressConfig(), middle: 1 })).toMatchObject({
+            middle: [1, 2],
+            middle2: [2],
+        });
+        expect(subtaskProgressStepOptions({ ...progressConfig(), middle: 1, middle2: 2 })).toMatchObject({
+            middle: [1],
+            middle2: [2],
         });
     });
 
@@ -39,12 +52,18 @@ describe('SubtaskProgressModal', () => {
         expect(subtaskProgressSettingsWith(progressConfig(), { middle: 1 })).toEqual({
             totalFrom: ' ',
             middleFrom: '<',
+            middle2From: '',
             completedFrom: 'x',
         });
         expect(subtaskProgressSettingsWith(progressConfig(), { middle: null, completed: 2 })).toEqual({
             totalFrom: ' ',
             middleFrom: '',
+            middle2From: '',
             completedFrom: '/',
+        });
+        expect(subtaskProgressSettingsWith(progressConfig(), { middle: 1, middle2: 2 })).toMatchObject({
+            middleFrom: '<',
+            middle2From: '/',
         });
     });
 });
