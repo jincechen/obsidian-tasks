@@ -338,10 +338,11 @@ class QueryRenderChild extends MarkdownRenderChild {
     }
 
     private async renderResults(state: State, tasks: Task[]) {
-        const content = this.containerEl.createDiv();
+        // Render off-screen, so the old and new results are never shown together.
+        const content = createDiv();
         await this.queryResultsRenderer.render(state, tasks, content);
 
-        this.containerEl.firstChild?.replaceWith(content);
+        this.containerEl.replaceChildren(content);
     }
 
     private rereadQueryFromFile() {

@@ -2,6 +2,7 @@ import { type App, type Component, Notice, debounce, setIcon, setTooltip } from 
 import { GlobalQuery } from 'Config/GlobalQuery';
 import type { IQuery } from 'IQuery';
 import { PerformanceTracker } from 'lib/PerformanceTracker';
+import { SerialRunner } from 'lib/SerialRunner';
 import { State } from 'Obsidian/Cache';
 import { DescriptionField } from 'Query/Filter/DescriptionField';
 import { Query } from 'Query/Query';
@@ -46,6 +47,10 @@ export class QueryResultsRenderer {
     public queryResult: QueryResult;
     public filteredQueryResult: QueryResult;
     private _filterString: string = '';
+
+    /** Where the latest search box filter re-render should draw its results. */
+    private searchBoxContent: HTMLDivElement | null = null;
+    private readonly searchBoxRerenderRunner = new SerialRunner(() => this.rerenderWithSearchBoxFilter());
 
     private readonly renderMarkdown: (
         app: App,
@@ -215,6 +220,17 @@ export class QueryResultsRenderer {
 
     public async applySearchBoxFilterAndRerender(filterString: string, content: HTMLDivElement) {
         this._filterString = filterString;
+        this.searchBoxContent = content;
+
+        // Overlapping re-renders would each add their results to the content, showing them twice.
+        await this.searchBoxRerenderRunner.run();
+    }
+
+    private async rerenderWithSearchBoxFilter() {
+        const content = this.searchBoxContent;
+        if (content === null) {
+            return;
+        }
 
         this.filterResults();
 

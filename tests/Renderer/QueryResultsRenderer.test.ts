@@ -93,7 +93,7 @@ describe('QueryResultsRenderer - accessing results', () => {
 });
 
 describe('QueryResultsRenderer - overlapping search box re-renders', () => {
-    it.fails('should show only the results of the latest search', async () => {
+    it('should show only the results of the latest search', async () => {
         const tasks = [
             new TaskBuilder().description('task one').build(),
             new TaskBuilder().description('another task').build(),
