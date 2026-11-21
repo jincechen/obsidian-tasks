@@ -354,17 +354,19 @@ Tasks are sorted into these groups, in this order:
 | 2     | Due today     | due today                                                                |                            |
 | 3     | Planned now   | scheduled today or earlier                                               | scheduled date             |
 | 4     | Deadline soon | due in the next 14 days                                                  | due date                   |
-| 5     | Anytime       | with no dates that matter yet, such as a due date more than 14 days away |                            |
-| 6     | Planned later | scheduled after today                                                    | scheduled date             |
-| 7     | Not started   | starting after today                                                     | start date                 |
-| 8     | Finished      | done, cancelled or non-task                                              |                            |
+| 5     | Planned soon  | scheduled in the next 14 days                                            | scheduled date             |
+| 6     | Anytime       | with no dates that matter yet, such as a due date more than 14 days away |                            |
+| 7     | Planned later | scheduled more than 14 days away                                         | scheduled date             |
+| 8     | Not started   | starting after today                                                     | start date                 |
+| 9     | On hold       | with an on hold status, whatever their dates                             |                            |
+| 10    | Finished      | done, cancelled or non-task                                              |                            |
 
 When a task fits several groups:
 
-- a finished task is always in Finished,
+- a finished task is always in Finished, and a task with an on hold status is always in On hold,
 - then a due date of today or earlier comes first,
 - then a start date after today, as the task cannot be worked on yet,
-- then the other groups, in the order above.
+- then the other groups, in the order above: deadlines come before plans.
 
 Tasks in the same group, with the same date, are sorted by any later `sort by` instructions, and then by the [[#Default sort order|default sort order]].
 
