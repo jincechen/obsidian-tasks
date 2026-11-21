@@ -22,6 +22,7 @@ import type { StatusCollection } from 'Statuses/StatusCollection';
 import { createStatusRegistryReport } from 'Statuses/StatusRegistryReport';
 import { i18n } from 'i18n/i18n';
 import type { TasksEvents } from 'Obsidian/TasksEvents';
+import { refreshEditorDecorations } from 'Obsidian/EditorDecorations';
 import * as Themes from 'Config/Themes';
 import {
     POSTPONE_DATE_FIELD_VALUES,
@@ -402,6 +403,7 @@ export class SettingsTab extends PluginSettingTab {
         const save = async () => {
             await this.plugin.saveSettings();
             this.events.triggerReloadOpenSearchResults();
+            refreshEditorDecorations(this.app);
         };
 
         setting.addToggle((toggle) => {
