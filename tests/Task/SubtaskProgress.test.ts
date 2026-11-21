@@ -1,7 +1,20 @@
+import { GlobalFilter } from 'Config/GlobalFilter';
 import type { Status } from 'Statuses/Status';
 import { StatusConfiguration, StatusType } from 'Statuses/StatusConfiguration';
 import { StatusRegistry } from 'Statuses/StatusRegistry';
-import { progressStep, statusSequence } from 'Task/SubtaskProgress';
+import {
+    progressConfig,
+    progressStep,
+    statusSequence,
+    subtaskProgressFromLines,
+    subtaskProgressOfListItem,
+    tallyStatuses,
+} from 'Task/SubtaskProgress';
+import { ListItem } from 'Task/ListItem';
+import { TaskLocation } from 'Task/TaskLocation';
+import { TasksFile } from 'Scripting/TasksFile';
+import { Task } from 'Task/Task';
+import { fromLine, fromMarkdown } from '../TestingTools/TestHelpers';
 
 /**
  * A status cycle with steps between Todo and Done, and statuses outside the cycle.
@@ -21,9 +34,11 @@ function useCycleWithSteps() {
 }
 
 const status = (symbol: string) => StatusRegistry.getInstance().bySymbol(symbol);
+const statuses = (symbols: string) => [...symbols].map(status);
 const names = (list: Status[]) => list.map((s) => s.name);
 
 afterEach(() => {
+    GlobalFilter.getInstance().reset();
     StatusRegistry.getInstance().resetToDefaultStatuses();
 });
 
@@ -75,5 +90,114 @@ describe('progressStep', () => {
         expect(stepOf('X')).toEqual(3);
         expect(stepOf('-')).toBeNull();
         expect(stepOf('?')).toBeNull();
+    });
+});
+
+describe('progressConfig', () => {
+    beforeEach(useCycleWithSteps);
+
+    it('counts from Todo to Done', () => {
+        expect(progressConfig()).toMatchObject({ total: 0, completed: 3 });
+    });
+});
+
+describe('tallyStatuses', () => {
+    beforeEach(useCycleWithSteps);
+
+    it('counts done out of all subtasks by default, leaving out cancelled and forwarded ones', () => {
+        expect(tallyStatuses(statuses(' <\\/xX->?'), progressConfig())).toEqual({
+            done: 2,
+            total: 6,
+        });
+    });
+
+    it('returns null when there is nothing to count', () => {
+        expect(tallyStatuses([], progressConfig())).toBeNull();
+        expect(tallyStatuses(statuses('->'), progressConfig())).toBeNull();
+    });
+});
+
+describe('subtaskProgressOfListItem', () => {
+    it('counts all descendant tasks, including those under plain list items', () => {
+        // - [ ] parent
+        //     - [x] child done
+        //     - [ ] child todo
+        //         - [x] grandchild done
+        //     - plain list item
+        //         - [-] cancelled, under a plain list item
+        //         - [/] in progress, under a plain list item
+        // Attach each item to its parent, in the same way as FileParser does.
+        const taskWithParent = (line: string, parent: ListItem | null) => new Task({ ...fromLine({ line })!, parent });
+        const parent = taskWithParent('- [ ] parent', null);
+        taskWithParent('    - [x] child done', parent);
+        const childTodo = taskWithParent('    - [ ] child todo', parent);
+        taskWithParent('        - [x] grandchild done', childTodo);
+        const plainListItem = new ListItem({
+            originalMarkdown: '    - plain list item',
+            indentation: '    ',
+            listMarker: '-',
+            statusCharacter: null,
+            description: 'plain list item',
+            parent,
+            taskLocation: TaskLocation.fromUnknownPosition(new TasksFile('file.md')),
+        });
+        taskWithParent('        - [-] cancelled, under a plain list item', plainListItem);
+        taskWithParent('        - [/] in progress, under a plain list item', plainListItem);
+
+        expect(subtaskProgressOfListItem(parent)).toEqual({ done: 2, total: 4 });
+    });
+
+    it('returns null for a task without subtasks', () => {
+        const tasks = fromMarkdown(`
+- [ ] parent
+- [ ] sibling
+`);
+        expect(subtaskProgressOfListItem(tasks[0])).toBeNull();
+    });
+});
+
+describe('subtaskProgressFromLines', () => {
+    const lines = [
+        '- [ ] parent', // 0
+        '    - [x] child done', // 1
+        '', // 2
+        '\t- [ ] tab-indented child', // 3
+        '        - [x] grandchild', // 4
+        '    - plain list item', // 5
+        '    - [-] cancelled', // 6
+        '- [ ] sibling', // 7
+        '    - [ ] child of sibling', // 8
+        'Some text', // 9
+    ];
+
+    it('counts the more deeply indented tasks after the parent, skipping blank lines', () => {
+        expect(subtaskProgressFromLines(lines, 0)).toEqual({ done: 2, total: 3 });
+    });
+
+    it('stops at the next line that is not more deeply indented', () => {
+        expect(subtaskProgressFromLines(lines, 7)).toEqual({ done: 0, total: 1 });
+    });
+
+    it('returns null for tasks without subtasks, and for lines that are not tasks', () => {
+        expect(subtaskProgressFromLines(lines, 1)).toBeNull();
+        expect(subtaskProgressFromLines(lines, 5)).toBeNull();
+        expect(subtaskProgressFromLines(lines, 9)).toBeNull();
+    });
+
+    it('works inside block quotes and callouts', () => {
+        const quoted = ['> - [ ] parent', '>     - [x] child', '> - [ ] sibling'];
+        expect(subtaskProgressFromLines(quoted, 0)).toEqual({ done: 1, total: 1 });
+    });
+
+    it('does not count a following block quote or callout as subtasks', () => {
+        const lines = ['- [ ] parent', '', '> [!note]', '> - [ ] in a callout'];
+        expect(subtaskProgressFromLines(lines, 0)).toBeNull();
+    });
+
+    it('only counts subtasks that contain the global filter', () => {
+        GlobalFilter.getInstance().set('#task');
+        const filtered = ['- [ ] #task parent', '    - [x] #task counted', '    - [ ] not counted'];
+        expect(subtaskProgressFromLines(filtered, 0)).toEqual({ done: 1, total: 1 });
+        expect(subtaskProgressFromLines(['- [ ] not a task', '    - [x] #task child'], 0)).toBeNull();
     });
 });
