@@ -3,38 +3,42 @@ import { i18n } from 'i18n/i18n';
 import { type SubtaskProgressConfig, progressConfig, renderSubtaskProgress, tallyStatuses } from 'Task/SubtaskProgress';
 import { type Settings, updateSettings } from 'Config/Settings';
 
-type Layer = 'completed' | 'total' | 'none';
-type Step = 'total' | 'completed';
+type Layer = 'completed' | 'middle' | 'total' | 'none';
+type Step = 'total' | 'middle' | 'completed';
 
 const range = (from: number, to: number) => Array.from({ length: Math.max(to - from, 0) }, (_, i) => from + i);
 
 /**
- * The steps that each dropdown can offer, keeping Total before Completed.
+ * The steps that each dropdown can offer, keeping them in order: Total, the middle layer, then Completed.
  */
 export function subtaskProgressStepOptions(config: SubtaskProgressConfig): Record<Step, number[]> {
     const steps = config.sequence.length;
     return {
         total: range(0, steps - 1),
+        middle: range(config.total + 1, config.completed),
         completed: range(config.total + 1, steps),
     };
 }
 
 /**
  * The settings for the config, with one step changed.
- * Steps are saved as status symbols.
+ * Steps are saved as status symbols. The middle layer is saved as '' when there is none.
  */
 export function subtaskProgressSettingsWith(
     config: SubtaskProgressConfig,
-    change: Partial<Record<Step, number>>,
+    change: Partial<Record<Step, number | null>>,
 ): Settings['subtaskProgress'] {
     const steps = {
         total: config.total,
+        middle: config.middle,
         completed: config.completed,
         ...change,
     };
-    const symbolAt = (step: number) => config.sequence[step].symbol;
+    const symbolAt = (step: number | null | undefined) =>
+        step === null || step === undefined ? '' : config.sequence[step].symbol;
     return {
         totalFrom: symbolAt(steps.total),
+        middleFrom: symbolAt(steps.middle),
         completedFrom: symbolAt(steps.completed),
     };
 }
@@ -42,6 +46,9 @@ export function subtaskProgressSettingsWith(
 function layerOf(step: number, config: SubtaskProgressConfig): Layer {
     if (step >= config.completed) {
         return 'completed';
+    }
+    if (config.middle !== null && step >= config.middle) {
+        return 'middle';
     }
     return step >= config.total ? 'total' : 'none';
 }
@@ -80,6 +87,14 @@ export class SubtaskProgressModal extends Modal {
             total: step,
         }));
         this.addStepDropdown(
+            i18n.t('modals.subtaskProgress.middle'),
+            config,
+            options.middle,
+            config.middle,
+            (step) => ({ middle: step }),
+            i18n.t('modals.subtaskProgress.none'),
+        );
+        this.addStepDropdown(
             i18n.t('modals.subtaskProgress.completed'),
             config,
             options.completed,
@@ -115,18 +130,23 @@ export class SubtaskProgressModal extends Modal {
         name: string,
         config: SubtaskProgressConfig,
         steps: number[],
-        value: number,
-        change: (step: number) => Parameters<typeof subtaskProgressSettingsWith>[1],
+        value: number | null,
+        change: (step: number | null) => Parameters<typeof subtaskProgressSettingsWith>[1],
+        noneLabel?: string,
     ) {
         new Setting(this.contentEl).setName(name).addDropdown((dropdown) => {
+            if (noneLabel !== undefined) {
+                dropdown.addOption('', noneLabel);
+            }
             for (const step of steps) {
                 const status = config.sequence[step];
                 dropdown.addOption(step.toString(), `${status.name} [${status.symbol}]`);
             }
-            dropdown.setValue(value.toString());
+            dropdown.setValue(value === null ? '' : value.toString());
             dropdown.setDisabled(steps.length === 0);
             dropdown.onChange(async (selected) => {
-                updateSettings({ subtaskProgress: subtaskProgressSettingsWith(config, change(Number(selected))) });
+                const step = selected === '' ? null : Number(selected);
+                updateSettings({ subtaskProgress: subtaskProgressSettingsWith(config, change(step)) });
                 await this.onChange();
                 this.render();
             });

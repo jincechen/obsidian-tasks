@@ -103,6 +103,7 @@ export interface Settings {
     // The steps of the subtask progress bar, as status symbols. See SubtaskProgressConfig.
     subtaskProgress: {
         totalFrom: string;
+        middleFrom: string; // Empty for no middle layer.
         completedFrom: string;
     };
     useFilenameAsScheduledDate: boolean;
@@ -150,6 +151,7 @@ const defaultSettings: Readonly<Settings> = {
     showSubtaskProgress: false,
     subtaskProgress: {
         totalFrom: ' ',
+        middleFrom: '',
         completedFrom: 'x',
     },
     useFilenameAsScheduledDate: false,

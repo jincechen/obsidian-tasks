@@ -99,18 +99,18 @@ describe('progressStep', () => {
 describe('progressConfig', () => {
     beforeEach(useCycleWithSteps);
 
-    it('counts from Todo to Done by default', () => {
-        expect(progressConfig()).toMatchObject({ total: 0, completed: 3 });
+    it('counts from Todo to Done, with no middle layer, by default', () => {
+        expect(progressConfig()).toMatchObject({ total: 0, middle: null, completed: 3 });
     });
 
     it('uses the steps chosen in settings', () => {
-        updateSettings({ subtaskProgress: { totalFrom: '<', completedFrom: 'x' } });
-        expect(progressConfig()).toMatchObject({ total: 1, completed: 3 });
+        updateSettings({ subtaskProgress: { totalFrom: '<', middleFrom: '/', completedFrom: 'x' } });
+        expect(progressConfig()).toMatchObject({ total: 1, middle: 2, completed: 3 });
     });
 
     it('falls back to the defaults for steps that no longer exist or are out of order', () => {
-        updateSettings({ subtaskProgress: { totalFrom: 'q', completedFrom: ' ' } });
-        expect(progressConfig()).toMatchObject({ total: 0, completed: 3 });
+        updateSettings({ subtaskProgress: { totalFrom: 'q', middleFrom: 'x', completedFrom: ' ' } });
+        expect(progressConfig()).toMatchObject({ total: 0, middle: null, completed: 3 });
     });
 });
 
@@ -120,16 +120,27 @@ describe('tallyStatuses', () => {
     it('counts done out of all subtasks by default, leaving out cancelled and forwarded ones', () => {
         expect(tallyStatuses(statuses(' <\\/xX->?'), progressConfig())).toEqual({
             done: 2,
+            middle: 0,
             total: 6,
         });
     });
 
     it('counts each status as its step and the steps before it', () => {
         // x/y = In Progress or later / Scheduled or later. Todo is not counted at all.
-        updateSettings({ subtaskProgress: { totalFrom: '<', completedFrom: '/' } });
+        updateSettings({ subtaskProgress: { totalFrom: '<', middleFrom: '', completedFrom: '/' } });
         expect(tallyStatuses(statuses(' </x\\'), progressConfig())).toEqual({
             done: 2,
+            middle: 0,
             total: 4,
+        });
+    });
+
+    it('counts the middle layer, including the done subtasks', () => {
+        updateSettings({ subtaskProgress: { totalFrom: ' ', middleFrom: '<', completedFrom: 'x' } });
+        expect(tallyStatuses(statuses(' <\\/x'), progressConfig())).toEqual({
+            done: 1,
+            middle: 4,
+            total: 5,
         });
     });
 
@@ -166,7 +177,7 @@ describe('subtaskProgressOfListItem', () => {
         taskWithParent('        - [-] cancelled, under a plain list item', plainListItem);
         taskWithParent('        - [/] in progress, under a plain list item', plainListItem);
 
-        expect(subtaskProgressOfListItem(parent)).toEqual({ done: 2, total: 4 });
+        expect(subtaskProgressOfListItem(parent)).toEqual({ done: 2, middle: 0, total: 4 });
     });
 
     it('returns null for a task without subtasks', () => {
@@ -193,11 +204,11 @@ describe('subtaskProgressFromLines', () => {
     ];
 
     it('counts the more deeply indented tasks after the parent, skipping blank lines', () => {
-        expect(subtaskProgressFromLines(lines, 0)).toEqual({ done: 2, total: 3 });
+        expect(subtaskProgressFromLines(lines, 0)).toEqual({ done: 2, middle: 0, total: 3 });
     });
 
     it('stops at the next line that is not more deeply indented', () => {
-        expect(subtaskProgressFromLines(lines, 7)).toEqual({ done: 0, total: 1 });
+        expect(subtaskProgressFromLines(lines, 7)).toEqual({ done: 0, middle: 0, total: 1 });
     });
 
     it('returns null for tasks without subtasks, and for lines that are not tasks', () => {
@@ -208,7 +219,7 @@ describe('subtaskProgressFromLines', () => {
 
     it('works inside block quotes and callouts', () => {
         const quoted = ['> - [ ] parent', '>     - [x] child', '> - [ ] sibling'];
-        expect(subtaskProgressFromLines(quoted, 0)).toEqual({ done: 1, total: 1 });
+        expect(subtaskProgressFromLines(quoted, 0)).toEqual({ done: 1, middle: 0, total: 1 });
     });
 
     it('does not count a following block quote or callout as subtasks', () => {
@@ -219,13 +230,13 @@ describe('subtaskProgressFromLines', () => {
     it('only counts subtasks that contain the global filter', () => {
         GlobalFilter.getInstance().set('#task');
         const filtered = ['- [ ] #task parent', '    - [x] #task counted', '    - [ ] not counted'];
-        expect(subtaskProgressFromLines(filtered, 0)).toEqual({ done: 1, total: 1 });
+        expect(subtaskProgressFromLines(filtered, 0)).toEqual({ done: 1, middle: 0, total: 1 });
         expect(subtaskProgressFromLines(['- [ ] not a task', '    - [x] #task child'], 0)).toBeNull();
     });
 
     it('counts with the steps chosen in settings', () => {
         useCycleWithSteps();
-        updateSettings({ subtaskProgress: { totalFrom: '<', completedFrom: '/' } });
+        updateSettings({ subtaskProgress: { totalFrom: '<', middleFrom: '', completedFrom: '/' } });
         const steps = [
             '- [ ] parent',
             '    - [ ] todo',
@@ -233,14 +244,14 @@ describe('subtaskProgressFromLines', () => {
             '    - [/] in progress',
             '    - [x] done',
         ];
-        expect(subtaskProgressFromLines(steps, 0)).toEqual({ done: 2, total: 3 });
+        expect(subtaskProgressFromLines(steps, 0)).toEqual({ done: 2, middle: 0, total: 3 });
     });
 });
 
 describe('renderSubtaskProgress', () => {
     it('renders an accessible progress bar with a count', () => {
         const parent = document.createElement('div');
-        renderSubtaskProgress(parent, { done: 1, total: 4 });
+        renderSubtaskProgress(parent, { done: 1, middle: 0, total: 4 });
 
         const progress = parent.querySelector('.tasks-progress')!;
         expect(progress.getAttribute('role')).toEqual('progressbar');
@@ -248,7 +259,25 @@ describe('renderSubtaskProgress', () => {
         expect(progress.getAttribute('aria-valuemax')).toEqual('4');
         expect(progress.getAttribute('aria-label')).toEqual('Done: 1 of 4');
         expect(progress.hasAttribute('data-complete')).toEqual(false);
+        expect(parent.querySelector('.tasks-progress-middle')).toBeNull();
         expect((parent.querySelector('.tasks-progress-fill') as HTMLElement).style.width).toEqual('25%');
         expect(parent.querySelector('.tasks-progress-count')!.textContent).toEqual('1/4');
+    });
+
+    it('draws the middle layer under the done layer, and describes it', () => {
+        useCycleWithSteps();
+        updateSettings({ subtaskProgress: { totalFrom: ' ', middleFrom: '<', completedFrom: 'x' } });
+        const parent = document.createElement('div');
+        renderSubtaskProgress(parent, { done: 1, middle: 3, total: 4 });
+
+        expect(parent.querySelector('.tasks-progress')!.getAttribute('aria-label')).toEqual(
+            'Done: 1 of 4 · Scheduled: 3',
+        );
+        const track = parent.querySelector('.tasks-progress-track')!;
+        const [middle, fill] = Array.from(track.children) as HTMLElement[];
+        expect(middle.className).toEqual('tasks-progress-middle');
+        expect(middle.style.width).toEqual('75%');
+        expect(fill.className).toEqual('tasks-progress-fill');
+        expect(fill.style.width).toEqual('25%');
     });
 });

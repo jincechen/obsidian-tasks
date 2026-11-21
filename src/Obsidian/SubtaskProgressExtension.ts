@@ -23,6 +23,7 @@ class SubtaskProgressWidget extends WidgetType {
     eq(other: SubtaskProgressWidget) {
         return (
             other.progress.done === this.progress.done &&
+            other.progress.middle === this.progress.middle &&
             other.progress.total === this.progress.total &&
             other.configKey === this.configKey
         );

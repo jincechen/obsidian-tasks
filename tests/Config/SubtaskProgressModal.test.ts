@@ -20,22 +20,30 @@ describe('SubtaskProgressModal', () => {
         resetSettings();
     });
 
-    it('offers only steps that keep Total before Completed', () => {
+    it('offers only steps that keep Total before the middle layer, before Completed', () => {
         expect(subtaskProgressStepOptions(progressConfig())).toEqual({
             total: [0, 1, 2],
+            middle: [1, 2],
             completed: [1, 2, 3],
         });
 
         const config = { ...progressConfig(), total: 1, completed: 2 };
         expect(subtaskProgressStepOptions(config)).toEqual({
             total: [0, 1, 2],
+            middle: [],
             completed: [2, 3],
         });
     });
 
     it('saves the steps as status symbols', () => {
-        expect(subtaskProgressSettingsWith(progressConfig(), { completed: 2 })).toEqual({
+        expect(subtaskProgressSettingsWith(progressConfig(), { middle: 1 })).toEqual({
             totalFrom: ' ',
+            middleFrom: '<',
+            completedFrom: 'x',
+        });
+        expect(subtaskProgressSettingsWith(progressConfig(), { middle: null, completed: 2 })).toEqual({
+            totalFrom: ' ',
+            middleFrom: '',
             completedFrom: '/',
         });
     });
