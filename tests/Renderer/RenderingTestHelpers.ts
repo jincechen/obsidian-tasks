@@ -4,7 +4,9 @@ import type { FilterOrErrorMessage } from 'Query/Filter/FilterOrErrorMessage';
 import { Query } from 'Query/Query';
 import type { HTMLQueryRendererParameters, HtmlQueryResultsRenderer } from 'Renderer/HtmlQueryResultsRenderer';
 import { MarkdownQueryResultsRenderer } from 'Renderer/MarkdownQueryResultsRenderer';
-import type { Task } from 'Task/Task';
+import { ListItem } from 'Task/ListItem';
+import { Task } from 'Task/Task';
+import { TaskLocation } from 'Task/TaskLocation';
 import { verifyWithFileExtension } from '../TestingTools/ApprovalTestHelpers';
 import { prettifyHTML } from '../TestingTools/HTMLHelpers';
 import { createTestTasksFile } from '../TestingTools/TasksFileHelpers';
@@ -34,6 +36,36 @@ export function makeHtmlQueryRendererParameters(allTasks: Task[]): HTMLQueryRend
         backlinksMousedownHandler: () => Promise.resolve(),
         editTaskPencilClickHandler: () => {},
     };
+}
+
+/**
+ * Read the tasks from indented Markdown lines, linking each task and list item to its parent.
+ * Each nesting level must be indented by 4 spaces.
+ * @returns the tasks, without the plain list items, which are reachable through the tasks' parents and children.
+ */
+export function readNestedTasks(markdown: string): Task[] {
+    const tasksFile = createTestTasksFile('nested.md');
+    const lines = markdown.split('\n').filter((line) => line.trim() !== '');
+    const parentAtDepth: ListItem[] = [];
+    const tasks: Task[] = [];
+    for (const [lineNumber, line] of lines.entries()) {
+        const depth = line.search(/\S/) / 4;
+        const parent = depth > 0 ? parentAtDepth[depth - 1] : null;
+        const taskLocation = new TaskLocation(tasksFile, lineNumber, 0, tasks.length, null);
+
+        const taskWithoutParent = Task.fromLine({ line, taskLocation, fallbackDate: null });
+        let listItem: ListItem;
+        if (taskWithoutParent) {
+            const task = new Task({ ...taskWithoutParent, parent });
+            tasks.push(task);
+            listItem = task;
+        } else {
+            listItem = ListItem.fromListItemLine(line, parent, taskLocation)!;
+        }
+        parentAtDepth[depth] = listItem;
+        parentAtDepth.length = depth + 1;
+    }
+    return tasks;
 }
 
 export function createMarkdownRenderer(source: string) {
