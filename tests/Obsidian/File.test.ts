@@ -1,7 +1,10 @@
 import { readFileSync } from 'fs';
 import { verify } from '@approval-tests/approvals/lib/Providers/Vitest/VitestApprovals';
-import { findLineNumberOfTaskToToggle } from 'Obsidian/File';
+import type { MetadataCache, Vault, Workspace } from 'obsidian';
+import { findLineNumberOfTaskToToggle, initializeFile, replaceTaskWithTasks } from 'Obsidian/File';
 import type { MockTogglingDataForTesting } from 'lib/MockDataCreator';
+import { noticeMessages } from '../__mocks__/obsidian';
+import { TaskBuilder } from '../TestingTools/TaskBuilder';
 
 /**
  * A function to help test File.findLineNumberOfTaskToToggle()
@@ -105,4 +108,29 @@ describe('replaceTaskWithTasks', () => {
     });
 
     // --------------------------------------------------------------------------------
+});
+
+describe('replaceTaskWithTasks - notices', () => {
+    beforeEach(() => {
+        vi.useFakeTimers();
+        vi.spyOn(console, 'warn').mockImplementation(() => {});
+        vi.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+        vi.restoreAllMocks();
+    });
+
+    it.fails('should not show a notice for each retry, only when giving up', async () => {
+        // The file is never found, so every attempt is retried, until Tasks gives up.
+        const vault = { getFileByPath: () => null } as unknown as Vault;
+        initializeFile({ metadataCache: {} as MetadataCache, vault, workspace: {} as Workspace });
+        const task = new TaskBuilder().path('some file.md').build();
+
+        await replaceTaskWithTasks({ originalTask: task, newTasks: task });
+        await vi.runAllTimersAsync();
+
+        expect(noticeMessages).toEqual([expect.stringContaining('Could not find the correct task line to update')]);
+    });
 });
