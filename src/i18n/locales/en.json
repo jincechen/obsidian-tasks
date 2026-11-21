@@ -264,6 +264,10 @@
       }
     },
     "searchResults": {
+      "subtaskProgress": {
+        "description": "Show a progress bar after tasks with subtasks.",
+        "name": "Subtask progress"
+      },
       "taskCountLocation": {
         "description": "Choose whether the task count is shown at the top or bottom of query results.",
         "name": "Task count location",

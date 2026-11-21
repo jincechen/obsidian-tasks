@@ -386,8 +386,30 @@ export class SettingsTab extends PluginSettingTab {
                         });
                     },
                 },
+                {
+                    name: i18n.t('settings.searchResults.subtaskProgress.name'),
+                    desc: i18n.t('settings.searchResults.subtaskProgress.description'),
+                    render: (setting) => this.addSubtaskProgressToggle(setting),
+                },
             ],
         };
+    }
+
+    /**
+     * Turn the subtask progress bar on or off.
+     */
+    private addSubtaskProgressToggle(setting: Setting) {
+        const save = async () => {
+            await this.plugin.saveSettings();
+            this.events.triggerReloadOpenSearchResults();
+        };
+
+        setting.addToggle((toggle) => {
+            toggle.setValue(getSettings().showSubtaskProgress).onChange(async (value) => {
+                updateSettings({ showSubtaskProgress: value });
+                await save();
+            });
+        });
     }
 
     private renderEnableCustomSearchesToggle(setting: Setting): void {

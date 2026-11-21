@@ -99,6 +99,7 @@ export interface Settings {
     autoSuggestMinMatch: number;
     autoSuggestMaxItems: number;
     provideAccessKeys: boolean;
+    showSubtaskProgress: boolean;
     useFilenameAsScheduledDate: boolean;
     filenameAsScheduledDateFormat: string;
     filenameAsDateFolders: string[];
@@ -141,6 +142,7 @@ const defaultSettings: Readonly<Settings> = {
     autoSuggestMinMatch: 0,
     autoSuggestMaxItems: 20,
     provideAccessKeys: true,
+    showSubtaskProgress: false,
     useFilenameAsScheduledDate: false,
     filenameAsScheduledDateFormat: '',
     filenameAsDateFolders: [],

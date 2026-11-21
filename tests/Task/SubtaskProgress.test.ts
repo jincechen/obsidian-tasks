@@ -5,6 +5,7 @@ import { StatusRegistry } from 'Statuses/StatusRegistry';
 import {
     progressConfig,
     progressStep,
+    renderSubtaskProgress,
     statusSequence,
     subtaskProgressFromLines,
     subtaskProgressOfListItem,
@@ -199,5 +200,21 @@ describe('subtaskProgressFromLines', () => {
         const filtered = ['- [ ] #task parent', '    - [x] #task counted', '    - [ ] not counted'];
         expect(subtaskProgressFromLines(filtered, 0)).toEqual({ done: 1, total: 1 });
         expect(subtaskProgressFromLines(['- [ ] not a task', '    - [x] #task child'], 0)).toBeNull();
+    });
+});
+
+describe('renderSubtaskProgress', () => {
+    it('renders an accessible progress bar with a count', () => {
+        const parent = document.createElement('div');
+        renderSubtaskProgress(parent, { done: 1, total: 4 });
+
+        const progress = parent.querySelector('.tasks-progress')!;
+        expect(progress.getAttribute('role')).toEqual('progressbar');
+        expect(progress.getAttribute('aria-valuenow')).toEqual('1');
+        expect(progress.getAttribute('aria-valuemax')).toEqual('4');
+        expect(progress.getAttribute('aria-label')).toEqual('Done: 1 of 4');
+        expect(progress.hasAttribute('data-complete')).toEqual(false);
+        expect((parent.querySelector('.tasks-progress-fill') as HTMLElement).style.width).toEqual('25%');
+        expect(parent.querySelector('.tasks-progress-count')!.textContent).toEqual('1/4');
     });
 });

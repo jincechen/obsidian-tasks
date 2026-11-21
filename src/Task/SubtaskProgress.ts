@@ -205,3 +205,37 @@ export function subtaskProgressFromLines(
     }
     return tallyStatuses(statuses, config, statusRegistry);
 }
+
+/**
+ * Add a slim progress bar and a 'done/total' count, such as '2/5', to the element.
+ *
+ * The track stands for the total.
+ */
+export function renderSubtaskProgress(
+    parent: HTMLElement,
+    progress: SubtaskProgress,
+    config: SubtaskProgressConfig = progressConfig(),
+): HTMLSpanElement {
+    const { done, total } = progress;
+    const percentage = (count: number) => `${Math.round((count / total) * 100)}%`;
+
+    const completedName = config.sequence[config.completed]?.name ?? '';
+    const label = `${completedName}: ${done} of ${total}`;
+
+    const container = parent.createSpan({ cls: 'tasks-progress' });
+    container.setAttribute('role', 'progressbar');
+    container.setAttribute('aria-valuemin', '0');
+    container.setAttribute('aria-valuemax', total.toString());
+    container.setAttribute('aria-valuenow', done.toString());
+    container.setAttribute('aria-label', label);
+    container.setAttribute('title', label);
+    if (done === total) {
+        container.setAttribute('data-complete', '');
+    }
+
+    const track = container.createSpan({ cls: 'tasks-progress-track' });
+    track.createSpan({ cls: 'tasks-progress-fill' }).style.width = percentage(done);
+
+    container.createSpan({ cls: 'tasks-progress-count', text: `${done}/${total}` });
+    return container;
+}
