@@ -287,7 +287,7 @@ description includes \
 
         describe.each(namedFields)('has sufficient sample "filter" lines for field "%s"', ({ name, field }) => {
             function fieldDoesNotSupportFiltering() {
-                return name === 'backlink' || name === 'urgency' || name === 'random';
+                return name === 'backlink' || name === 'urgency' || name === 'random' || name === 'readiness';
             }
 
             // This is a bit weaker than the corresponding tests for 'sort by' and 'group by',
@@ -357,6 +357,8 @@ description includes \
             'sort by priority reverse',
             'sort by random',
             'sort by random reverse',
+            'sort by readiness',
+            'sort by readiness reverse',
             'sort by recurring',
             'sort by recurring reverse',
             'sort by scheduled',
