@@ -82,12 +82,8 @@ export class RemoveTaskDate extends BaseTaskEditingInstruction {
     }
 
     apply(task: Task): Task[] {
-        // There's no point trying to remove an inferred scheduled date, as the next time
-        // Tasks starts up, it will infer the scheduled date again from the file name,
-        // which will be very confusing for users.
-        const fieldIsInferred = this.dateFieldToEdit === 'scheduledDate' && task.scheduledDateIsInferred;
         const fieldIsAlreadyNull = task[this.dateFieldToEdit] === null;
-        if (fieldIsAlreadyNull || fieldIsInferred) {
+        if (fieldIsAlreadyNull || !this.isEnabledForTask(task)) {
             return [task];
         }
         return [
@@ -104,6 +100,13 @@ export class RemoveTaskDate extends BaseTaskEditingInstruction {
 
     isCheckedForTask(_task: Task): boolean {
         return false;
+    }
+
+    isEnabledForTask(task: Task): boolean {
+        // There's no point trying to remove an inferred scheduled date, as the next time
+        // Tasks starts up, it will infer the scheduled date again from the file name,
+        // which will be very confusing for users.
+        return !(this.dateFieldToEdit === 'scheduledDate' && task.scheduledDateIsInferred);
     }
 }
 

@@ -30,6 +30,12 @@ export interface TaskEditingInstruction {
     isCheckedForTask(task: Task): boolean;
 
     /**
+     * Can this instruction be applied to the given task. If not, it is shown disabled in menus.
+     * @param task
+     */
+    isEnabledForTask(task: Task): boolean;
+
+    /**
      * Return the command ID to use for this instruction, in Obsidian commands.
      */
     commandId(): string;

@@ -176,7 +176,7 @@ describe('PostponeMenu', () => {
         expect(TestableTaskSaver.tasksBeingSaved![0].start.formatAsDate()).toEqual('2023-12-05');
     });
 
-    it.fails('should disable the item for removing an inferred scheduled date', () => {
+    it('should disable the item for removing an inferred scheduled date', () => {
         const task = new TaskBuilder().scheduledDate(tomorrow).scheduledDateIsInferred(true).build();
         const menu = new PostponeMenu(document.createElement('a'), task);
 
