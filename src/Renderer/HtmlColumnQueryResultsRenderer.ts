@@ -86,6 +86,10 @@ export class HtmlColumnQueryResultsRenderer extends HtmlQueryResultsRenderer {
     protected extendTaskBehaviour(listItem: HTMLLIElement, task: Task) {
         if (this.nestingLevel === 0) {
             listItem.classList.add('tasks-columns-column-card');
+            if (this.isContextOnly(task)) {
+                // This task did not match the query, so moving it to another column would be surprising.
+                return;
+            }
             // TODO Prevent giving the appearance that the whole column can be moved,
             //      if some characters in the heading and first task are selected.
             listItem.draggable = true;

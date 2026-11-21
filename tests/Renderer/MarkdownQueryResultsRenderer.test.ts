@@ -5,7 +5,7 @@ import { Priority } from 'Task/Priority';
 import { readTasksFromSimulatedFile } from '../Obsidian/SimulatedFile';
 import { TaskBuilder } from '../TestingTools/TaskBuilder';
 import { fromMarkdown } from '../TestingTools/TestHelpers';
-import { createMarkdownRenderer, renderMarkdown } from './RenderingTestHelpers';
+import { createMarkdownRenderer, readNestedTasks, renderMarkdown } from './RenderingTestHelpers';
 
 window.moment = moment;
 
@@ -287,6 +287,84 @@ show group count
             "
             do not understand query
             Problem line: "abracadabra""
+        `);
+    });
+});
+
+describe('show tree: only matching subtasks, with their parents', () => {
+    const sample = `
+- [ ] parent ⏳ 2025-10-29
+    - [ ] child ⏳ 2025-10-29
+    - [ ] unscheduled child
+        - [ ] scheduled grandchild ⏳ 2025-10-29
+    - a note
+        - a nested note
+    - a list item with only unscheduled tasks
+        - [ ] unscheduled grandchild
+- [ ] unscheduled parent
+    - [ ] unscheduled child 2
+- [ ] another unscheduled parent
+    - a list item
+        - [ ] scheduled grandchild 2 ⏳ 2025-10-29
+`;
+
+    it('should show only matching subtasks, and the notes under shown tasks', async () => {
+        const { markdown } = await renderMarkdown('show tree\nhas scheduled date', readNestedTasks(sample));
+        expect(markdown).toMatchInlineSnapshot(`
+            "
+            - [ ] parent ⏳ 2025-10-29
+                - [ ] child ⏳ 2025-10-29
+                - [ ] unscheduled child
+                    - [ ] scheduled grandchild ⏳ 2025-10-29
+                - a note
+                    - a nested note
+            - [ ] another unscheduled parent
+                - a list item
+                    - [ ] scheduled grandchild 2 ⏳ 2025-10-29
+            "
+        `);
+    });
+
+    it('should place a non-matching parent where its first matching subtask is sorted', async () => {
+        const tasks = readNestedTasks(`
+- [ ] b parent
+    - [ ] c child
+- [ ] a task
+- [ ] z task
+`);
+        const { markdown } = await renderMarkdown(
+            'show tree\nsort by description\n(description includes child) OR (description includes task)',
+            tasks,
+        );
+        expect(markdown).toMatchInlineSnapshot(`
+            "
+            - [ ] a task
+            - [ ] b parent
+                - [ ] c child
+            - [ ] z task
+            "
+        `);
+    });
+
+    it('should show the parent in every group that contains a matching subtask', async () => {
+        const tasks = readNestedTasks(`
+- [ ] parent
+    - [ ] child 1 ⏳ 2025-10-29
+    - [ ] child 2 ⏳ 2025-10-30
+`);
+        const { markdown } = await renderMarkdown('show tree\nhas scheduled date\ngroup by scheduled', tasks);
+        expect(markdown).toMatchInlineSnapshot(`
+            "
+            #### 2025-10-29 Wednesday
+
+            - [ ] parent
+                - [ ] child 1 ⏳ 2025-10-29
+
+            #### 2025-10-30 Thursday
+
+            - [ ] parent
+                - [ ] child 2 ⏳ 2025-10-30
+            "
         `);
     });
 });
