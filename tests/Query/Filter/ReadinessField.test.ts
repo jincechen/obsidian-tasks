@@ -45,9 +45,11 @@ describe('sorting by readiness', () => {
             task().description('due today').dueDate('2023-07-05'),
             task().description('planned now').scheduledDate('2023-07-05'),
             task().description('deadline soon').dueDate('2023-07-10'),
+            task().description('planned soon').scheduledDate('2023-07-10'),
             task().description('anytime'),
-            task().description('planned later').scheduledDate('2023-07-10'),
+            task().description('planned later').scheduledDate('2023-07-25'),
             task().description('not started').startDate('2023-07-10'),
+            task().description('on hold').status(Status.ON_HOLD).dueDate('2023-07-01'),
             task().description('finished').status(Status.DONE),
         ].map((builder) => builder.build());
 
