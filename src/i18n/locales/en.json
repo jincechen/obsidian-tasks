@@ -52,6 +52,12 @@
         "placeholder": "not done\npath includes Work"
       },
       "title": "Edit preset"
+    },
+    "subtaskProgress": {
+      "completed": "Completed",
+      "noSequence": "Set a status cycle from Todo to Done.",
+      "title": "Subtask progress",
+      "total": "Total"
     }
   },
   "notices": {
@@ -265,6 +271,7 @@
     },
     "searchResults": {
       "subtaskProgress": {
+        "configure": "Configure",
         "description": "Show a progress bar after tasks with subtasks.",
         "name": "Subtask progress"
       },

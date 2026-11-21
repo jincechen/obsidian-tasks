@@ -34,6 +34,7 @@ import {
 } from 'Config/Settings';
 import { GlobalFilter } from 'Config/GlobalFilter';
 import { StatusSettings } from 'Config/StatusSettings';
+import { SubtaskProgressModal } from 'Config/SubtaskProgressModal';
 
 import { CustomStatusModal } from 'Config/CustomStatusModal';
 import { GlobalQuery } from 'Config/GlobalQuery';
@@ -397,7 +398,7 @@ export class SettingsTab extends PluginSettingTab {
     }
 
     /**
-     * Turn the subtask progress bar on or off.
+     * Turn the subtask progress bar on or off. While it is on, a gear button opens its configuration.
      */
     private addSubtaskProgressToggle(setting: Setting) {
         const save = async () => {
@@ -406,8 +407,25 @@ export class SettingsTab extends PluginSettingTab {
             refreshEditorDecorations(this.app);
         };
 
+        let configureButtonEl: HTMLElement | null = null;
+        const showConfigureButton = (show: boolean) => {
+            if (configureButtonEl) {
+                configureButtonEl.style.display = show ? '' : 'none';
+            }
+        };
+
+        setting.addExtraButton((button) => {
+            configureButtonEl = button.extraSettingsEl;
+            button
+                .setIcon('settings')
+                .setTooltip(i18n.t('settings.searchResults.subtaskProgress.configure'))
+                .onClick(() => new SubtaskProgressModal(this.app, save).open());
+        });
+        showConfigureButton(getSettings().showSubtaskProgress);
+
         setting.addToggle((toggle) => {
             toggle.setValue(getSettings().showSubtaskProgress).onChange(async (value) => {
+                showConfigureButton(value);
                 updateSettings({ showSubtaskProgress: value });
                 await save();
             });
