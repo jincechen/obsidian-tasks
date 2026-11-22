@@ -42,7 +42,7 @@ The drafts are in [upstream/](upstream/). Before posting anything, check every s
    - [fr-subtask-progress.md](upstream/fr-subtask-progress.md) first;
    - then [fr-sort-by-readiness.md](upstream/fr-sort-by-readiness.md);
    - then [fr-property-icons.md](upstream/fr-property-icons.md);
-   - [bug-labels-keyboard.md](upstream/bug-labels-keyboard.md) whenever there's a quiet moment.
+   - the two accessibility bugs, [bug-edit-dialog-labels.md](upstream/bug-edit-dialog-labels.md) and [bug-result-buttons-keyboard.md](upstream/bug-result-buttons-keyboard.md), whenever there is a quiet moment.
 
    Open a PR only after a maintainer agrees.
 
@@ -66,14 +66,17 @@ Use the template GitHub shows, keeping every section. Answer review comments wit
 
 ## Branches on the fork
 
-| Branch | Upstream step |
-| --- | --- |
-| `test/mock-data-loader-windows` | PR 1 |
-| `fix/file-retry-notices` | bug report → PR 2 |
-| `fix/inferred-scheduled-date-menu-item` | bug report → PR 3 |
-| `fix/query-results-shown-twice` | bug report (video) |
-| `fix/labels-and-keyboard-access` | bug report, later |
-| `feat/tree-matching-subtasks` | comment on #3449 |
-| `feat/subtask-progress` | feature request |
-| `feat/sort-by-readiness` | feature request |
-| `feat/property-icons` | feature request (largest; commits already split by area) |
+Each branch is one change, with commits small enough to review one at a time (preparatory `refactor:` first, then `feat:` steps, then `docs:`; bug fixes as `test:` then `fix:`).
+
+| Branch                                  | Commits | Upstream step                          |
+| --------------------------------------- | ------- | -------------------------------------- |
+| `test/mock-data-loader-windows`         | 1       | PR 1                                   |
+| `fix/file-retry-notices`                | 2       | bug report → PR 2                      |
+| `fix/inferred-scheduled-date-menu-item` | 2       | bug report → PR 3                      |
+| `fix/query-results-shown-twice`         | 2       | bug report (video)                     |
+| `fix/edit-dialog-labels`                | 2       | bug report, later                      |
+| `fix/result-buttons-keyboard`           | 2       | bug report, later                      |
+| `feat/tree-matching-subtasks`           | 4       | comment on #3449                       |
+| `feat/subtask-progress`                 | 9       | feature request                        |
+| `feat/sort-by-readiness`                | 3       | feature request                        |
+| `feat/property-icons`                   | 12      | feature request (largest; split by area) |
