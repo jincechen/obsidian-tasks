@@ -98,6 +98,18 @@ export class SettingsTab extends PluginSettingTab {
 
     private static readonly createFragmentWithHTML = (html: string) => sanitizeHTMLToDom(html);
 
+    /**
+     * A description that marks its row as destructive, so that CSS shows it in the theme's error colour.
+     */
+    private static destructiveDescription(text: string): DocumentFragment {
+        const fragment = SettingsTab.createFragmentWithHTML('<span class="tasks-destructive-action"></span>');
+        const span = fragment.querySelector('span');
+        if (span) {
+            span.textContent = text;
+        }
+        return fragment;
+    }
+
     public saveSettingsAndRebuildSettingsTab(): void {
         void this.plugin.saveSettings();
         this.rebuildSettingsTab();
@@ -659,7 +671,9 @@ export class SettingsTab extends PluginSettingTab {
                         },
                         {
                             name: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.name'),
-                            desc: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.description'),
+                            desc: SettingsTab.destructiveDescription(
+                                i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.description'),
+                            ),
                             aliases: [i18n.t('settings.statuses.customStatuses.heading')],
                             action: () => {
                                 const { statusSettings: current } = getSettings();

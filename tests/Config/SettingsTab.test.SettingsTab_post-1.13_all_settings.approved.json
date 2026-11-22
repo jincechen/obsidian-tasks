@@ -105,7 +105,7 @@
               },
               {
                 "name": "Reset custom status types to defaults",
-                "desc": "Discard all custom statuses and restore the defaults.",
+                "desc": "<span class=\"tasks-destructive-action\">Discard all custom statuses and restore the defaults.</span>",
                 "action": "[Function]",
                 "aliases": [
                   "Custom statuses"
