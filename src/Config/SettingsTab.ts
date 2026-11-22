@@ -263,6 +263,8 @@ export class SettingsTab extends PluginSettingTab {
                         // Open searches are redrawn once that has finished.
                         this.events.triggerReloadVault();
                         this.redrawReadingViews();
+                        // Re-evaluate the 'visible' predicate of 'Render properties in Live Preview'.
+                        this.refreshDomState();
                     });
                 });
             }, 'https://publish.obsidian.md/tasks/Reference/Task+Formats/About+Task+Formats'),
@@ -1147,7 +1149,25 @@ export class SettingsTab extends PluginSettingTab {
                                     updateSettings({ signifierDisplay: value as 'icons' | 'emoji' });
                                     await this.plugin.saveSettings();
                                     this.events.triggerReloadOpenSearchResults();
+                                    refreshEditorDecorations(this.app);
+                                    this.refreshDomState();
                                 });
+                        });
+                    },
+                },
+                {
+                    name: i18n.t('settings.display.editorIcons.name'),
+                    desc: i18n.t('settings.display.editorIcons.description'),
+                    // Emoji signifiers are only replaced by icons, but Dataview fields are shown compactly in either style.
+                    visible: () =>
+                        getSettings().signifierDisplay === 'icons' || getSettings().taskFormat === 'dataview',
+                    render: (setting) => {
+                        setting.addToggle((toggle) => {
+                            toggle.setValue(getSettings().showIconsInEditor).onChange(async (value) => {
+                                updateSettings({ showIconsInEditor: value });
+                                await this.plugin.saveSettings();
+                                refreshEditorDecorations(this.app);
+                            });
                         });
                     },
                 },

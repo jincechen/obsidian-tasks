@@ -108,6 +108,7 @@ export interface Settings {
         completedFrom: string;
     };
     signifierDisplay: 'icons' | 'emoji';
+    showIconsInEditor: boolean;
     useFilenameAsScheduledDate: boolean;
     filenameAsScheduledDateFormat: string;
     filenameAsDateFolders: string[];
@@ -158,6 +159,7 @@ const defaultSettings: Readonly<Settings> = {
         completedFrom: 'x',
     },
     signifierDisplay: 'emoji',
+    showIconsInEditor: true,
     useFilenameAsScheduledDate: false,
     filenameAsScheduledDateFormat: '',
     filenameAsDateFolders: [],
