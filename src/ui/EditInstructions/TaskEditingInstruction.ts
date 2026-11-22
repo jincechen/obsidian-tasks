@@ -33,4 +33,9 @@ export interface TaskEditingInstruction {
      * Return the command ID to use for this instruction, in Obsidian commands.
      */
     commandId(): string;
+
+    /**
+     * Return the name of the icon to show next to this instruction in menus, or null for no icon.
+     */
+    instructionIcon(): string | null;
 }

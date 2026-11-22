@@ -13,6 +13,7 @@ export function createSetStatusCommands(statusRegistry: StatusRegistry): Command
     return allStatusInstructions(statusRegistry).map((instruction) => ({
         id: instruction.commandId(),
         name: instruction.instructionDisplayName(),
+        icon: instruction.instructionIcon(),
         editorCheckCallback: createApplyInstructionEditorCallback(instruction, notATaskMessage),
     }));
 }

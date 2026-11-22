@@ -12,4 +12,8 @@ export abstract class BaseTaskEditingInstruction implements TaskEditingInstructi
     public commandId(): string {
         throw new Error(`${this.constructor.name}.commandId(): Method not implemented.`);
     }
+
+    public instructionIcon(): string | null {
+        return null;
+    }
 }

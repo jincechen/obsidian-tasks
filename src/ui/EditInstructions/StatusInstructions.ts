@@ -4,6 +4,7 @@ import type { Task } from 'Task/Task';
 import type { StatusRegistry } from 'Statuses/StatusRegistry';
 import { StatusSettings } from 'Config/StatusSettings';
 import { BaseTaskEditingInstruction } from 'ui/EditInstructions/BaseTaskEditingInstruction';
+import { iconForStatusType } from 'ui/Icons';
 
 /**
  * An instruction class, for editing a {@link Task} object's {@link Status}.
@@ -28,6 +29,10 @@ export class SetStatus extends BaseTaskEditingInstruction {
     public instructionDisplayName(): string {
         const commonTitle = 'Change status to:';
         return `${commonTitle} [${this.newStatus.symbol}] ${this.newStatus.name}`;
+    }
+
+    public instructionIcon(): string {
+        return iconForStatusType(this.newStatus.type);
     }
 
     public isCheckedForTask(task: Task): boolean {
