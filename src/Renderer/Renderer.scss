@@ -200,3 +200,10 @@ a.tasks-edit svg, a.tasks-postpone svg {
 .task-list-item .task-block-link{
     display: none;
 }
+
+/* Auto-suggest menu items with icons */
+.tasks-suggestion {
+    display: flex;
+    align-items: center;
+    gap: var(--size-4-2);
+}
