@@ -37,6 +37,7 @@ export class MenuItem {
     public callback: (evt: MouseEvent | KeyboardEvent) => any;
     public checked = false;
     public disabled = false;
+    public icon: string | null = null;
 
     constructor() {
         this.callback = (_evt: MouseEvent | KeyboardEvent) => console.log('callback not defined');
@@ -54,6 +55,11 @@ export class MenuItem {
 
     public setDisabled(disabled: boolean): this {
         this.disabled = disabled;
+        return this;
+    }
+
+    public setIcon(icon: string | null): this {
+        this.icon = icon;
         return this;
     }
 
@@ -314,6 +320,8 @@ type IconName = string;
 export function setIcon(element: HTMLElement, iconId: IconName): void {
     element.setAttribute('test-icon', iconId);
 }
+
+export function addIcon(_iconId: string, _svgContent: string): void {}
 
 export function setTooltip(element: HTMLElement, text: string): void {
     element.setAttribute('test-tooltip', text);

@@ -235,6 +235,7 @@ export class SettingsTab extends PluginSettingTab {
             this.datesFromFilenamesGroup(),
             this.recurringTasksGroup(),
             this.taskEntryGroup(),
+            this.displayGroup(),
         ];
     }
 
@@ -1120,6 +1121,35 @@ export class SettingsTab extends PluginSettingTab {
                         'provideAccessKeys',
                         'https://publish.obsidian.md/tasks/Getting+Started/Create+or+edit+Task#Keyboard+shortcuts',
                     ),
+                },
+            ],
+        };
+    }
+
+    // ---- Display ----------------------------------------------------------
+
+    private displayGroup(): SettingDefinitionItem {
+        return {
+            type: 'group',
+            heading: i18n.t('settings.display.heading'),
+            items: [
+                {
+                    name: i18n.t('settings.display.signifiers.name'),
+                    aliases: [i18n.t('settings.display.heading')],
+                    desc: i18n.t('settings.display.signifiers.description'),
+                    render: (setting) => {
+                        setting.addDropdown((dropdown) => {
+                            dropdown
+                                .addOption('emoji', i18n.t('settings.display.signifiers.options.emoji'))
+                                .addOption('icons', i18n.t('settings.display.signifiers.options.icons'))
+                                .setValue(getSettings().signifierDisplay)
+                                .onChange(async (value) => {
+                                    updateSettings({ signifierDisplay: value as 'icons' | 'emoji' });
+                                    await this.plugin.saveSettings();
+                                    this.events.triggerReloadOpenSearchResults();
+                                });
+                        });
+                    },
                 },
             ],
         };

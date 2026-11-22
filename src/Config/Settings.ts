@@ -107,6 +107,7 @@ export interface Settings {
         middle2From: string; // Empty for no second middle layer.
         completedFrom: string;
     };
+    signifierDisplay: 'icons' | 'emoji';
     useFilenameAsScheduledDate: boolean;
     filenameAsScheduledDateFormat: string;
     filenameAsDateFolders: string[];
@@ -156,6 +157,7 @@ const defaultSettings: Readonly<Settings> = {
         middle2From: '',
         completedFrom: 'x',
     },
+    signifierDisplay: 'emoji',
     useFilenameAsScheduledDate: false,
     filenameAsScheduledDateFormat: '',
     filenameAsDateFolders: [],

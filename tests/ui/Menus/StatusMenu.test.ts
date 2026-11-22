@@ -104,6 +104,7 @@ describe('StatusMenu', () => {
         // @ts-expect-error TS2339: Property 'items' does not exist on type 'StatusMenu'.
         const todoItem = menu.items[0];
         expect(todoItem.title).toEqual('Change status to: [ ] Todo');
+        expect(todoItem.icon).toEqual('circle');
         todoItem.callback();
 
         // Assert

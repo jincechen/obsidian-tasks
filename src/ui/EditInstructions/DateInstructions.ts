@@ -5,6 +5,7 @@ import { TasksDate } from 'DateTime/TasksDate';
 import type { TaskEditingInstruction } from 'ui/EditInstructions/TaskEditingInstruction';
 import { MenuDividerInstruction } from 'ui/EditInstructions/MenuDividerInstruction';
 import { BaseTaskEditingInstruction } from 'ui/EditInstructions/BaseTaskEditingInstruction';
+import { TasksIcon } from 'ui/Icons';
 
 /**
  * An instruction to set a date field to an absolute date.
@@ -42,6 +43,10 @@ export class SetTaskDate extends BaseTaskEditingInstruction {
 
     public isCheckedForTask(task: Task): boolean {
         return task[this.dateFieldToEdit]?.isSame(window.moment(this.newDate)) || false;
+    }
+
+    public instructionIcon(): string {
+        return TasksIcon[this.dateFieldToEdit];
     }
 }
 
@@ -107,6 +112,10 @@ export class RemoveTaskDate extends BaseTaskEditingInstruction {
         // Tasks starts up, it will infer the scheduled date again from the file name,
         // which will be very confusing for users.
         return !(this.dateFieldToEdit === 'scheduledDate' && task.scheduledDateIsInferred);
+    }
+
+    instructionIcon(): string {
+        return TasksIcon.remove;
     }
 }
 
