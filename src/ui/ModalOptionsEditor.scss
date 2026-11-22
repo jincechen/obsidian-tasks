@@ -34,17 +34,28 @@
 
     .tasks-options-modal-group,
     .tasks-options-modal-field {
-        border-radius: 4px;
+        border-radius: 5px;
 
+        // Like the drop slot of Obsidian's reorderable settings lists.
         &.is-dragging {
-            background-color: var(--background-modifier-hover);
+            background-color: color-mix(in oklch, var(--interactive-accent) 30%, transparent);
         }
     }
 
     .tasks-options-modal-handle {
         cursor: grab;
+        color: var(--icon-color);
         // Stop touch screens from scrolling the modal while a handle is dragged.
         touch-action: none;
+
+        &:hover {
+            color: var(--icon-color-hover);
+        }
+    }
+
+    &:has(.is-dragging),
+    &:has(.is-dragging) .tasks-options-modal-handle {
+        cursor: grabbing;
     }
 
     .tasks-options-modal-checkboxes {
