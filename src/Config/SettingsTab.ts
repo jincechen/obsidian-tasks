@@ -442,6 +442,10 @@ export class SettingsTab extends PluginSettingTab {
             toggle.setValue(EnableJsInTasksQueries.getInstance().get()).onChange((value) => {
                 if (!value) {
                     // Turning OFF: no confirmation needed.
+                    // Nothing to do if already off, as when a cancelled confirmation resets the toggle.
+                    if (!EnableJsInTasksQueries.getInstance().get()) {
+                        return;
+                    }
                     EnableJsInTasksQueries.getInstance().set(false);
                     this.events.triggerReloadOpenSearchResults();
                     return;
@@ -656,7 +660,7 @@ export class SettingsTab extends PluginSettingTab {
                         name: i18n.t('settings.statuses.buttons.addStatus'),
                         action: () => {
                             const draft = new StatusConfiguration('', '', '', false, StatusType.TODO);
-                            const modal = new CustomStatusModal(this.plugin, draft, false);
+                            const modal = new CustomStatusModal(this.plugin, draft, false, true);
                             modal.onClose = () => {
                                 if (!modal.saved) {
                                     return;
