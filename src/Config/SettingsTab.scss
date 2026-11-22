@@ -36,6 +36,11 @@
     font-size: var(--font-ui-small);
 }
 
+/* A destructive tool, such as resetting custom statuses: in the theme's error colour, so it is not clicked by accident. */
+.setting-item:has(.tasks-destructive-action) .setting-item-name {
+    color: var(--text-error) !important;
+}
+
 /* Global Query modal: wider than the default dialog, to give the query room. */
 .modal.tasks-global-query-modal {
     --dialog-width: 800px;
