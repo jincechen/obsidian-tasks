@@ -11,7 +11,7 @@ publish: true
 
 ## Overview
 
-At any time you can **validate** and **visualise** your custom statuses, using the **'Review and check your Statuses' button** in Tasks' [[Status Settings]].
+At any time you can **validate** and **visualise** your custom statuses, using the **'Review and check your Statuses' button** in the **Tools** section of Tasks' [[Status Settings]].
 
 ## The output file
 

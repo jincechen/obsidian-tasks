@@ -358,10 +358,17 @@
       "customStatuses": {
         "buttons": {
           "addAllUnknown": {
+            "added_one": "Tasks: Added {{count}} status.",
+            "added_other": "Tasks: Added {{count}} statuses.",
             "description": "Add any status symbols found in your vault but not yet configured here.",
-            "name": "Add all unknown status types"
+            "name": "Add all unknown status types",
+            "noneFound": "Tasks: No unknown statuses found."
           },
           "resetCustomStatuses": {
+            "confirm": {
+              "button": "Reset",
+              "message": "All your custom statuses will be replaced with the defaults. This cannot be undone."
+            },
             "description": "Discard all custom statuses and restore the defaults.",
             "name": "Reset custom status types to defaults"
           }
@@ -381,6 +388,9 @@
       "heading": "Task statuses",
       "next": "Next",
       "reloadRequired": "Changes take effect after reload.",
+      "tools": {
+        "heading": "Tools"
+      },
       "types": {
         "cancelled": "Cancelled",
         "done": "Done",

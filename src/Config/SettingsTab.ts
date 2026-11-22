@@ -41,6 +41,7 @@ import { GlobalQuery } from 'Config/GlobalQuery';
 import { GlobalQueryModal } from 'Config/GlobalQueryModal';
 import { PresetsSettingsUI } from 'Config/PresetsSettingsUI';
 import { EnableJsInTasksQueries } from 'Config/EnableJsInTasksQueries';
+import { confirmDestructiveAction } from 'Config/ConfirmModal';
 
 /**
  * A snapshot of the settings when the plugin loaded.
@@ -601,19 +602,7 @@ export class SettingsTab extends PluginSettingTab {
                                     ),
                                 ),
                     ],
-                    items: [
-                        ...statusSettings.coreStatuses.map((status) => statusRow(status, true)),
-                        {
-                            name: i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.name'),
-                            desc: i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.tooltip'),
-                            // List headings are not searchable, so this
-                            // always-present row carries the heading as an alias.
-                            aliases: [i18n.t('settings.statuses.coreStatuses.heading')],
-                            action: async () => {
-                                await this.createStatusRegistryReport();
-                            },
-                        },
-                    ],
+                    items: statusSettings.coreStatuses.map((status) => statusRow(status, true)),
                 },
                 {
                     type: 'list',
@@ -682,6 +671,7 @@ export class SettingsTab extends PluginSettingTab {
                 },
                 {
                     type: 'list',
+                    heading: i18n.t('settings.statuses.tools.heading'),
                     items: [
                         {
                             name: i18n.t('settings.statuses.buttons.importFromTheme.name'),
@@ -693,35 +683,59 @@ export class SettingsTab extends PluginSettingTab {
                             name: i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.name'),
                             desc: i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.description'),
                             searchable: false,
-                            action: () => {
-                                const { statusSettings: current } = getSettings();
-                                const tasks = this.plugin.getTasks();
-                                const unknownStatuses = StatusRegistry.getInstance().findUnknownStatuses(
-                                    tasks.map((task) => task.status),
-                                );
-                                if (unknownStatuses.length === 0) {
-                                    return;
-                                }
-                                unknownStatuses.forEach((s) => {
-                                    StatusSettings.addStatus(current.customStatuses, s);
-                                });
-                                updateAndSaveStatusSettings(current, this);
+                            action: () => this.addUnknownStatuses(),
+                        },
+                        {
+                            name: i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.name'),
+                            desc: i18n.t('settings.statuses.coreStatuses.buttons.checkStatuses.tooltip'),
+                            // List headings are not searchable, so this
+                            // always-present row carries the page name as an alias.
+                            aliases: [i18n.t('settings.statuses.heading')],
+                            action: async () => {
+                                await this.createStatusRegistryReport();
                             },
                         },
                         {
                             name: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.name'),
                             desc: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.description'),
                             aliases: [i18n.t('settings.statuses.customStatuses.heading')],
-                            action: () => {
-                                const { statusSettings: current } = getSettings();
-                                StatusSettings.resetAllCustomStatuses(current);
-                                updateAndSaveStatusSettings(current, this);
-                            },
+                            action: () => this.confirmResetCustomStatuses(),
                         },
                     ],
                 },
             ],
         };
+    }
+
+    private addUnknownStatuses(): void {
+        const tasks = this.plugin.getTasks();
+        const unknownStatuses = StatusRegistry.getInstance().findUnknownStatuses(tasks.map((task) => task.status));
+        if (unknownStatuses.length === 0) {
+            new Notice(i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.noneFound'));
+            return;
+        }
+        const { statusSettings: current } = getSettings();
+        unknownStatuses.forEach((s) => {
+            StatusSettings.addStatus(current.customStatuses, s);
+        });
+        updateAndSaveStatusSettings(current, this);
+        new Notice(
+            i18n.t('settings.statuses.customStatuses.buttons.addAllUnknown.added', { count: unknownStatuses.length }),
+        );
+    }
+
+    private async confirmResetCustomStatuses(): Promise<void> {
+        const confirmed = await confirmDestructiveAction(this.app, {
+            title: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.name'),
+            message: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.confirm.message'),
+            confirmText: i18n.t('settings.statuses.customStatuses.buttons.resetCustomStatuses.confirm.button'),
+        });
+        if (!confirmed) {
+            return;
+        }
+        const { statusSettings: current } = getSettings();
+        StatusSettings.resetAllCustomStatuses(current);
+        updateAndSaveStatusSettings(current, this);
     }
 
     /**

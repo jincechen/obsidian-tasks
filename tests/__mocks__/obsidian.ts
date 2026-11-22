@@ -350,16 +350,19 @@ export const lastModalState: {
     title: string | null;
     html: string | null;
     opened: boolean;
+    modal: Modal | null;
 } = {
     title: null,
     html: null,
     opened: false,
+    modal: null,
 };
 
 export function resetLastModalState(): void {
     lastModalState.title = null;
     lastModalState.html = null;
     lastModalState.opened = false;
+    lastModalState.modal = null;
 }
 
 // Minimal Modal mock for tests that inspect modal text produced by UI callbacks.
@@ -383,6 +386,7 @@ export class Modal {
     public open(): void {
         lastModalState.opened = true;
         lastModalState.html = this.contentEl.innerHTML;
+        lastModalState.modal = this;
     }
 
     public close(): void {
@@ -458,7 +462,34 @@ export class ButtonComponent {
         return this;
     }
 
-    public onClick(_callback: () => void): this {
+    public setCta(): this {
+        return this.setClass('mod-cta');
+    }
+
+    public setDestructive(): this {
+        return this.setClass('mod-destructive');
+    }
+
+    public onClick(callback: () => void): this {
+        this.buttonEl.addEventListener('click', callback);
         return this;
+    }
+}
+
+// Minimal ConfirmationModal mock: each button runs its handler, then closes the modal.
+export class ConfirmationModal extends Modal {
+    public addButton(callback: (button: ButtonComponent) => unknown): this {
+        const button = new ButtonComponent(this.contentEl);
+        callback(button);
+        button.buttonEl.addEventListener('click', () => this.close());
+        return this;
+    }
+
+    public addCancelButton(text = 'Cancel'): this {
+        return this.addButton((button) => button.setButtonText(text));
+    }
+
+    public override close(): void {
+        this.onClose();
     }
 }

@@ -50,6 +50,8 @@ You can then fill in the details for your new Status: see [[Editing a Status]].
 
 ## Bulk-adding Statuses
 
+These options are in the **Tools** section, below the Custom Statuses.
+
 You can click on **Import from theme** to show a menu that allows you to add all the custom statuses that are supported by a theme or CSS snippet.
 
 ![The "Import from theme" menu](../../images/settings-custom-statuses-import.png)
@@ -88,6 +90,7 @@ You can find a full list, with screenshots and complete details of the supported
 
 This searches all the tasks in your vault for any with status symbols that are not already in Tasks settings.
 It then creates a new custom status for each unknown status symbol.
+A notice says how many statuses were added, or that none were found.
 
 The new statuses are sorted by their symbols.
 This can be a convenient way to populate the Custom Statuses settings.
@@ -100,6 +103,7 @@ For example, in a vault that has already used a few custom statuses, we might se
 ## Reset custom status types to defaults
 
 This resets the entire Custom Statuses section back to its default list.
+You are asked to confirm first, as this cannot be undone.
 
 This allows you to try out each of the buttons above, and if you don't like them, you can quickly undo their changes.
 
