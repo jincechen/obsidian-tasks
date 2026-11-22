@@ -1,6 +1,11 @@
 import moment from 'moment';
 import { GlobalFilter } from 'Config/GlobalFilter';
-import { findDataviewFieldRanges, findSignifierRanges, propertyRangesForLine } from 'Obsidian/SignifierIcons';
+import {
+    dateFieldOf,
+    findDataviewFieldRanges,
+    findSignifierRanges,
+    propertyRangesForLine,
+} from 'Obsidian/SignifierIcons';
 
 window.moment = moment;
 
@@ -125,5 +130,12 @@ describe('propertyRangesForLine', () => {
         expect(propertyRangesForLine(dataviewLine, 'dataview', 'emoji')).toHaveLength(1);
         // Dataview fields are not Tasks properties in the emoji format:
         expect(propertyRangesForLine(dataviewLine, 'tasksPluginEmoji', 'icons')).toEqual([]);
+    });
+});
+
+describe('dateFieldOf', () => {
+    it('gives the date field of date properties only', () => {
+        expect(findSignifierRanges('- [ ] Task ⏫ 🛫 2026-10-01').map(dateFieldOf)).toEqual([null, 'startDate']);
+        expect(findDataviewFieldRanges('- [ ] Task [due:: 2026-10-02]').map(dateFieldOf)).toEqual(['dueDate']);
     });
 });

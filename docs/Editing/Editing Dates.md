@@ -19,6 +19,7 @@ There is a [[#Date-picker on task dates]] and a [[#Context menu on task dates]],
 > [!released]
 > Introduced in Tasks 7.14.0.
 > The native date-picker was introduced in Tasks X.Y.Z.
+> The date-picker in Live Preview was introduced in Tasks X.Y.Z.
 
 **Left-click on any task date field** in **Reading mode** and **Tasks query search results** to use a date-picker and calendar to edit or remove a date.
 
@@ -27,10 +28,12 @@ There is a [[#Date-picker on task dates]] and a [[#Context menu on task dates]],
 
 The date-picker is your device's own date input: select a new date, or clear the date to remove it.
 
+In **Live Preview**, click a date's emoji or icon to use the date-picker.
+
 | Where                         | Viewing Mode | Works? |
 | ----------------------------- | ------------ | ------ |
 | Task lines in markdown files  | Source mode  | ❌     |
-| Task lines in markdown files  | Live Preview | ❌     |
+| Task lines in markdown files  | Live Preview | ✅     |
 | Task lines in markdown files  | Reading mode | ✅     |
 | In Tasks query search results | Live Preview | ✅     |
 | In Tasks query search results | Reading mode | ✅     |
