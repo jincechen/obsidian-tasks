@@ -8,55 +8,67 @@
   <section class="tasks-modal-priority-section">
     <label id="priority" for="priority-none">Priority</label>
     <div class="task-modal-priority-option-container">
-      <input type="radio" id="priority-lowest" value="lowest" />
-      <label for="priority-lowest">
-        <span>Lowest</span>
-        <!---->
-        <span>⏬</span>
-        <!---->
-      </label>
-    </div>
-    <div class="task-modal-priority-option-container">
-      <input type="radio" id="priority-low" value="low" />
-      <label for="priority-low">
-        <span>Low</span>
-        <!---->
-        <span>🔽</span>
-        <!---->
-      </label>
-    </div>
-    <div class="task-modal-priority-option-container">
-      <input type="radio" id="priority-none" value="none" />
-      <label for="priority-none">
-        <span>Normal</span>
-        <!---->
-        <!---->
-      </label>
-    </div>
-    <div class="task-modal-priority-option-container">
-      <input type="radio" id="priority-medium" value="medium" />
-      <label for="priority-medium">
-        <span>Medium</span>
-        <!---->
-        <span>🔼</span>
+      <input type="radio" id="priority-highest" value="highest" />
+      <label for="priority-highest">
+        <span class="tasks-priority-label">
+          Highest
+          <!---->
+        </span>
+        <span class="tasks-priority-emoji">🔺</span>
         <!---->
       </label>
     </div>
     <div class="task-modal-priority-option-container">
       <input type="radio" id="priority-high" value="high" />
       <label for="priority-high">
-        <span>High</span>
-        <!---->
-        <span>⏫</span>
+        <span class="tasks-priority-label">
+          High
+          <!---->
+        </span>
+        <span class="tasks-priority-emoji">⏫</span>
         <!---->
       </label>
     </div>
     <div class="task-modal-priority-option-container">
-      <input type="radio" id="priority-highest" value="highest" />
-      <label for="priority-highest">
-        <span>Highest</span>
+      <input type="radio" id="priority-medium" value="medium" />
+      <label for="priority-medium">
+        <span class="tasks-priority-label">
+          Medium
+          <!---->
+        </span>
+        <span class="tasks-priority-emoji">🔼</span>
         <!---->
-        <span>🔺</span>
+      </label>
+    </div>
+    <div class="task-modal-priority-option-container">
+      <input type="radio" id="priority-none" value="none" />
+      <label for="priority-none">
+        <span class="tasks-priority-label">
+          Normal
+          <!---->
+        </span>
+        <!---->
+      </label>
+    </div>
+    <div class="task-modal-priority-option-container">
+      <input type="radio" id="priority-low" value="low" />
+      <label for="priority-low">
+        <span class="tasks-priority-label">
+          Low
+          <!---->
+        </span>
+        <span class="tasks-priority-emoji">🔽</span>
+        <!---->
+      </label>
+    </div>
+    <div class="task-modal-priority-option-container">
+      <input type="radio" id="priority-lowest" value="lowest" />
+      <label for="priority-lowest">
+        <span class="tasks-priority-label">
+          Lowest
+          <!---->
+        </span>
+        <span class="tasks-priority-emoji">⏬</span>
         <!---->
       </label>
     </div>
@@ -70,13 +82,13 @@
     <!---->
     <!---->
     <label for="recurrence">Recurs</label>
-    <input id="recurrence" type="text" placeholder="Try 'every day when done'" class="tasks-modal-date-input" />
-    <code class="tasks-modal-parsed-date">
+    <input id="recurrence" type="text" placeholder="e.g. every week" class="tasks-modal-date-input" />
+    <span class="tasks-modal-parsed-date tasks-modal-parsed-message">
       🔁
       <!---->
       <i>not recurring</i>
       <!---->
-    </code>
+    </span>
     <!---->
     <!---->
     <label for="due">Due</label>
@@ -99,11 +111,11 @@
       placeholder="Try 'Mon' or 'tm' then space"
       id="scheduled"
       class="tasks-modal-date-input tasks-modal-error" />
-    <code class="tasks-modal-parsed-date">
+    <span class="tasks-modal-parsed-date tasks-modal-parsed-message">
       ⏳
       <i>invalid scheduled date</i>
       <!---->
-    </code>
+    </span>
     <!---->
     <!---->
     <!---->
@@ -133,25 +145,25 @@
     <!---->
     <!---->
     <!---->
-    <label for="before_this">Before this</label>
+    <label for="before_this">Blocked by</label>
     <span>
       <input
         class="tasks-modal-dependency-input"
         type="text"
         id="before_this"
-        placeholder="Search for tasks that the task being edited depends on..." />
+        placeholder="Search tasks that must be done first…" />
     </span>
     <!---->
     <!---->
     <!---->
     <!---->
-    <label for="after_this">After this</label>
+    <label for="after_this">Blocks</label>
     <span>
       <input
         class="tasks-modal-dependency-input"
         type="text"
         id="after_this"
-        placeholder="Search for tasks that depend on this task being done..." />
+        placeholder="Search tasks waiting on this one…" />
     </span>
     <!---->
     <!---->

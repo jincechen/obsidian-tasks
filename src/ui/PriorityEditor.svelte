@@ -19,27 +19,19 @@
         accessKeyIndex: number;
     }[] = [
         {
-            value: 'lowest',
-            label: 'Lowest',
-            symbol: prioritySymbols.Lowest,
-            icon: iconForPriority(Priority.Lowest),
-            accessKey: 'o',
+            value: 'highest',
+            label: 'Highest',
+            symbol: prioritySymbols.Highest,
+            icon: iconForPriority(Priority.Highest),
+            accessKey: 'i',
             accessKeyIndex: 1,
         },
         {
-            value: 'low',
-            label: 'Low',
-            symbol: prioritySymbols.Low,
-            icon: iconForPriority(Priority.Low),
-            accessKey: 'l',
-            accessKeyIndex: 0,
-        },
-        {
-            value: 'none',
-            label: 'Normal',
-            symbol: prioritySymbols.None,
-            icon: null,
-            accessKey: 'n',
+            value: 'high',
+            label: 'High',
+            symbol: prioritySymbols.High,
+            icon: iconForPriority(Priority.High),
+            accessKey: 'h',
             accessKeyIndex: 0,
         },
         {
@@ -51,19 +43,27 @@
             accessKeyIndex: 0,
         },
         {
-            value: 'high',
-            label: 'High',
-            symbol: prioritySymbols.High,
-            icon: iconForPriority(Priority.High),
-            accessKey: 'h',
+            value: 'none',
+            label: 'Normal',
+            symbol: prioritySymbols.None,
+            icon: null,
+            accessKey: 'n',
             accessKeyIndex: 0,
         },
         {
-            value: 'highest',
-            label: 'Highest',
-            symbol: prioritySymbols.Highest,
-            icon: iconForPriority(Priority.Highest),
-            accessKey: 'i',
+            value: 'low',
+            label: 'Low',
+            symbol: prioritySymbols.Low,
+            icon: iconForPriority(Priority.Low),
+            accessKey: 'l',
+            accessKeyIndex: 0,
+        },
+        {
+            value: 'lowest',
+            label: 'Lowest',
+            symbol: prioritySymbols.Lowest,
+            icon: iconForPriority(Priority.Lowest),
+            accessKey: 'o',
             accessKeyIndex: 1,
         },
     ];
@@ -77,19 +77,18 @@
         <!-- svelte-ignore a11y-accesskey -->
         <input type="radio" id="priority-{value}" {value} bind:group={priority} accesskey={accesskey(accessKey)} />
         <label for="priority-{value}">
-            {#if withAccessKeys}
-                <span>{label.substring(0, accessKeyIndex)}</span><span class="accesskey"
-                    >{label.substring(accessKeyIndex, accessKeyIndex + 1)}</span
-                ><span>{label.substring(accessKeyIndex + 1)}</span>
-            {:else}
-                <span>{label}</span>
-            {/if}
+            <!-- One span for the text, so that the label's gap only separates the text from the icon -->
+            <span class="tasks-priority-label"
+                >{#if withAccessKeys}<span>{label.substring(0, accessKeyIndex)}</span><span class="accesskey"
+                        >{label.substring(accessKeyIndex, accessKeyIndex + 1)}</span
+                    ><span>{label.substring(accessKeyIndex + 1)}</span>{:else}{label}{/if}</span
+            >
             {#if useIcons}
                 {#if priorityIcon}
                     <span use:icon={{ id: priorityIcon, label: '' }}></span>
                 {/if}
             {:else if symbol && symbol.charCodeAt(0) >= 0x100}
-                <span>{symbol}</span>
+                <span class="tasks-priority-emoji">{symbol}</span>
             {/if}
         </label>
     </div>

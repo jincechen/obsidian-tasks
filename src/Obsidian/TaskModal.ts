@@ -1,4 +1,4 @@
-import { type App, setIcon } from 'obsidian';
+import { type App, setIcon, setTooltip } from 'obsidian';
 import { Modal } from 'obsidian';
 import { mount, unmount } from 'svelte';
 
@@ -15,6 +15,29 @@ export interface TaskModalParams {
     onSubmit: (updatedTasks: Task[]) => void;
     onCancel?: () => void;
     allTasks: Task[];
+}
+
+/**
+ * Position a button, styled like the modal's close button, just before the close button.
+ *
+ * The close button's size and position differ between Obsidian versions and themes,
+ * so measure it rather than rely on a fixed offset.
+ */
+function placeBesideCloseButton(modalEl: HTMLElement, button: HTMLElement) {
+    window.requestAnimationFrame(() => {
+        const closeButton = Array.from(
+            modalEl.querySelectorAll<HTMLElement>(':scope > .modal-close-button, :scope > .modal-header-button'),
+        ).find((element) => element !== button);
+        if (!closeButton || closeButton.offsetWidth === 0) {
+            return;
+        }
+
+        const style = window.getComputedStyle(closeButton);
+        const closeButtonEnd = parseFloat(style.insetInlineEnd) || parseFloat(style.right) || 0;
+        const gap = 4;
+        button.style.insetInlineEnd = `${closeButtonEnd + closeButton.offsetWidth + gap}px`;
+        button.style.top = style.top;
+    });
 }
 
 export class TaskModal extends Modal {
@@ -50,11 +73,14 @@ export class TaskModal extends Modal {
                 'modal-close-button',
                 'mod-raised',
                 'clickable-icon',
-                // But overload the 'inset-inline-end' property for a correct position:
+                // Fallback position, until placeBesideCloseButton() measures the close button:
                 'modal-option-button',
             ],
         });
-        setIcon(optionsButton, 'settings');
+        setIcon(optionsButton, 'sliders-horizontal');
+        optionsButton.setAttribute('aria-label', 'Hide and reorder fields');
+        setTooltip(optionsButton, 'Hide and reorder fields');
+        placeBesideCloseButton(this.modalEl, optionsButton);
         optionsButton.onclick = () => {
             const optionsModal = new OptionsModal({
                 app: this.app,

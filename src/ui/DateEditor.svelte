@@ -68,7 +68,7 @@
         />
     </div>
 {:else}
-    <code class="tasks-modal-parsed-date">{showSymbol ? dateSymbol : ''} {@html parsedDate}</code>
+    <span class="tasks-modal-parsed-date tasks-modal-parsed-message">{showSymbol ? dateSymbol : ''} {@html parsedDate}</span>
 {/if}
 
 <style>

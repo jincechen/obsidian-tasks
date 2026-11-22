@@ -24,10 +24,10 @@
     type="text"
     class:tasks-modal-error={!isRecurrenceValid}
     class="tasks-modal-date-input"
-    placeholder="Try 'every day when done'"
+    placeholder="e.g. every week"
     {accesskey}
 />
-<code class="tasks-modal-parsed-date">
+<span class="tasks-modal-parsed-date tasks-modal-parsed-message">
     {#if useIcons}
         {#if editableTask.recurrenceRule && isRecurrenceValid}
             <span use:icon={{ id: TasksIcon.recurrence, label: 'Recurs' }}></span>
@@ -36,4 +36,4 @@
         {recurrenceSymbol}
     {/if}
     {@html parsedRecurrence}
-</code>
+</span>

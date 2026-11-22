@@ -36,8 +36,9 @@
     };
 
     // Helper to format field names for display
-    const formatFieldName = (fieldName: string): string => {
-        return fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace('_', ' ');
+    const fieldLabels: Partial<Record<EditModalField, string>> = { before_this: 'Blocked by', after_this: 'Blocks' };
+    const formatFieldName = (fieldName: EditModalField): string => {
+        return fieldLabels[fieldName] ?? fieldName.charAt(0).toUpperCase() + fieldName.slice(1).replace('_', ' ');
     };
 
     const icon = (node: HTMLElement, iconId: string) => setIcon(node, iconId);

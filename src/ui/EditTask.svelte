@@ -107,16 +107,16 @@
 <!--
 Availability of access keys:
 - A: Start
-- B: Before this
+- B: Blocked by
 - C: Created
 - D: Due
-- E: After this
+- E:
 - F: Only future dates
 - G:
 - H: High
 - I: Highest
 - J:
-- K:
+- K: Blocks
 - L: Low
 - M: Medium
 - N: Normal
@@ -264,13 +264,13 @@ Availability of access keys:
                                 <Dependency
                                     id="before_this"
                                     type="blockedBy"
-                                    labelText="Before this"
+                                    labelText="Blocked by"
                                     {task}
                                     {editableTask}
                                     {allTasks}
                                     {_onDescriptionKeyDown}
                                     accesskey={accesskey('b')}
-                                    placeholder="Search for tasks that the task being edited depends on..."
+                                    placeholder="Search tasks that must be done first…"
                                 />
                             {:else if field === 'after_this'}
                                 <!-- --------------------------------------------------------------------------- -->
@@ -279,13 +279,13 @@ Availability of access keys:
                                 <Dependency
                                     id="after_this"
                                     type="blocking"
-                                    labelText="After this"
+                                    labelText="Blocks"
                                     {task}
                                     {editableTask}
                                     {allTasks}
                                     {_onDescriptionKeyDown}
-                                    accesskey={accesskey('e')}
-                                    placeholder="Search for tasks that depend on this task being done..."
+                                    accesskey={accesskey('k')}
+                                    placeholder="Search tasks waiting on this one…"
                                 />
                             {/if}
                         {/if}
