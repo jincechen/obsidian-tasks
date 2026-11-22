@@ -153,6 +153,9 @@ export class HtmlQueryResultsRenderer extends QueryResultsRendererBase {
     protected async addTask(task: Task, taskIndex: number): Promise<void> {
         const isFilenameUnique = this.isFilenameUnique({ task }, this.htmlQueryRendererParameters.allMarkdownFiles());
         const listItem = this.lastLIElement;
+        if (this.isContextOnly(task)) {
+            listItem.classList.add('tasks-tree-context');
+        }
 
         this.extendTaskBehaviour(listItem, task);
 

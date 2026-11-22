@@ -138,10 +138,12 @@ It allows you to:
 > [!Tip]
 > The new instruction `show tree` is the first in a long series of steps to teach the Tasks plugin to fully handle [nested tasks and list items](https://help.obsidian.md/Editing+and+formatting/Basic+formatting+syntax#Nesting+lists).
 >
-> When you use `show tree`, Tasks shows all found tasks, and **all** their nested tasks and list items (for now, regardless of whether or not the nested tasks matched the query).
+> When you use `show tree`, Tasks shows the found tasks with their parents, so every task is shown in context.
 
 > [!released]
-> `show tree` was introduced in Tasks 7.12.0.
+>
+> - `show tree` was introduced in Tasks 7.12.0.
+> - Hiding nested tasks that do not match the query was introduced in Tasks X.Y.Z.
 
 #### Show Tree example
 
@@ -173,7 +175,9 @@ hide backlink
 ```
 ````
 
-The `show tree` instruction enables us to see the parent/child relationships in the tasks, and their nested tasks and list items:
+The `show tree` instruction enables us to see the parent/child relationships in the tasks, and their nested tasks and list items.
+
+(The screenshot predates hiding non-matching child tasks, so it still shows `Decide who to invite`.)
 
 ![Sample search results with 'show tree' instruction](../images/show-tree.png)
 <span class="caption">Sample search results with 'show tree' instruction</span>
@@ -185,8 +189,9 @@ The `show tree` instruction enables us to see the parent/child relationships in 
 >
 > We are releasing this first version, having found to already be valuable in our own vaults.
 
-- For now, **all child tasks and list items are displayed**, regardless of whether they match the query.
-  - In the screenshot above, `Decide who to invite` did not match the `not done` query, but it is still shown.
+- **Only child tasks that match the query are displayed**, so `Decide who to invite` is hidden.
+- **Parents of matching tasks are always displayed**, dimmed if they did not match.
+- **List items under displayed tasks are kept**, unless they only contain hidden tasks.
 - Any **sorting instructions only affect the sorting of the left-most tasks** in the results list.
   - Child tasks and list items are displayed in the order that they appear in the file. They are not affected by any `sort by` instructions.
 - For now, the **tree layout is turned off by default**, whilst we explore how it should interact with the filtering instructions.
