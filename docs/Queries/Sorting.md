@@ -337,6 +337,49 @@ sort by function task.happens.format("dddd")
 
 <!-- placeholder to force blank line after included text --><!-- endInclude -->
 
+### Readiness
+
+> [!released]
+> Introduced in Tasks X.Y.Z.
+
+- `sort by readiness`
+
+This sorts tasks by how ready they are to be worked on, using what each of their dates means: the due date is a deadline, the scheduled date is when you plan to do the task, and the start date is the earliest you can begin. The created date is not used.
+
+Tasks are sorted into these groups, in this order:
+
+| Order | Group         | Tasks                                                                    | Sorted within the group by |
+| ----- | ------------- | ------------------------------------------------------------------------ | -------------------------- |
+| 1     | Overdue       | due before today                                                         | due date                   |
+| 2     | Due today     | due today                                                                |                            |
+| 3     | Planned now   | scheduled today or earlier                                               | scheduled date             |
+| 4     | Deadline soon | due in the next 14 days                                                  | due date                   |
+| 5     | Planned soon  | scheduled in the next 14 days                                            | scheduled date             |
+| 6     | Anytime       | with no dates that matter yet, such as a due date more than 14 days away |                            |
+| 7     | Planned later | scheduled more than 14 days away                                         | scheduled date             |
+| 8     | Not started   | starting after today                                                     | start date                 |
+| 9     | On hold       | with an on hold status, whatever their dates                             |                            |
+| 10    | Finished      | done, cancelled or non-task                                              |                            |
+
+When a task fits several groups:
+
+- a finished task is always in Finished, and a task with an on hold status is always in On hold,
+- then a due date of today or earlier comes first,
+- then a start date after today, as the task cannot be worked on yet,
+- then the other groups, in the order above: deadlines come before plans.
+
+Tasks in the same group, with the same date, are sorted by any later `sort by` instructions, and then by the [[#Default sort order|default sort order]].
+
+Readiness differs from [[#Urgency|urgency]], which blends dates and priority into one score, and is still the default.
+To sort by priority, and by readiness within each priority:
+
+```text
+sort by priority
+sort by readiness
+```
+
+Swap the two lines to sort by readiness first, and by priority within each group.
+
 ## Sort by Other Task Properties
 
 ### Description
