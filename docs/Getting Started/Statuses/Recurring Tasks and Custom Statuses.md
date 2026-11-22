@@ -66,7 +66,7 @@ Now imagine we have the **following task line**:
 
 ### First click - advances to IN_PROGRESS
 
-The **first time we click on the task's checkbox** or run Tasks' **Toggle task done** command, the line becomes:
+The **first time we click on the task's checkbox** or run Tasks' **Toggle task statuses** command, the line becomes:
 
 ```text
 - [/] Do something 🔁 every day 📅 2023-10-15
@@ -78,7 +78,7 @@ The **first time we click on the task's checkbox** or run Tasks' **Toggle task d
 
 ### Second click - advances to DONE and recurs
 
-The **next time we click on the task's checkbox** or run Tasks' **Toggle task done** command we toggle the task, the line becomes **two lines**:
+The **next time we click on the task's checkbox** or run Tasks' **Toggle task statuses** command we toggle the task, the line becomes **two lines**:
 
 ```text
 - [x] Do something 🔁 every day 📅 2023-10-15 ✅ 2023-10-15

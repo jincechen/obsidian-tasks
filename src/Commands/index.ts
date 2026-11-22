@@ -9,7 +9,7 @@ import { ensureQueryFileDefaultsInFrontmatter } from 'Commands/AddQueryFileDefau
 import { createSetStatusCommands } from 'Commands/ChangeStatusCommands';
 import { createSetPriorityCommands } from 'Commands/ChangePriorityCommands';
 
-export const ToggleTaskDoneCommandName = 'Toggle task done';
+export const ToggleTaskDoneCommandName = 'Toggle task statuses';
 
 export class Commands {
     private readonly plugin: TasksPlugin;

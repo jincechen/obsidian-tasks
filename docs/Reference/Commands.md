@@ -81,6 +81,6 @@ Notes:
 | Name                                            | ID                                                         | Details                                                                         |
 | ----------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | `Tasks: Create or edit task`                    | `obsidian-tasks-plugin:edit-task`                          | [[Create or edit Task#Opening the 'Create or edit Task' Modal\|details]]        |
-| `Tasks: Toggle task done`                       | `obsidian-tasks-plugin:toggle-done`                        | [[Toggling and Editing Statuses#'Tasks Toggle task done' command\|details]]     |
+| `Tasks: Toggle task statuses`                   | `obsidian-tasks-plugin:toggle-done`                        | [[Toggling and Editing Statuses#'Tasks Toggle task statuses' command\|details]] |
 | `Tasks: Quick search`                           | `obsidian-tasks-plugin:quick-search`                       | [[Quick Search\|details]]                                                       |
 | `Tasks: Add all Query File Defaults properties` | `obsidian-tasks-plugin:add-query-file-defaults-properties` | [[Query File Defaults#Command Add all Query File Defaults properties\|details]] |

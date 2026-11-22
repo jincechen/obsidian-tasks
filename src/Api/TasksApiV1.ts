@@ -24,7 +24,7 @@ export interface TasksApiV1 {
     editTaskLineModal(taskLine: string): Promise<string>;
 
     /**
-     * Executes the 'Tasks: Toggle task done' command on the supplied line string
+     * Executes the 'Tasks: Toggle task statuses' command on the supplied line string
      *
      * @param line The markdown string of the task line being toggled
      * @param path The path to the file containing line

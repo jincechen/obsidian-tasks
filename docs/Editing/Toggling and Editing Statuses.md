@@ -12,7 +12,7 @@ This page describes ways to mark a task line as `TODO` or `DONE`, or any other [
 
 You can [[#Toggling Tasks with mouse|left-click]] or [[#'Change task status' context menu|right-click]] on task checkboxes.
 
-Other options are commands ([[#'Tasks Toggle task done' command|toggle]] or [[#'Tasks Change status to...' commands|set to a specific status]]) and a [[#Edit task modal|modal]].
+Other options are commands ([[#'Tasks Toggle task statuses' command|toggle]] or [[#'Tasks Change status to...' commands|set to a specific status]]) and a [[#Edit task modal|modal]].
 
 > [!tip] What is "toggling"?
 > The simplest meaning of 'toggling' is converting a task between these two states:
@@ -65,9 +65,11 @@ Changing from one `DONE` status to another:
 > [!released]
 > The 'Change task status' context menu was introduced in Tasks 5.3.0.
 
-## 'Tasks: Toggle task done' command
+## 'Tasks: Toggle task statuses' command
 
-There is also a command 'Tasks: Toggle task done'.
+There is also a command 'Tasks: Toggle task statuses' (called 'Tasks: Toggle task done' before Tasks X.Y.Z).
+
+It advances each task to its next status, following the cycle set up in your [[Status Settings]].
 
 Obsidian allows you to assign a [hotkey](https://help.obsidian.md/Customization/Custom+hotkeys) to commands, for ease of use.
 
