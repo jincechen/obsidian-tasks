@@ -34,7 +34,7 @@ For convenience, here is a list of all those documentation pages (in the order t
 > [!released]
 > Introduced in Tasks X.Y.Z.
 
-- **Property style**: show task properties such as dates and priority as **Emoji** (the default) or **Icons**, in search results, Reading mode, the edit dialog, auto-suggest and Quick Search. Your notes are not changed: they still use the task format's emoji or text.
+- **Property style**: show task properties such as dates and priority as **Emoji** (the default) or **Icons**, in search results, Reading mode, the edit dialog, auto-suggest, Quick Search and these settings. Your notes are not changed: they still use the task format's emoji or text.
 - Menus, such as the status and date menus, show icons next to their items whichever style is chosen.
 - **Render properties in Live Preview**: show task properties compactly in Live Preview, in the chosen property style, including [[Dataview Format]] fields such as `[priority:: highest]`. Put the cursor on a property to edit its text.
   - This is shown when **Icons** are chosen, or with the [[Dataview Format]].
