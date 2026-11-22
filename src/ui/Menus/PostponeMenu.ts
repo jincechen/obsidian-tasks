@@ -87,9 +87,11 @@ export class PostponeMenu extends TaskEditingMenu {
 
         this.addSeparator();
 
-        this.addItem((item) =>
-            postponeMenuItemCallback(button, item, 'days', 2, removeDateMenuItemTitle, createTaskWithDateRemoved),
-        );
+        this.addItem((item) => {
+            postponeMenuItemCallback(button, item, 'days', 2, removeDateMenuItemTitle, createTaskWithDateRemoved);
+            // An inferred scheduled date would be inferred again from the file name, so it cannot be removed.
+            item.setDisabled(getDateFieldToPostpone(task) === 'scheduledDate' && task.scheduledDateIsInferred);
+        });
     }
 
     public static async postponeOnClickCallback(

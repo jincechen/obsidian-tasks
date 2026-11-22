@@ -72,6 +72,7 @@ export class TaskEditingMenu extends Menu {
     private getMenuItemCallback(task: Task, item: MenuItem, instruction: TaskEditingInstruction) {
         item.setTitle(instruction.instructionDisplayName())
             .setChecked(instruction.isCheckedForTask(task))
+            .setDisabled(!instruction.isEnabledForTask(task))
             .onClick(async () => {
                 const newTask = instruction.apply(task);
                 const hasEdits = newTask.length !== 1 || !Object.is(newTask[0], task);
