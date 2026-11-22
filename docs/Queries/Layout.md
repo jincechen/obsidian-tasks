@@ -111,7 +111,7 @@ This is a global setting that applies to all task queries. Individual queries ca
 
 ### Subtask progress
 
-Turn on **Settings → Tasks → Searches → Subtask progress** to show a progress bar and a count, such as `2/5`, after tasks that have subtasks, in search results and Live Preview.
+Turn on **Settings → Tasks → Display → Subtask progress** to show a progress bar and a count, such as `2/5`, after tasks that have subtasks, in search results and Live Preview.
 
 Its gear button chooses what is counted, as steps of your [[Custom Statuses|status cycle]] from Todo to Done. Each step also counts the statuses after it:
 

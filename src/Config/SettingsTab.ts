@@ -235,6 +235,7 @@ export class SettingsTab extends PluginSettingTab {
             this.datesFromFilenamesGroup(),
             this.recurringTasksGroup(),
             this.taskEntryGroup(),
+            this.displayGroup(),
         ];
     }
 
@@ -387,11 +388,6 @@ export class SettingsTab extends PluginSettingTab {
                             });
                         });
                     },
-                },
-                {
-                    name: i18n.t('settings.searchResults.subtaskProgress.name'),
-                    desc: i18n.t('settings.searchResults.subtaskProgress.description'),
-                    render: (setting) => this.addSubtaskProgressToggle(setting),
                 },
             ],
         };
@@ -1120,6 +1116,20 @@ export class SettingsTab extends PluginSettingTab {
                         'provideAccessKeys',
                         'https://publish.obsidian.md/tasks/Getting+Started/Create+or+edit+Task#Keyboard+shortcuts',
                     ),
+                },
+            ],
+        };
+    }
+
+    private displayGroup(): SettingDefinitionItem {
+        return {
+            type: 'group',
+            heading: i18n.t('settings.display.heading'),
+            items: [
+                {
+                    name: i18n.t('settings.searchResults.subtaskProgress.name'),
+                    desc: i18n.t('settings.searchResults.subtaskProgress.description'),
+                    render: (setting) => this.addSubtaskProgressToggle(setting),
                 },
             ],
         };

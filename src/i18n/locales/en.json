@@ -196,6 +196,9 @@
         "name": "Provide access keys in dialogs"
       }
     },
+    "display": {
+      "heading": "Display"
+    },
     "format": {
       "description": {
         "line1": "The format that Tasks uses to read and write tasks.",
