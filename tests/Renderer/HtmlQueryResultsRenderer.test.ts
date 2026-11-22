@@ -498,9 +498,26 @@ describe('HtmlQueryResultsRenderer - task buttons', () => {
             labelMatchesTitle: button.getAttribute('aria-label') === button.title,
         }));
         expect(attributes).toEqual([
-            { className: 'tasks-edit', href: '#', role: 'button', labelMatchesTitle: true },
             { className: 'tasks-postpone', href: '#', role: 'button', labelMatchesTitle: true },
+            { className: 'tasks-edit', href: '#', role: 'button', labelMatchesTitle: true },
         ]);
+    });
+});
+
+describe('HtmlQueryResultsRenderer - postpone button', () => {
+    const tasksFile = createTestTasksFile('query.md');
+
+    async function elementBeforePostponeButton(dateField: 'due' | 'scheduled') {
+        updateSettings({ postpone: { dateField } });
+        const allTasks = [new TaskBuilder().dueDate('2023-07-04').scheduledDate('2023-07-03').build()];
+        const { renderer, query } = makeHtmlRenderer('', tasksFile, allTasks);
+        const container = await renderTasks(State.Warm, renderer, allTasks, query);
+        return container.querySelector('.tasks-postpone')?.previousElementSibling?.className;
+    }
+
+    it('should be next to the date it postpones', async () => {
+        expect(await elementBeforePostponeButton('due')).toEqual('task-due');
+        expect(await elementBeforePostponeButton('scheduled')).toEqual('task-scheduled');
     });
 });
 

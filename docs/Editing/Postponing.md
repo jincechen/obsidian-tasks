@@ -17,11 +17,13 @@ publish: true
 > Then the ⏩ Postpone button is for you!
 
 The ⏩ button in Tasks Search results allows you to quickly postpone (or "snooze") a task until tomorrow or later.
+It is shown right after the date that it postpones: see [[#Which date field is edited?]].
 
 > [!released]
 >
 > - Postpone was introduced in Tasks 5.3.0.
 > - The ability to remove the existing date was introduced in Tasks 7.3.0.
+> - Showing the button after the date it postpones was introduced in Tasks X.Y.Z.
 
 ### Click and Context Menu
 
