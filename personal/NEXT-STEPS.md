@@ -16,9 +16,9 @@ node personal/deploy.mjs "path/to/vault"
 
 The parts below have unit tests, but they have not been tried in Obsidian. Check them by hand:
 
-- [ ] **Status settings page:** compare with your old screenshot. Check the filter, the "+" button, ×, dragging rows, the Tools list, and Reset (which now asks for confirmation).
-- [ ] **Icons** (Settings → Display → Property style): results, Reading mode, the edit dialog, auto-suggest, Quick Search, menus.
-- [ ] **Live Preview** compact properties, and clicking a date to pick one (native date picker).
+- [x] **Status settings page:** compare with your old screenshot. Check the filter, the "+" button, ×, dragging rows, the Tools list, and Reset (which now asks for confirmation).
+- [x] **Icons** (Settings → Display → Property style): results, Reading mode, the edit dialog, auto-suggest, Quick Search, menus.
+- [x] **Live Preview** compact properties, and clicking a date to pick one (native date picker).
 - [ ] **Edit dialog:**
   - "Blocked by" and "Blocks" labels;
   - the options button beside the close button;
@@ -42,6 +42,7 @@ The drafts are in [upstream/](upstream/). Before posting anything, check every s
    - [fr-subtask-progress.md](upstream/fr-subtask-progress.md) first;
    - then [fr-sort-by-readiness.md](upstream/fr-sort-by-readiness.md);
    - then [fr-property-icons.md](upstream/fr-property-icons.md);
+   - the two small ones, [fr-red-reset-custom-statuses.md](upstream/fr-red-reset-custom-statuses.md) and [fr-field-order-drag-style.md](upstream/fr-field-order-drag-style.md), whenever there is a quiet moment;
    - the two accessibility bugs, [bug-edit-dialog-labels.md](upstream/bug-edit-dialog-labels.md) and [bug-result-buttons-keyboard.md](upstream/bug-result-buttons-keyboard.md), whenever there is a quiet moment.
 
    Open a PR only after a maintainer agrees.
@@ -77,6 +78,8 @@ Each branch is one change, with commits small enough to review one at a time (pr
 | `fix/edit-dialog-labels`                | 2       | bug report, later                      |
 | `fix/result-buttons-keyboard`           | 2       | bug report, later                      |
 | `feat/tree-matching-subtasks`           | 4       | comment on #3449                       |
-| `feat/subtask-progress`                 | 9       | feature request                        |
+| `feat/subtask-progress`                 | 10      | feature request                        |
 | `feat/sort-by-readiness`                | 3       | feature request                        |
-| `feat/property-icons`                   | 12      | feature request (largest; split by area) |
+| `feat/property-icons`                   | 13      | feature request (largest; split by area) |
+| `feat/red-reset-custom-statuses`        | 1       | feature request (small)                  |
+| `feat/field-order-drag-style`           | 1       | feature request (small)                  |

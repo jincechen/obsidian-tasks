@@ -30,4 +30,6 @@ Possible later step, only if wanted: the settings choose which status counts as 
 ## 📝 Additional Context
 
 I have a working implementation with tests and docs, and can split it into small PRs: the count and bar first, then `hide progress`, then the optional layers.
+
+The setting is in a new **Display** group, because it affects Live Preview as well as searches. I'm happy to move it, for example to **Searches** next to **Task count location**.
 <!-- Attach a screenshot of the progress bar from your personal build. -->

@@ -47,7 +47,7 @@ Then run `yarn build`, `yarn lint` and `yarn test`. Use the Node version upstrea
 ## Add a feature
 
 - **For the official plugin too:** branch from `main`, commit, and merge the branch into `personal` (`git merge --no-ff <branch>`) to use it now. Rewrite the branch only before it is merged into `personal` or opened as a PR.
-- **Only for yourself:** commit directly on `personal`.
+- **Only for yourself:** commit directly on `personal`. Since 2026-11-21, new changes go on a branch from `main` by default, so that both versions get them.
 - **After a feature branch changes** (for example during review): `git switch personal && git merge <branch>`.
 
 Never rebase `personal`: it is built from merges, and a rebase would copy the upstream and feature-branch commits it contains. Update it with `git merge` only.
