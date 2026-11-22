@@ -393,11 +393,6 @@ export class SettingsTab extends PluginSettingTab {
                         });
                     },
                 },
-                {
-                    name: i18n.t('settings.searchResults.subtaskProgress.name'),
-                    desc: i18n.t('settings.searchResults.subtaskProgress.description'),
-                    render: (setting) => this.addSubtaskProgressToggle(setting),
-                },
             ],
         };
     }
@@ -1195,6 +1190,11 @@ export class SettingsTab extends PluginSettingTab {
                             });
                         });
                     },
+                },
+                {
+                    name: i18n.t('settings.searchResults.subtaskProgress.name'),
+                    desc: i18n.t('settings.searchResults.subtaskProgress.description'),
+                    render: (setting) => this.addSubtaskProgressToggle(setting),
                 },
             ],
         };

@@ -27,7 +27,6 @@ For convenience, here is a list of all those documentation pages (in the order t
 - [[Auto-Suggest#Settings|Auto-Suggest]]
 - [[Create or edit Task#Turning off keyboard shortcuts|Create or edit Task modal]]
 - [[Layout#Task count location|Search results]]
-- [[Layout#Subtask progress|Subtask progress]]
 - [[#Display settings|Display]]
 
 ## Display settings
@@ -39,6 +38,7 @@ For convenience, here is a list of all those documentation pages (in the order t
 - Menus, such as the status and date menus, show icons next to their items whichever style is chosen.
 - **Render properties in Live Preview**: show task properties compactly in Live Preview, in the chosen property style, including [[Dataview Format]] fields such as `[priority:: highest]`. Put the cursor on a property to edit its text.
   - This is shown when **Icons** are chosen, or with the [[Dataview Format]].
+- **Subtask progress**: show a progress bar after tasks that have subtasks, in search results and Live Preview. See [[Layout#Subtask progress|Subtask progress]].
 
 ## Support
 

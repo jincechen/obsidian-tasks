@@ -211,11 +211,6 @@
         "name": "Task count location",
         "desc": "Choose whether the task count is shown at the top or bottom of query results.",
         "render": "[Function]"
-      },
-      {
-        "name": "Subtask progress",
-        "desc": "Show a progress bar after tasks with subtasks.",
-        "render": "[Function]"
       }
     ],
     "type": "group"
@@ -350,6 +345,11 @@
         "desc": "Show task properties compactly in Live Preview, in the chosen property style. Put the cursor on a property to see and edit its text.",
         "render": "[Function]",
         "visible": "[Function]"
+      },
+      {
+        "name": "Subtask progress",
+        "desc": "Show a progress bar after tasks with subtasks.",
+        "render": "[Function]"
       }
     ],
     "type": "group"
