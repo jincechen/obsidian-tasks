@@ -208,7 +208,6 @@ class EditPresetModal extends Modal {
 
         const queryFieldEl = this.contentEl.createEl('p', { cls: 'form-field' });
         queryFieldEl.createEl('label', { text: i18n.t('modals.editPresetModal.query.name') });
-        queryFieldEl.createDiv({ cls: 'form-field-help', text: i18n.t('modals.editPresetModal.query.description') });
         this.valueInput = new TextAreaComponent(queryFieldEl)
             .setPlaceholder(i18n.t('modals.editPresetModal.query.placeholder'))
             .setValue(initial.value);
@@ -246,6 +245,12 @@ class EditPresetModal extends Modal {
             name !== this.editingKey && Object.prototype.hasOwnProperty.call(this.existing, name);
         if (isRenamingToExisting) {
             displayTooltip(this.nameInput.inputEl, i18n.t('modals.editPresetModal.name.duplicate'), {
+                classes: ['mod-error'],
+            });
+            return;
+        }
+        if (this.valueInput.getValue().trim() === '') {
+            displayTooltip(this.valueInput.inputEl, i18n.t('modals.editPresetModal.query.required'), {
                 classes: ['mod-error'],
             });
             return;

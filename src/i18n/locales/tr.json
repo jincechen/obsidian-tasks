@@ -47,7 +47,6 @@
         "required": "Gerekli"
       },
       "query": {
-        "description": "İsteğe bağlı. Bunu daha sonra doldurabilirsiniz.",
         "name": "Sorgu",
         "placeholder": "not done\npath includes Work"
       },

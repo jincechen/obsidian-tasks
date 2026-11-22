@@ -47,7 +47,6 @@
         "required": "Obligatoire"
       },
       "query": {
-        "description": "Facultatif. Vous pouvez le renseigner plus tard.",
         "name": "Requête",
         "placeholder": "not done\npath includes Work"
       },

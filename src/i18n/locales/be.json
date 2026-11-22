@@ -47,7 +47,6 @@
         "required": "Абавязкова"
       },
       "query": {
-        "description": "Неабавязкова. Вы можаце запоўніць гэта пазней.",
         "name": "Запыт",
         "placeholder": "not done\npath includes Work"
       },

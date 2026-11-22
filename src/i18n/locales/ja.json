@@ -47,7 +47,6 @@
         "required": "必須"
       },
       "query": {
-        "description": "省略できます。あとから入力してもかまいません。",
         "name": "クエリ",
         "placeholder": "not done\npath includes Work"
       },

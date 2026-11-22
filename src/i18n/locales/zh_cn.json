@@ -47,7 +47,6 @@
         "required": "必填"
       },
       "query": {
-        "description": "可选。您可以稍后填写。",
         "name": "查询",
         "placeholder": "not done\npath includes Work"
       },

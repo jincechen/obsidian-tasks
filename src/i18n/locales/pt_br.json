@@ -47,7 +47,6 @@
         "required": "Obrigatório"
       },
       "query": {
-        "description": "Opcional. Você pode preencher isso depois.",
         "name": "Consulta",
         "placeholder": "not done\npath includes Work"
       },

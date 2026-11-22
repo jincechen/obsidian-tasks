@@ -47,7 +47,6 @@
         "required": "Обов’язково"
       },
       "query": {
-        "description": "Необов’язково. Ви можете заповнити це пізніше.",
         "name": "Запит",
         "placeholder": "not done\npath includes Work"
       },

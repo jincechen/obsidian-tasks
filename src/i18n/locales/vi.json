@@ -47,7 +47,6 @@
         "required": "Bắt buộc"
       },
       "query": {
-        "description": "Tùy chọn. Bạn có thể điền sau.",
         "name": "Truy vấn",
         "placeholder": "not done\npath includes Work"
       },

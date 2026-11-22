@@ -47,7 +47,6 @@
         "required": "필수"
       },
       "query": {
-        "description": "선택 사항입니다. 나중에 입력할 수 있습니다.",
         "name": "쿼리",
         "placeholder": "not done\npath includes Work"
       },

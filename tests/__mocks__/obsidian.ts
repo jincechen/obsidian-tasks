@@ -327,6 +327,10 @@ export function setTooltip(element: HTMLElement, text: string): void {
     element.setAttribute('test-tooltip', text);
 }
 
+export function displayTooltip(element: HTMLElement, text: string): void {
+    element.setAttribute('test-displayed-tooltip', text);
+}
+
 export function debounce<T extends unknown[], V>(
     cb: (...args: [...T]) => V,
     _timeout?: number,
@@ -491,5 +495,36 @@ export class ConfirmationModal extends Modal {
 
     public override close(): void {
         this.onClose();
+    }
+}
+
+// Minimal TextComponent and TextAreaComponent mocks, backed by real DOM elements.
+abstract class AbstractTextComponentMock<T extends HTMLInputElement | HTMLTextAreaElement> {
+    protected constructor(public inputEl: T) {}
+
+    public setPlaceholder(placeholder: string): this {
+        this.inputEl.placeholder = placeholder;
+        return this;
+    }
+
+    public getValue(): string {
+        return this.inputEl.value;
+    }
+
+    public setValue(value: string): this {
+        this.inputEl.value = value;
+        return this;
+    }
+}
+
+export class TextComponent extends AbstractTextComponentMock<HTMLInputElement> {
+    constructor(containerEl: HTMLElement) {
+        super(containerEl.createEl('input'));
+    }
+}
+
+export class TextAreaComponent extends AbstractTextComponentMock<HTMLTextAreaElement> {
+    constructor(containerEl: HTMLElement) {
+        super(containerEl.createEl('textarea'));
     }
 }

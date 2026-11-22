@@ -13,7 +13,10 @@ const events = {
 
 function getPresetsList() {
     const ui = new PresetsSettingsUI(plugin, events);
-    const [list] = ui.getPresetsDefinitions(() => {}) as unknown as Array<{ onDelete: (index: number) => unknown }>;
+    const [list] = ui.getPresetsDefinitions(() => {}) as unknown as Array<{
+        addItem: { action: () => void };
+        onDelete: (index: number) => unknown;
+    }>;
     return list;
 }
 
@@ -50,5 +53,18 @@ describe('PresetsSettingsUI', () => {
         clickModalButton('Cancel');
         await deleted;
         expect(getSettings().presets).toEqual({ existing: 'not done' });
+    });
+
+    it('should not save a preset with an empty query', () => {
+        getPresetsList().addItem.action();
+        const contentEl = lastModalState.modal!.contentEl;
+        contentEl.querySelector('input')!.value = 'new_preset';
+        const queryEl = contentEl.querySelector('textarea')!;
+        queryEl.value = '   ';
+
+        clickModalButton('Save');
+
+        expect(getSettings().presets).toEqual({ existing: 'not done' });
+        expect(queryEl.getAttribute('test-displayed-tooltip')).toEqual('Required');
     });
 });

@@ -50,9 +50,9 @@
         "required": "Required"
       },
       "query": {
-        "description": "Optional. You can fill this in later.",
         "name": "Query",
-        "placeholder": "not done\npath includes Work"
+        "placeholder": "not done\npath includes Work",
+        "required": "Required"
       },
       "title": "Edit preset"
     },
