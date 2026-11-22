@@ -47,7 +47,7 @@ Here is a more detailed walk through of the creation of a new task, which can be
      - and the status symbol (the character between `[` and `]`) does not have [[Status Types|status type]] `NON_TASK`.
 
      Tasks also tries to display the auto-suggest menu based on context. For example, suggestions will only appear
-      within square brackets `[]` or parentheses `()` when using the [[Dataview Format#Bracketed inline fields|Dataview Task Format]].
+      within square brackets `[]` when using the [[Dataview Format#Bracketed inline fields|Dataview Task Format]].
 
 2. You can keep typing (to ignore the suggestions), or select one of the menu items in a variety of ways:
 
@@ -86,7 +86,7 @@ It triggers only on lines that will be recognised as tasks by the Tasks plugin:
 - If you use a [[Global Filter|global task filter]], for example `#task`, you will need to provide `- [ ] #task` before the menu pops up.
 - If you don't use a global task filter, you will only need to provide `- [ ]` before the menu pops up.
 - It also recognises lists starting with asterisk (`*`) and plus (`+`) characters.
-- When using the [[Dataview Format#Bracketed inline fields|Dataview Task Format]], suggestions will only appear when the cursor is within square brackets `[]` or parentheses `()`.
+- When using the [[Dataview Format#Bracketed inline fields|Dataview Task Format]], suggestions will only appear when the cursor is within square brackets `[]`, not parentheses `()`.
 
 The menu is smart: it will only offer valid options:
 

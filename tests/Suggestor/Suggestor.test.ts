@@ -2,7 +2,7 @@ import moment from 'moment';
 import * as chrono from 'chrono-node';
 import type { Task } from 'Task/Task';
 import { verifyAll, verifyAsJson } from '@approval-tests/approvals/lib/Providers/Vitest/VitestApprovals';
-import { getSettings, resetSettings } from 'Config/Settings';
+import { TASK_FORMATS, getSettings, resetSettings } from 'Config/Settings';
 import type { SuggestInfo, SuggestionBuilder } from 'Suggestor';
 import {
     canSuggestForLine,
@@ -564,6 +564,24 @@ describe('onlySuggestIfBracketOpen', () => {
     it("should not suggest if there's no open bracket at cursor position", () => {
         const suggestions = buildSuggestions(...cursorPosition('(hello world)|'), getSettings(), [], CAN_SAVE_EDITS);
         expect(suggestions).toEqual(emptySuggestion);
+    });
+});
+
+describe('dataview format suggestions', () => {
+    const buildSuggestions = TASK_FORMATS.dataview.buildSuggestions;
+
+    function suggestionsFor(lineWithCursor: string) {
+        return buildSuggestions(...cursorPosition(lineWithCursor), getSettings(), [], CAN_SAVE_EDITS);
+    }
+
+    it('should suggest inside square brackets', () => {
+        expect(suggestionsFor('- [ ] task [|').length).toBeGreaterThan(0);
+        expect(suggestionsFor('- [ ] task ([|').length).toBeGreaterThan(0);
+    });
+
+    it('should not suggest inside parentheses', () => {
+        expect(suggestionsFor('- [ ] task (|')).toEqual([]);
+        expect(suggestionsFor('- [ ] task [due:: 2022-07-11] (|')).toEqual([]);
     });
 });
 
