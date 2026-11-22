@@ -235,11 +235,16 @@ export const createApplyInstructionEditorCallback = (instruction: TaskEditingIns
  *
  * @param lineTransformer - A function that takes a line and file path, and returns the transformed text
  * @param noChangeMessage - Shown to the user, once, if the transformer changed no lines
+ * @param singleLineTransformer - Used instead of {@link lineTransformer} when the selections cover a single line
  * @returns An editor callback suitable for use with Obsidian's `editorCheckCallback`
  */
-export function createMultiLineEditorCallback(lineTransformer: LineTransformer, noChangeMessage: string) {
+export function createMultiLineEditorCallback(
+    lineTransformer: LineTransformer,
+    noChangeMessage: string,
+    singleLineTransformer: LineTransformer = lineTransformer,
+) {
     const lineTransformerWithNotice = (line: string, path: string) => {
-        const insertion = lineTransformer(line, path);
+        const insertion = singleLineTransformer(line, path);
         if (insertion === undefined) {
             new Notice(noChangeMessage);
         }

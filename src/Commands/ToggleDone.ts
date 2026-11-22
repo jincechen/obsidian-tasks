@@ -3,7 +3,7 @@ import { TasksFile } from 'Scripting/TasksFile';
 import { Task } from 'Task/Task';
 import { TaskLocation } from 'Task/TaskLocation';
 import { TaskRegularExpressions } from 'Task/TaskRegularExpressions';
-import { type EditorInsertion, createEditorCallback } from 'Commands/CreateEditorCallback';
+import { type EditorInsertion, createMultiLineEditorCallback } from 'Commands/CreateEditorCallback';
 
 // Re-export for backwards compatibility with existing test imports
 export { getNewCursorPosition } from './CreateEditorCallback';
@@ -46,4 +46,15 @@ export const toggleLine = (line: string, path: string): EditorInsertion => {
     }
 };
 
-export const toggleDone = createEditorCallback(toggleLine);
+/**
+ * Toggles a task or checklist item, leaving any other line unchanged.
+ * Used for multi-line selections, so that selected non-task lines are not converted to tasks.
+ */
+const toggleTaskLine = (line: string, path: string): EditorInsertion | undefined =>
+    TaskRegularExpressions.taskRegex.test(line) ? toggleLine(line, path) : undefined;
+
+export const toggleDone = createMultiLineEditorCallback(
+    toggleTaskLine,
+    'Cannot toggle: none of the selected lines is a task',
+    toggleLine,
+);

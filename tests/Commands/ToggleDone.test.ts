@@ -1,10 +1,12 @@
 import moment from 'moment';
-import type { EditorPosition } from 'obsidian';
-import { getNewCursorPosition, toggleLine } from 'Commands/ToggleDone';
+import type { Editor, EditorPosition } from 'obsidian';
+import { getNewCursorPosition, toggleDone, toggleLine } from 'Commands/ToggleDone';
 import { GlobalFilter } from 'Config/GlobalFilter';
 import { StatusRegistry } from 'Statuses/StatusRegistry';
 import { Status } from 'Statuses/Status';
 import { StatusConfiguration, StatusType } from 'Statuses/StatusConfiguration';
+import { noticeMessages } from '../__mocks__/obsidian';
+import { makeFakeEditor, makeFakeMarkdownView } from './CreateEditorCallbackHelpers';
 
 window.moment = moment;
 
@@ -357,5 +359,58 @@ describe('ToggleDone', () => {
 - [2] Recurring task should start with TODO| 🔁 every day 📅 2022-09-04 ✅ 2022-09-04`,
             );
         });
+    });
+});
+
+describe('toggleDone command', () => {
+    beforeEach(() => {
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date('2022-09-04'));
+        StatusRegistry.getInstance().resetToDefaultStatuses();
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
+    });
+
+    function runCommand(lines: string[], fromLine: number, toLine: number) {
+        const { editor, getText } = makeFakeEditor(lines, fromLine, toLine);
+        toggleDone(false, editor as unknown as Editor, makeFakeMarkdownView());
+        return { text: getText(), transaction: editor.transaction };
+    }
+
+    it('should toggle every task in a multi-line selection, in one transaction, skipping other lines', () => {
+        const { text, transaction } = runCommand(
+            ['- [ ] task 1', 'Not a task', '- list item', '- [x] task 2', '- [ ] task 3 outside selection'],
+            0,
+            3,
+        );
+
+        expect(text).toEqual(
+            [
+                '- [x] task 1 ✅ 2022-09-04',
+                'Not a task',
+                '- list item',
+                '- [ ] task 2',
+                '- [ ] task 3 outside selection',
+            ].join('\n'),
+        );
+        expect(transaction).toHaveBeenCalledTimes(1);
+        expect(noticeMessages).toEqual([]);
+    });
+
+    it('should notify the user when no selected line is a task', () => {
+        const { text, transaction } = runCommand(['Not a task', '- list item'], 0, 1);
+
+        expect(text).toEqual(['Not a task', '- list item'].join('\n'));
+        expect(transaction).not.toHaveBeenCalled();
+        expect(noticeMessages).toEqual(['Cannot toggle: none of the selected lines is a task']);
+    });
+
+    it('should still convert a single non-task line to a task', () => {
+        const { text } = runCommand(['Not a task'], 0, 0);
+
+        expect(text).toEqual('- [ ] Not a task');
+        expect(noticeMessages).toEqual([]);
     });
 });

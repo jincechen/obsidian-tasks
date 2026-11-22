@@ -71,15 +71,20 @@ There is also a command 'Tasks: Toggle task done'.
 
 Obsidian allows you to assign a [hotkey](https://help.obsidian.md/Customization/Custom+hotkeys) to commands, for ease of use.
 
+To toggle several tasks at once, select the lines containing them and then run the command. Each task in the selection is toggled to its own next status, and any other selected lines are left unchanged.
+
 | Where                         | Viewing Mode | Works? | Works on<br>multiple tasks? |
 | ----------------------------- | ------------ | ------ | --------------------------- |
-| Task lines in markdown files  | Source mode  | ✅     | ❌                          |
-| Task lines in markdown files  | Live Preview | ✅     | ❌                          |
+| Task lines in markdown files  | Source mode  | ✅     | ✅                          |
+| Task lines in markdown files  | Live Preview | ✅     | ✅                          |
 | Task lines in markdown files  | Reading mode | ❌     | ❌                          |
 | In Tasks query search results | Live Preview | ❌     | ❌                          |
 | In Tasks query search results | Reading mode | ❌     | ❌                          |
 
 Since Tasks 7.2.0, this command can also be triggered programmatically via the [[Tasks Api#`executeToggleTaskDoneCommand (line string, path string) => string;`|Tasks API]].
+
+> [!released]
+> Toggling all the tasks in a multi-line selection was introduced in Tasks X.Y.Z.
 
 ## 'Tasks: Change status to...' commands
 
