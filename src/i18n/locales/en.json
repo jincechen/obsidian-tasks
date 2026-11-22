@@ -379,6 +379,7 @@
         "placeholder": "Filter statuses…"
       },
       "heading": "Task statuses",
+      "next": "Next",
       "reloadRequired": "Changes take effect after reload.",
       "types": {
         "cancelled": "Cancelled",

@@ -800,27 +800,27 @@ export class SettingsTab extends PluginSettingTab {
     }
 
     /**
-     * Builds one list row for a single status. The row's `name` is the
-     * status's friendly name, with the symbol and its toggle transition
-     * prepended as a `<code>` chip, and the status type shown as a flair; a
-     * pencil extraButton opens the existing edit modal. Deletion is wired by
-     * the list's `onDelete`, so no per-row delete button is needed.
+     * Builds one list row for a single status, laid out as
+     * "[/] In progress IN PROGRESS ... Next → [x]", with a pencil extraButton
+     * that opens the edit modal. Deletion is wired by the list's `onDelete`,
+     * so no per-row delete button is needed.
      */
     private statusRow(status: StatusConfiguration, isCoreStatus: boolean): SettingDefinition {
-        const symbol = status.symbol || ' ';
-        const nextSymbol = status.nextStatusSymbol || ' ';
         return {
             name: status.name || i18n.t('settings.statuses.unnamed'),
             render: (setting) => {
-                // Prepend the symbol and transition to the left of the row's
-                // name — reads as the list marker for the friendly name beside
-                // it (`- [/] → [x] In progress`).
+                setting.settingEl.addClass('tasks-status-row');
                 setting.nameEl.createEl('code', {
                     cls: 'tasks-status-symbol',
-                    text: `- [${symbol}] → [${nextSymbol}]`,
+                    text: `[${status.symbol || ' '}]`,
                     prepend: true,
                 });
-                setting.controlEl.createSpan({ cls: 'flair', text: humanizeStatusType(status.type) });
+                setting.nameEl.createSpan({ cls: 'flair', text: humanizeStatusType(status.type) });
+
+                const nextEl = setting.controlEl.createSpan({ cls: 'tasks-status-next' });
+                nextEl.createSpan({ cls: 'tasks-status-next-label', text: i18n.t('settings.statuses.next') + ' →' });
+                nextEl.createEl('code', { cls: 'tasks-status-symbol', text: `[${status.nextStatusSymbol || ' '}]` });
+
                 setting.addExtraButton((btn) => {
                     btn.setIcon('pencil')
                         .setTooltip(i18n.t('common.edit'))

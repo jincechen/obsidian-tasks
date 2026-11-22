@@ -35,8 +35,8 @@ We also see that each status consists of:
 
 - **Status Symbol** (for example, `x` and  `-`)
 - **Status Name** (for example, 'In Progress')
-- **Next Status Symbol** (for example, `x` and `space`)
-- **Status Type** (one of `TODO`, `DONE`, `IN_PROGRESS` or `CANCELLED`)
+- **Status Type** (for example, 'To do', 'Done', 'In progress' or 'Cancelled')
+- **Next Status Symbol** (for example, `x` and `space`), shown after **Next →**
 
 ## Add New Task Status
 
