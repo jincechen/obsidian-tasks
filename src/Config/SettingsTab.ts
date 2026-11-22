@@ -656,6 +656,12 @@ export class SettingsTab extends PluginSettingTab {
                         current.customStatuses.splice(index, 1);
                         updateAndSaveStatusSettings(current, this);
                     },
+                    onReorder: (oldIndex, newIndex) => {
+                        const { statusSettings: current } = getSettings();
+                        if (StatusSettings.moveStatus(current.customStatuses, oldIndex, newIndex)) {
+                            updateAndSaveStatusSettings(current, this);
+                        }
+                    },
                     addItem: {
                         name: i18n.t('settings.statuses.buttons.addStatus'),
                         action: () => {
