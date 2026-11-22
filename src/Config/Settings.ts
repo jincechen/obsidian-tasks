@@ -99,6 +99,14 @@ export interface Settings {
     autoSuggestMinMatch: number;
     autoSuggestMaxItems: number;
     provideAccessKeys: boolean;
+    showSubtaskProgress: boolean;
+    // The steps of the subtask progress bar, as status symbols. See SubtaskProgressConfig.
+    subtaskProgress: {
+        totalFrom: string;
+        middleFrom: string; // Empty for no middle layer.
+        middle2From: string; // Empty for no second middle layer.
+        completedFrom: string;
+    };
     useFilenameAsScheduledDate: boolean;
     filenameAsScheduledDateFormat: string;
     filenameAsDateFolders: string[];
@@ -141,6 +149,13 @@ const defaultSettings: Readonly<Settings> = {
     autoSuggestMinMatch: 0,
     autoSuggestMaxItems: 20,
     provideAccessKeys: true,
+    showSubtaskProgress: false,
+    subtaskProgress: {
+        totalFrom: ' ',
+        middleFrom: '',
+        middle2From: '',
+        completedFrom: 'x',
+    },
     useFilenameAsScheduledDate: false,
     filenameAsScheduledDateFormat: '',
     filenameAsDateFolders: [],

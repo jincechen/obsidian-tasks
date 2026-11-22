@@ -52,6 +52,15 @@
         "placeholder": "not done\npath includes Work"
       },
       "title": "Edit preset"
+    },
+    "subtaskProgress": {
+      "completed": "Completed",
+      "middle": "Middle layer 1",
+      "middle2": "Middle layer 2",
+      "noSequence": "Set a status cycle from Todo to Done.",
+      "none": "None",
+      "title": "Subtask progress",
+      "total": "Total"
     }
   },
   "notices": {
@@ -264,6 +273,11 @@
       }
     },
     "searchResults": {
+      "subtaskProgress": {
+        "configure": "Configure",
+        "description": "Show a progress bar after tasks with subtasks.",
+        "name": "Subtask progress"
+      },
       "taskCountLocation": {
         "description": "Choose whether the task count is shown at the top or bottom of query results.",
         "name": "Task count location",

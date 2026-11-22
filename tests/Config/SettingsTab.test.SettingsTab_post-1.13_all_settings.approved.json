@@ -209,6 +209,11 @@
         "name": "Task count location",
         "desc": "Choose whether the task count is shown at the top or bottom of query results.",
         "render": "[Function]"
+      },
+      {
+        "name": "Subtask progress",
+        "desc": "Show a progress bar after tasks with subtasks.",
+        "render": "[Function]"
       }
     ],
     "type": "group"

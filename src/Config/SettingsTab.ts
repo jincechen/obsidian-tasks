@@ -22,6 +22,7 @@ import type { StatusCollection } from 'Statuses/StatusCollection';
 import { createStatusRegistryReport } from 'Statuses/StatusRegistryReport';
 import { i18n } from 'i18n/i18n';
 import type { TasksEvents } from 'Obsidian/TasksEvents';
+import { refreshEditorDecorations } from 'Obsidian/EditorDecorations';
 import * as Themes from 'Config/Themes';
 import {
     POSTPONE_DATE_FIELD_VALUES,
@@ -33,6 +34,7 @@ import {
 } from 'Config/Settings';
 import { GlobalFilter } from 'Config/GlobalFilter';
 import { StatusSettings } from 'Config/StatusSettings';
+import { SubtaskProgressModal } from 'Config/SubtaskProgressModal';
 
 import { CustomStatusModal } from 'Config/CustomStatusModal';
 import { GlobalQuery } from 'Config/GlobalQuery';
@@ -386,8 +388,48 @@ export class SettingsTab extends PluginSettingTab {
                         });
                     },
                 },
+                {
+                    name: i18n.t('settings.searchResults.subtaskProgress.name'),
+                    desc: i18n.t('settings.searchResults.subtaskProgress.description'),
+                    render: (setting) => this.addSubtaskProgressToggle(setting),
+                },
             ],
         };
+    }
+
+    /**
+     * Turn the subtask progress bar on or off. While it is on, a gear button opens its configuration.
+     */
+    private addSubtaskProgressToggle(setting: Setting) {
+        const save = async () => {
+            await this.plugin.saveSettings();
+            this.events.triggerReloadOpenSearchResults();
+            refreshEditorDecorations(this.app);
+        };
+
+        let configureButtonEl: HTMLElement | null = null;
+        const showConfigureButton = (show: boolean) => {
+            if (configureButtonEl) {
+                configureButtonEl.style.display = show ? '' : 'none';
+            }
+        };
+
+        setting.addExtraButton((button) => {
+            configureButtonEl = button.extraSettingsEl;
+            button
+                .setIcon('settings')
+                .setTooltip(i18n.t('settings.searchResults.subtaskProgress.configure'))
+                .onClick(() => new SubtaskProgressModal(this.app, save).open());
+        });
+        showConfigureButton(getSettings().showSubtaskProgress);
+
+        setting.addToggle((toggle) => {
+            toggle.setValue(getSettings().showSubtaskProgress).onChange(async (value) => {
+                showConfigureButton(value);
+                updateSettings({ showSubtaskProgress: value });
+                await save();
+            });
+        });
     }
 
     private renderEnableCustomSearchesToggle(setting: Setting): void {
