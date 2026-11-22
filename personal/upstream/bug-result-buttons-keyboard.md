@@ -1,6 +1,6 @@
 # Bug report: Result buttons cannot be used from the keyboard
 
-Template: **Bug Report**. Branch: `fix/result-buttons-keyboard`. Post this later, after PR 2 and PR 3.
+Template: **Bug Report**. Branch: `fix/result-buttons-keyboard`. Post this later, after PR 2 and PR 3. Related: #1478 (keyboard access to the edit button; closed with no answer) and discussion #3620 (navigating search results with the keyboard).
 
 **Title:** Edit and postpone buttons in query results can't be used from the keyboard
 

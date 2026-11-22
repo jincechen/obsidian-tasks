@@ -1,6 +1,6 @@
 # Bug report: Edit dialog labels point to the wrong fields
 
-Template: **Bug Report**. Branch: `fix/edit-dialog-labels`. Post this later, after PR 2 and PR 3.
+Template: **Bug Report**. Branch: `fix/edit-dialog-labels`. Post this only after PR #4135 (native date pickers) merges: its tests use the id `date-editor-picker`, which this fix changes. PR #4145 also edits this dialog. No existing issue covers it.
 
 **Title:** Labels in the 'Create or edit Task' dialog point to the wrong fields
 

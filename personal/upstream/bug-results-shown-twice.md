@@ -1,6 +1,6 @@
 # Bug report: Query results briefly shown twice
 
-Template: **Bug Report**. The maintainer asked for **a reproduction and, preferably, a video**. Record one with the official plugin before posting.
+Template: **Bug Report**. The maintainer asked for **a reproduction and, preferably, a video**. Record one with the official plugin before posting. Related: #3893 (a flicker report, closed because it couldn't be reproduced in a clean vault; these steps use the search box, which a test reproduces on current `main`), and #4105 / #4106 (the stale-results half, already fixed).
 
 **Title:** Query results are briefly shown twice when the search box filter is typed quickly
 

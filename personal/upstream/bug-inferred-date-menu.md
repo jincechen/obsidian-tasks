@@ -1,8 +1,8 @@
 # Bug report: "Cannot remove inferred scheduled date" menu item can be clicked
 
-Template: **Bug Report**.
+Template: **Bug Report**. The item itself is intentional: Clare added it in #2844 (for #2650), with a test, to explain why the date can't be removed. So don't call the item a mistake. Ask for it to be shown **disabled**, and report the postpone menu's misleading "removed" notice as the bug. Related: #1947.
 
-**Title:** "Cannot remove inferred scheduled date" menu item is clickable but does nothing
+**Title:** "Cannot remove inferred scheduled date" looks clickable, and in the postpone menu claims to remove the date
 
 ## Steps to reproduce
 
@@ -36,5 +36,7 @@ In both menus the item looks clickable.
 - **Postpone menu:** clicking it shows a "removed" success notice. Nothing changes in the file, and the date is inferred again from the file name.
 
 ## Possible solution
+
+Keep the explanatory item added in #2844, but show it disabled.
 
 Add `isEnabledForTask(task)` to the editing instructions (default `true`; `RemoveTaskDate` returns `false` for an inferred scheduled date), and disable the item in `TaskEditingMenu` and `PostponeMenu`. I have a fix with tests ready.

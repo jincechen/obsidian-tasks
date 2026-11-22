@@ -1,6 +1,6 @@
 # Bug report: A notice pops up on every retry when editing a task
 
-Template: **Bug Report**. Tick the checkboxes after you check them yourself.
+Template: **Bug Report**. Tick the checkboxes after you check them yourself. Related: #3267 (the underlying cause, still open) and #2130 (the same notices piling up on Canvas cards).
 
 **Title:** A "Retrying ..." notice pops up on every retry while a task edit is waiting for Obsidian's cache
 

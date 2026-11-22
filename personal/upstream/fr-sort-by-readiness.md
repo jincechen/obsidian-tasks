@@ -1,6 +1,6 @@
 # Feature request: `sort by readiness`
 
-Template: **Feature Request**. Related: #2655 (urgency and dependencies) and discussion #1257.
+Template: **Feature Request**. Related: #2655 (urgency and dependencies, 15 👍), discussions #1257, #698 and #1162, and #2344 (urgency by a given date; wontfix). Explain why `sort by happens` and urgency don't cover this.
 
 **Title:** Add `sort by readiness`: sort by what each date means, instead of a blended score
 

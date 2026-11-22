@@ -35,8 +35,8 @@ Open each PR from your fork's branch into `obsidian-tasks-group/obsidian-tasks:m
 **Title:** `fix: Disable the menu item for removing an inferred scheduled date`
 **Type:** Bug fix. Issue: #<bug report number>
 
-**Description:** In the scheduled date's right-click menu, "Cannot remove inferred scheduled date" is now shown disabled, instead of looking clickable and doing nothing.
+**Description:** In the scheduled date's menu and the postpone button's menu, the "Cannot remove inferred scheduled date" item added in #2844 is now shown disabled. It still explains why the date can't be removed, but no longer looks clickable. In the postpone menu, clicking it also no longer shows a "removed" notice.
 
-**Motivation and Context:** Fixes #<number>.
+**Motivation and Context:** Fixes #<number>. Keeps the intent of #2844.
 
 **How has this been tested?** The first commit adds a test marked `it.fails`, and the fix commit makes it pass. I also checked by hand, with a task in a daily note and **Use filename as Scheduled date** turned on.

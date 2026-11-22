@@ -1,6 +1,6 @@
 # Feature request: Show "Reset custom status types to defaults" in red
 
-Template: **Feature Request**. Branch: `feat/red-reset-custom-statuses` (1 commit).
+Template: **Feature Request**. Branch: `feat/red-reset-custom-statuses` (1 commit). Related: #2353 (Clare's own idea of a reset button for core statuses) and #2358 (reset sometimes doesn't restore the defaults). No issue asks for the colour or a confirmation yet.
 
 **Title:** Show the "Reset custom status types to defaults" setting in red, as a destructive action
 

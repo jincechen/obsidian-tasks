@@ -1,6 +1,6 @@
 # Feature request: Optional icon style for task properties
 
-Template: **Feature Request**. Post this one later, as the largest of the three. Link #1737 (closed as not planned), and quote the maintainer's invitation from #4048.
+Template: **Feature Request**. Post this one later, as the largest of the three. Link #1737 (closed as not planned), and quote the maintainer's invitation from #4048. Also link discussion #1965 (CSS for monochrome icons, 17 upvotes), which shows there is demand.
 
 **Title:** Optional icon style for displaying task properties (display only, files unchanged)
 
