@@ -27,6 +27,15 @@ For convenience, here is a list of all those documentation pages (in the order t
 - [[Auto-Suggest#Settings|Auto-Suggest]]
 - [[Create or edit Task#Turning off keyboard shortcuts|Create or edit Task modal]]
 - [[Layout#Task count location|Search results]]
+- [[#Display settings|Display]]
+
+## Display settings
+
+> [!released]
+> Introduced in Tasks X.Y.Z.
+
+- **Property style**: show task properties such as dates and priority as **Emoji** (the default) or **Icons**, in search results, Reading mode, the edit dialog, auto-suggest and Quick Search. Your notes are not changed: they still use the task format's emoji or text.
+- Menus, such as the status and date menus, show icons next to their items whichever style is chosen.
 
 ## Support
 
