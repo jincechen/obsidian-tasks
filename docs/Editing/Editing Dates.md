@@ -18,14 +18,14 @@ There is a [[#Date-picker on task dates]] and a [[#Context menu on task dates]],
 
 > [!released]
 > Introduced in Tasks 7.14.0.
+> The native date-picker was introduced in Tasks X.Y.Z.
 
 **Left-click on any task date field** in **Reading mode** and **Tasks query search results** to use a date-picker and calendar to edit or remove a date.
 
 ![Hover over a date in Read mode or Tasks query search results](../images/date-picker-1.png)
 <span class="caption">Hover over a date in Read mode or Tasks query search results</span>
 
-![In the date-picker, you can easily select a new date, or clear the current one](../images/date-picker-2.png)
-<span class="caption">In the date-picker, you can easily select a new date, or clear the current one</span>
+The date-picker is your device's own date input: select a new date, or clear the date to remove it.
 
 | Where                         | Viewing Mode | Works? |
 | ----------------------------- | ------------ | ------ |
@@ -34,8 +34,6 @@ There is a [[#Date-picker on task dates]] and a [[#Context menu on task dates]],
 | Task lines in markdown files  | Reading mode | ✅     |
 | In Tasks query search results | Live Preview | ✅     |
 | In Tasks query search results | Reading mode | ✅     |
-
-On iPhone, and probably iPad too, this date-picker hard-codes the start of the week to Monday, instead of respecting the user's settings. We are tracking this in [issue #3239](https://github.com/obsidian-tasks-group/obsidian-tasks/issues/3239).
 
 ## Context menu on task dates
 
