@@ -1,6 +1,6 @@
 import type { AllTaskDateFields } from 'DateTime/DateFieldTypes';
 import { Task } from 'Task/Task';
-import { postponeMenuItemTitleFromDate, removeDateMenuItemTitleForField } from 'DateTime/Postponer';
+import { postponeMenuItemTitleFromDate, removeDateMenuItemTitleForField, splitDateText } from 'DateTime/Postponer';
 import { TasksDate } from 'DateTime/TasksDate';
 import type { TaskEditingInstruction } from 'ui/EditInstructions/TaskEditingInstruction';
 import { MenuDividerInstruction } from 'ui/EditInstructions/MenuDividerInstruction';
@@ -21,7 +21,8 @@ export class SetTaskDate extends BaseTaskEditingInstruction {
         super();
         this.newDate = date;
         this.dateFieldToEdit = dateFieldToEdit;
-        this.displayName = displayName ?? `Set Date: ${this.newDate.toDateString()}`;
+        this.displayName =
+            displayName ?? `Set ${splitDateText(dateFieldToEdit)} to ${window.moment(date).format('ddd Do MMM YYYY')}`;
     }
 
     public apply(task: Task): Task[] {

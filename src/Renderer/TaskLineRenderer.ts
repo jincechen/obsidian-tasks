@@ -187,7 +187,7 @@ export class TaskLineRenderer {
             checkbox.addEventListener('contextmenu', (ev: MouseEvent) => {
                 showMenu(ev, new StatusMenu(StatusRegistry.getInstance(), task));
             });
-            checkbox.setAttribute('title', 'Right-click for options');
+            checkbox.setAttribute('title', 'Right-click to change status');
         }
 
         li.prepend(checkbox);
@@ -253,7 +253,7 @@ export class TaskLineRenderer {
                     });
                     span.setAttribute(
                         'title',
-                        `Click to edit ${splitDateText(componentDateField)}, Right-click for more options`,
+                        `Click to change ${splitDateText(componentDateField)} · right-click for more`,
                     );
                 }
             }
@@ -311,7 +311,7 @@ export class TaskLineRenderer {
         const { debugSettings } = getSettings();
         if (debugSettings.showTaskHiddenData) {
             // Add some debug output to enable hidden information in the task to be inspected.
-            description += `<br>🐛 <b>${task.lineNumber}</b> . ${task.sectionStart} . ${task.sectionIndex} . '<code>${task.originalMarkdown}</code>'<br>'<code>${task.path}</code>' > '<code>${task.precedingHeader}</code>'<br>`;
+            description += `<br>Debug: <b>${task.lineNumber}</b> . ${task.sectionStart} . ${task.sectionIndex} . '<code>${task.originalMarkdown}</code>'<br>'<code>${task.path}</code>' > '<code>${task.precedingHeader}</code>'<br>`;
         }
         await this.textRenderer(this.obsidianApp, description, span, task.path, this.obsidianComponent);
 

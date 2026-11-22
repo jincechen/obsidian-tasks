@@ -102,7 +102,7 @@ filename includes {{query.file.fileName}}
 ... generates this output:
 
 ```text
-Tasks query: There was an error expanding one or more placeholders.
+Tasks query error: There was an error expanding one or more placeholders.
 
 The error message was:
     Unknown property: query.file.fileName

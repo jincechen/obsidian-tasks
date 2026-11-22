@@ -284,7 +284,7 @@ This is why Tasks offers a choice of [[#Delimiters|delimiters]] around sub-expre
 Here is the bulk of the error text for the above broken query:
 
 ```text
-Tasks query: Could not interpret the following instruction as a Boolean combination:
+Tasks query error: Could not interpret the following instruction as a Boolean combination:
     (description includes (maybe)) OR (description includes (perhaps))
 
 The error message is:
@@ -363,7 +363,7 @@ Above, we migrated the Boolean operators to JavaScript ones instead.
 Here is the bulk of the error text for the above broken query:
 
 ```text
-Tasks query: Could not interpret the following instruction as a Boolean combination:
+Tasks query error: Could not interpret the following instruction as a Boolean combination:
     (filter by function task.tags.join(',').toUpperCase().includes('#XX')) AND (filter by function task.tags.join(',').toUpperCase().includes('#YY')) AND (filter by function task.tags.join(',').toUpperCase().includes('#ZZ'))
 
 The error message is:
@@ -419,7 +419,7 @@ How to fix the query:
 The full output includes:
 
 ```text
-Tasks query: Could not interpret the following instruction as a Boolean combination:
+Tasks query error: Could not interpret the following instruction as a Boolean combination:
     "not done" AND (is recurring)
 
 The error message is:
@@ -600,7 +600,7 @@ Problem line: "(description includes (maybe)) OR (description includes (perhaps)
 After:
 
 ```text
-Tasks query: Could not interpret the following instruction as a Boolean combination:
+Tasks query error: Could not interpret the following instruction as a Boolean combination:
     (description includes (maybe)) OR (description includes (perhaps))
 
 The error message is:

@@ -19,7 +19,7 @@ export type SuggestInfoWithContext = SuggestInfo & {
  */
 function showError(message: string) {
     console.error(message);
-    new Notice(message + '\n\nThis message has been written to the console.\n', 10000);
+    new Notice(message, 10000);
 }
 
 export class EditorSuggestor extends EditorSuggest<SuggestInfoWithContext> {

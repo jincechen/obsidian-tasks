@@ -41,7 +41,7 @@ export class Commands {
         plugin.addCommand({
             id: 'toggle-done',
             name: ToggleTaskDoneCommandName,
-            icon: 'check-in-circle',
+            icon: 'check-circle',
             editorCheckCallback: toggleDone,
         });
 
@@ -59,7 +59,7 @@ export class Commands {
 
         plugin.addCommand({
             id: 'add-query-file-defaults-properties',
-            name: 'Add all Query File Defaults properties',
+            name: 'Add query file default properties',
             icon: 'settings',
             checkCallback: (checking: boolean) => {
                 const activeFile = this.app.workspace.getActiveFile();

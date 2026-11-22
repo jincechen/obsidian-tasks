@@ -131,6 +131,6 @@ describe('replaceTaskWithTasks - notices', () => {
         await replaceTaskWithTasks({ originalTask: task, newTasks: task });
         await vi.runAllTimersAsync();
 
-        expect(noticeMessages).toEqual([expect.stringContaining('Could not find the correct task line to update')]);
+        expect(noticeMessages).toEqual([expect.stringContaining('Could not update this task')]);
     });
 });
