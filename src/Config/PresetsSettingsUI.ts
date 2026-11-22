@@ -14,6 +14,7 @@ import { PresetsSettingsService } from 'Query/Presets/PresetsSettingsService';
 import type { PresetsMap } from 'Query/Presets/Presets';
 import { i18n } from 'i18n/i18n';
 import { type Settings, getSettings, updateSettings } from 'Config/Settings';
+import { confirmDestructiveAction } from 'Config/ConfirmModal';
 
 type RefreshViewCallback = () => void;
 
@@ -77,10 +78,20 @@ export class PresetsSettingsUI {
                         this.savePresetsSettings(updated, getSettings(), refresh);
                     }
                 },
-                onDelete: (index) => {
+                onDelete: async (index) => {
                     const currentKeys = Object.keys(getSettings().presets);
                     const key = currentKeys[index];
                     if (!key) {
+                        return;
+                    }
+                    const confirmed = await confirmDestructiveAction(this.plugin.app, {
+                        title: i18n.t('settings.presets.deleteConfirm.title', { name: key }),
+                        message: i18n.t('settings.presets.deleteConfirm.message'),
+                        confirmText: i18n.t('common.delete'),
+                    });
+                    if (!confirmed) {
+                        // Restore the row, in case the list has already removed it.
+                        refresh();
                         return;
                     }
                     const updated = this.presetsSettingsService.deletePreset(getSettings().presets, key);

@@ -143,6 +143,7 @@ The Tasks plugin defines several useful built-in presets, for demonstration purp
 <!-- placeholder to force blank line after included text --><!-- endInclude -->
 
 These defaults can, of course, be edited, renamed and deleted.
+You are asked to confirm before a preset is deleted.
 
 > [!released]
 >

@@ -1,6 +1,7 @@
 {
   "common": {
     "cancel": "Cancel",
+    "delete": "Delete",
     "edit": "Edit",
     "moreInfo": "More info",
     "okay": "Okay",
@@ -266,6 +267,10 @@
     "presets": {
       "buttons": {
         "addNewPreset": "Add new preset"
+      },
+      "deleteConfirm": {
+        "message": "Queries that use this preset will show an error.",
+        "title": "Delete preset '{{name}}'?"
       },
       "emptyState": "No presets yet.",
       "filter": {
