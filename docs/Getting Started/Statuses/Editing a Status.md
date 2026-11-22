@@ -40,6 +40,7 @@ Once you have added or edited the desired information, and none of the fields ar
 Red warnings will be shown if any of the following checks are not satisfied:
 
 - The two Symbol values must be a single character.
+- A changed Symbol cannot already be used by another status.
 - The Name cannot be empty.
 
 ## Limitations and Issues
