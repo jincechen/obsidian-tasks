@@ -281,7 +281,7 @@ describe('parseAndValidateRecurrence() tests', () => {
     it.each([
         // editable task, expected parsed recurrence, expected recurrence validity
         [invalidRecurrenceRule, '<i>invalid recurrence rule</i>', false],
-        [withRecurrenceRuleButNoHappensDate, '<i>due, scheduled or start date required</i>', false],
+        [withRecurrenceRuleButNoHappensDate, '<i>needs a due, scheduled or start date</i>', false],
         [withRecurrenceRuleAndHappensDate, 'every month when done', true],
     ])(
         "editable task with '%s' fields should have '%s' parsed recurrence and its validity is %s",
