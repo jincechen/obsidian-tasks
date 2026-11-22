@@ -2,6 +2,7 @@
     import { doAutocomplete } from '../DateTime/DateAbbreviations';
     import { parseTypedDateForDisplayUsingFutureDate } from '../DateTime/DateTools';
     import { labelContentWithAccessKey } from './EditTaskHelpers';
+    import { useIconsForDisplay } from './Icons';
 
     export let id: 'start' | 'scheduled' | 'due' | 'done' | 'created' | 'cancelled';
     export let dateSymbol: string;
@@ -36,6 +37,9 @@
 
     // 'weekend' abbreviation omitted due to lack of space.
     const datePlaceholder = "Try 'Mon' or 'tm' then space";
+
+    // With icons, no symbol is shown: the date picker already shows a calendar.
+    const showSymbol = !useIconsForDisplay();
 </script>
 
 <label for={id}>{@html labelContentWithAccessKey(id, accesskey)}</label>
@@ -52,7 +56,7 @@
 
 {#if isDateValid}
     <div class="tasks-modal-parsed-date">
-        {dateSymbol}<input
+        {showSymbol ? dateSymbol : ''}<input
             class="tasks-modal-date-editor-picker"
             type="date"
             bind:value={pickedDate}
@@ -62,7 +66,7 @@
         />
     </div>
 {:else}
-    <code class="tasks-modal-parsed-date">{dateSymbol} {@html parsedDate}</code>
+    <code class="tasks-modal-parsed-date">{showSymbol ? dateSymbol : ''} {@html parsedDate}</code>
 {/if}
 
 <style>
