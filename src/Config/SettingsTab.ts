@@ -39,6 +39,18 @@ import { GlobalQuery } from 'Config/GlobalQuery';
 import { GlobalQueryModal } from 'Config/GlobalQueryModal';
 import { PresetsSettingsUI } from 'Config/PresetsSettingsUI';
 import { EnableJsInTasksQueries } from 'Config/EnableJsInTasksQueries';
+import { TaskLayoutComponent } from 'Layout/TaskLayoutOptions';
+import { Priority } from 'Task/Priority';
+import { DEFAULT_SYMBOLS } from 'TaskSerializer/DefaultTaskSerializer';
+import {
+    TasksIcon,
+    createIcon,
+    iconForComponent,
+    iconForPriority,
+    labelForComponent,
+    labelForPriority,
+    useIconsForDisplay,
+} from 'ui/Icons';
 
 /**
  * A snapshot of the settings when the plugin loaded.
@@ -225,7 +237,7 @@ export class SettingsTab extends PluginSettingTab {
     }
 
     public getSettingDefinitions(): SettingDefinitionItem[] {
-        return [
+        const items = [
             this.globalDefaultsGroup(),
             this.searchesGroup(),
             this.datesGroup(),
@@ -235,6 +247,86 @@ export class SettingsTab extends PluginSettingTab {
             this.taskEntryGroup(),
             this.displayGroup(),
         ];
+        if (useIconsForDisplay()) {
+            SettingsTab.showPropertyIconsInDescriptions(items);
+        }
+        return items;
+    }
+
+    /**
+     * With the icon property style, show icons instead of the task property emojis in the descriptions.
+     */
+    private static showPropertyIconsInDescriptions(items: unknown[]) {
+        for (const item of items as { desc?: string | DocumentFragment; items?: unknown[] }[]) {
+            if (item.desc) {
+                item.desc = SettingsTab.withPropertyIcons(item.desc);
+            }
+            if (item.items) {
+                SettingsTab.showPropertyIconsInDescriptions(item.items);
+            }
+        }
+    }
+
+    private static withPropertyIcons(desc: string | DocumentFragment): DocumentFragment {
+        const icons = SettingsTab.propertyIconsByEmoji();
+        const emojis = new RegExp(`(${[...icons.keys()].join('|')})\uFE0F?`, 'u');
+
+        const fragment = typeof desc === 'string' ? SettingsTab.createFragmentWithHTML('') : desc;
+        if (typeof desc === 'string') {
+            fragment.append(desc);
+        }
+
+        const walker = fragment.ownerDocument.createTreeWalker(fragment, NodeFilter.SHOW_TEXT);
+        const textNodes: Text[] = [];
+        while (walker.nextNode()) {
+            textNodes.push(walker.currentNode as Text);
+        }
+        for (const textNode of textNodes) {
+            // Splitting on a capturing group puts each emoji at an odd index.
+            const parts = (textNode.textContent ?? '').split(emojis);
+            if (parts.length > 1) {
+                textNode.replaceWith(
+                    ...parts.map((part, index) => {
+                        const icon = icons.get(part);
+                        return index % 2 === 1 && icon ? createIcon(icon.id, icon.label) : part;
+                    }),
+                );
+            }
+        }
+        return fragment;
+    }
+
+    /**
+     * The emojis of the Tasks emoji format, and the postpone button's emoji, with the icons that replace them.
+     */
+    private static propertyIconsByEmoji(): Map<string, { id: string; label: string }> {
+        const icons = new Map<string, { id: string; label: string }>();
+        const fields: [string, TaskLayoutComponent][] = [
+            [DEFAULT_SYMBOLS.createdDateSymbol, TaskLayoutComponent.CreatedDate],
+            [DEFAULT_SYMBOLS.startDateSymbol, TaskLayoutComponent.StartDate],
+            [DEFAULT_SYMBOLS.scheduledDateSymbol, TaskLayoutComponent.ScheduledDate],
+            [DEFAULT_SYMBOLS.dueDateSymbol, TaskLayoutComponent.DueDate],
+            [DEFAULT_SYMBOLS.doneDateSymbol, TaskLayoutComponent.DoneDate],
+            [DEFAULT_SYMBOLS.cancelledDateSymbol, TaskLayoutComponent.CancelledDate],
+            [DEFAULT_SYMBOLS.recurrenceSymbol, TaskLayoutComponent.RecurrenceRule],
+            [DEFAULT_SYMBOLS.onCompletionSymbol, TaskLayoutComponent.OnCompletion],
+            [DEFAULT_SYMBOLS.dependsOnSymbol, TaskLayoutComponent.DependsOn],
+            [DEFAULT_SYMBOLS.idSymbol, TaskLayoutComponent.Id],
+        ];
+        for (const [emoji, component] of fields) {
+            const id = iconForComponent(component);
+            if (id) {
+                icons.set(emoji, { id, label: labelForComponent(component) });
+            }
+        }
+        for (const name of ['Highest', 'High', 'Medium', 'Low', 'Lowest'] as const) {
+            const id = iconForPriority(Priority[name]);
+            if (id) {
+                icons.set(DEFAULT_SYMBOLS.prioritySymbols[name], { id, label: labelForPriority(Priority[name]) });
+            }
+        }
+        icons.set('⏩', { id: TasksIcon.postpone, label: 'Postpone' });
+        return icons;
     }
 
     // ---- Task format (general, no heading) --------------------------------
@@ -1105,6 +1197,8 @@ export class SettingsTab extends PluginSettingTab {
                                     updateSettings({ signifierDisplay: value as 'icons' | 'emoji' });
                                     await this.plugin.saveSettings();
                                     this.events.triggerReloadOpenSearchResults();
+                                    // Show the new style in the settings' own descriptions too.
+                                    this.rebuildSettingsTab();
                                 });
                         });
                     },

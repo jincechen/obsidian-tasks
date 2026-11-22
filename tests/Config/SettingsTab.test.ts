@@ -2,7 +2,7 @@ import { verifyAsJson } from '@approval-tests/approvals/lib/Providers/Vitest/Vit
 
 import { SettingsTab } from 'Config/SettingsTab';
 import { GlobalFilter } from 'Config/GlobalFilter';
-import { getSettings, resetSettings } from 'Config/Settings';
+import { getSettings, resetSettings, updateSettings } from 'Config/Settings';
 import { i18n } from 'i18n/i18n';
 import { MarkdownView, lastModalState, resetLastModalState } from '../__mocks__/obsidian';
 
@@ -127,6 +127,27 @@ const events = {
     triggerReloadOpenSearchResults: vi.fn(),
 } as any;
 
+/**
+ * Find the definition of the setting with the given display name, anywhere in the
+ * nested groups and pages returned by {@link SettingsTab.getSettingDefinitions}.
+ */
+function findSetting(items: unknown, name: string): any {
+    if (Array.isArray(items)) {
+        for (const item of items) {
+            const found = findSetting(item, name);
+            if (found) return found;
+        }
+    } else if (items !== null && typeof items === 'object') {
+        const record = items as Record<string, unknown>;
+        if (record.name === name) return record;
+        for (const value of Object.values(record)) {
+            const found = findSetting(value, name);
+            if (found) return found;
+        }
+    }
+    return undefined;
+}
+
 describe('SettingsTab post-1.13', () => {
     const settingsTab = new SettingsTab({ plugin, events });
 
@@ -150,27 +171,6 @@ describe('SettingsTab applies changed settings without reloading', () => {
         GlobalFilter.getInstance().reset();
         vi.clearAllMocks();
     });
-
-    /**
-     * Find the definition of the setting with the given display name, anywhere in the
-     * nested groups and pages returned by {@link SettingsTab.getSettingDefinitions}.
-     */
-    function findSetting(items: unknown, name: string): any {
-        if (Array.isArray(items)) {
-            for (const item of items) {
-                const found = findSetting(item, name);
-                if (found) return found;
-            }
-        } else if (items !== null && typeof items === 'object') {
-            const record = items as Record<string, unknown>;
-            if (record.name === name) return record;
-            for (const value of Object.values(record)) {
-                const found = findSetting(value, name);
-                if (found) return found;
-            }
-        }
-        return undefined;
-    }
 
     /**
      * Render a toggle or dropdown setting, as the Tasks settings pane would, and return its onChange handler,
@@ -229,5 +229,20 @@ describe('SettingsTab applies changed settings without reloading', () => {
         // Tasks are parsed using the task format, so the vault's tasks need re-reading.
         expect(events.triggerReloadVault).toHaveBeenCalled();
         expect(readingView.previewMode.rerender).toHaveBeenCalledWith(true);
+    });
+});
+
+describe('SettingsTab with the icon property style', () => {
+    afterEach(() => {
+        resetSettings();
+    });
+
+    it('should show icons instead of the property emojis in descriptions', () => {
+        updateSettings({ signifierDisplay: 'icons' });
+        const definitions = new SettingsTab({ plugin, events }).getSettingDefinitions();
+        const desc: DocumentFragment = findSetting(definitions, i18n.t('settings.dates.doneDate.name')).desc;
+
+        expect(desc.textContent).not.toContain('✅');
+        expect(desc.querySelector('.tasks-icon')?.getAttribute('aria-label')).toEqual('Done');
     });
 });

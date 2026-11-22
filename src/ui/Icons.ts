@@ -203,14 +203,21 @@ function setOrRemoveAttribute(element: HTMLElement, name: string, value: string 
 }
 
 /**
- * Append an icon to the element, as a span that screen readers announce with the given label.
+ * An icon, as a span that screen readers announce with the given label.
  */
-export function appendIcon(parent: HTMLElement, iconId: string, label: string): HTMLSpanElement {
-    const iconSpan = parent.createSpan({ cls: 'tasks-icon' });
+export function createIcon(iconId: string, label: string): HTMLSpanElement {
+    const iconSpan = createSpan({ cls: 'tasks-icon' });
     setTasksIcon(iconSpan, iconId);
     iconSpan.setAttribute('aria-label', label);
     iconSpan.setAttribute('role', 'img');
     return iconSpan;
+}
+
+/**
+ * Append an icon to the element, as a span that screen readers announce with the given label.
+ */
+export function appendIcon(parent: HTMLElement, iconId: string, label: string): HTMLSpanElement {
+    return parent.appendChild(createIcon(iconId, label));
 }
 
 /**
